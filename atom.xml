@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-14T16:50:40.784Z</updated>
+  <updated>2014-03-14T16:56:04.621Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -30,7 +30,7 @@
 <li>object-c</li>
 </ul>
 <h3 id="email">EMAIL</h3>
-<p><a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#x33;&#119;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#x70;&#x75;&#x74;&#x65;&#x72;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#109;">&#x33;&#119;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#x70;&#x75;&#x74;&#x65;&#x72;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#109;</a></p>
+<p><a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#51;&#119;&#109;&#97;&#111;&#x63;&#111;&#109;&#x70;&#x75;&#116;&#101;&#x72;&#x40;&#x67;&#109;&#x61;&#105;&#108;&#46;&#99;&#x6f;&#x6d;">&#51;&#119;&#109;&#97;&#111;&#x63;&#111;&#109;&#x70;&#x75;&#116;&#101;&#x72;&#x40;&#x67;&#109;&#x61;&#105;&#108;&#46;&#99;&#x6f;&#x6d;</a></p>
 <h3 id="blog">BLOG</h3>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -46,10 +46,12 @@
     <link href="http://yuhaya.github.io/2014/03/14/hello-world/"/>
     <id>http://yuhaya.github.io/2014/03/14/hello-world/</id>
     <published>2014-03-14T13:56:49.000Z</published>
-    <updated>2014-03-14T13:56:49.000Z</updated>
+    <updated>2014-03-14T16:55:55.000Z</updated>
     <content type="html"><![CDATA[<p>Welcome to <a href="http://zespia.tw/hexo" target="_blank">Hexo</a>! This is your very first post. Check <a href="http://zespia.tw/hexo/docs" target="_blank">documentation</a> to learn how to use.</p>
 ]]></content>
     
+    
+      <category term="public" scheme="http://yuhaya.github.io/categories/public/"/>
     
   </entry>
   
