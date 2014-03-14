@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-14T17:24:14.671Z</updated>
+  <updated>2014-03-14T17:29:59.419Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/03/15/%E5%90%88%E5%B9%B6zf2%E5%BA%93%E6%96%87%E4%BB%B6/"/>
     <id>http://yuhaya.github.io/2014/03/15/合并zf2库文件/</id>
     <published>2014-03-14T17:16:36.000Z</published>
-    <updated>2014-03-14T17:23:58.000Z</updated>
+    <updated>2014-03-14T17:29:53.000Z</updated>
     <content type="html"><![CDATA[<figure class="highlight php"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -263,6 +263,22 @@ Zend\Mvc\Application::init(<span class="keyword">require</span> <span class="str
 
 all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 </pre></td></tr></table></figure>
+
+
+<ul>
+<li><h4 id="all_files">all_files</h4>
+<pre><code>  获取所有需要加载的文件
+</code></pre></li>
+<li><h4 id="strip_whitespace">strip_whitespace</h4>
+<pre><code>  压缩php文件
+</code></pre></li>
+<li><h4 id="complie">complie</h4>
+<pre><code>  合并php文件
+</code></pre></li>
+<li><h4 id="load_complie">load_complie</h4>
+<pre><code>  加载合并文件
+</code></pre></li>
+</ul>
 ]]></content>
     
     
@@ -288,7 +304,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#x33;&#119;&#x6d;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#x75;&#x74;&#x65;&#x72;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;">&#x33;&#119;&#x6d;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#x75;&#x74;&#x65;&#x72;&#64;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#99;&#x6f;&#109;</a></p>
+<p><a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x33;&#x77;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#117;&#x74;&#101;&#x72;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#46;&#99;&#111;&#109;">&#x33;&#x77;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#117;&#x74;&#101;&#x72;&#x40;&#103;&#109;&#x61;&#x69;&#108;&#46;&#99;&#111;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
