@@ -1,0 +1,1866 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[/sbin]]></title>
+  <subtitle><![CDATA[Simple code farming life]]></subtitle>
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://yuhaya.github.io/"/>
+  <updated>2014-03-14T13:38:17.676Z</updated>
+  <id>http://yuhaya.github.io/</id>
+  
+  <author>
+    <name><![CDATA[3wmao]]></name>
+    <email><![CDATA[3wmaocomputer@gmail.com]]></email>
+  </author>
+  
+  <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[mysql数据库目录存放位置更改]]></title>
+    <link href="http://yuhaya.github.io/2014/03/13/mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%AE%E5%BD%95%E5%AD%98%E6%94%BE%E4%BD%8D%E7%BD%AE%E6%9B%B4%E6%94%B9/"/>
+    <id>http://yuhaya.github.io/2014/03/13/mysql数据库目录存放位置更改/</id>
+    <published>2014-03-13T05:05:17.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>操作步骤：</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;1.检查mysql数据库存放目录
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;mysql&amp;nbsp;-u&amp;nbsp;root&amp;nbsp;-prootadmin
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;show&amp;nbsp;variables&amp;nbsp;like&amp;nbsp;&#39;%dir%&#39;;
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;quit;
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;（查看datadir&amp;nbsp;那一行所指的路径）
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;2.停止mysql服务
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;service&amp;nbsp;mysqld&amp;nbsp;stop
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;3.创建新的数据库存放目录
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;mkdir&amp;nbsp;/data/mysql
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;4.移动/复制之前存放数据库目录文件，到新的数据库存放目录位置
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;cp&amp;nbsp;-R&amp;nbsp;/usr/local/mysql/data/*&amp;nbsp;/data/mysql/&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;#或mv&amp;nbsp;/usr/local/mysql/data/*&amp;nbsp;/data/mysql
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;5.修改mysql数据库目录权限以及配置文件
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;chown&amp;nbsp;mysql:mysql&amp;nbsp;-R&amp;nbsp;/data/mysql/
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;vim&amp;nbsp;/etc/my.cnf
+
+datadir=/data/mysql&amp;nbsp;（制定为新的数据存放目录）
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;vim&amp;nbsp;/etc/init.d/mysqld
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;datadir=/data/mysql
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;6.启动数据库服务
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;service&amp;nbsp;mysqld&amp;nbsp;start
+
+说明：根据以上的简单6步操作，已经成功的数据库目录更换路径了。
+
+备注：以上系统为CentOS&amp;nbsp;6.2&amp;nbsp;x64&amp;nbsp;&amp;nbsp;&amp;nbsp;mysql-5.5.13
+</code></pre><p><a href="http://codemao-wordpress.stor.sinaapp.com/uploads/2014/03/092616454.jpg" target="_blank"><img src="http://codemao-wordpress.stor.sinaapp.com/uploads/2014/03/092616454.jpg" alt="" title="092616454"></a></p>
+]]></content>
+    
+    
+      <category term="mysql" scheme="http://yuhaya.github.io/categories/mysql/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[捕获PHP的致命错误（Fatal Error 或 E_ERROR）并处理]]></title>
+    <link href="http://yuhaya.github.io/2014/03/13/%E6%8D%95%E8%8E%B7php%E7%9A%84%E8%87%B4%E5%91%BD%E9%94%99%E8%AF%AF%EF%BC%88fatal-error-%E6%88%96-e_error%EF%BC%89%E5%B9%B6%E5%A4%84%E7%90%86/"/>
+    <id>http://yuhaya.github.io/2014/03/13/捕获php的致命错误（fatal-error-或-e_error）并处理/</id>
+    <published>2014-03-13T04:58:48.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>如何处理PHP的E_ERROR或Fatal Error是一件麻烦事。当程序因为内存不足、执行超时等等而出现致命错误意外中断时，也需要进行相关的处理，而这时error_reporting与try...catch都不适用。</p>
+<p>这时可以利用PHP的register_shutdown_function函数。</p>
+<p>手册上写的很明确：register_shutdown_function — Register a function for execution on shutdown，就是说当程序中断时会调用该函数注册的函数。</p>
+<pre><code>比如：
+</code></pre><pre class="prettyprint lang-php">function shutdown() {
+    echo 'Script executed with success', PHP_EOL;
+}
+register_shutdown_function('shutdown');</pre>
+
+<pre><code>当然，任何的程序中断都会触发用此方法注册的函数，包括exit()等等。如果想只用来处理某段程序的致命错误，这时需要进行一下判断，可以参考一下代码：
+</code></pre><pre class="prettyprint lang-php">class Test {
+private $running;
+public function __construct() {
+register_shutdown_function(array($this, 'shutdown_handler'));
+}
+public function main() {
+$this-&gt;running = true;  //开始监测
+echo "Hello ";
+$this-&gt;error();  //(undefined method)触发一个致命错误
+echo "World ";      
+$this-&gt;running = false;  //结束监测
+}
+public function shutdown_handler() {
+if ($this-&gt;running) {
+echo '抱歉出错了～';
+@header("Location: error.php");   
+}
+}
+}
+$t = new Test();
+$t-&gt;main();</pre>]]></content>
+    
+    
+      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[shell判断文件是否存在]]></title>
+    <link href="http://yuhaya.github.io/2014/03/07/shell%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8/"/>
+    <id>http://yuhaya.github.io/2014/03/07/shell判断文件是否存在/</id>
+    <published>2014-03-07T06:06:59.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="shell-">shell判断文件,目录是否存在或者具有权限</h1>
+<pre class="prettyprint lang-bsh">#!/bin/sh
+myPath="/var/log/httpd/"
+myFile="/var /log/httpd/access.log"
+
+#这里的-x 参数判断$myPath是否存在并且是否具有可执行权限
+if [ ! -x "$myPath"]; then
+mkdir "$myPath"
+fi
+
+#这里的-d 参数判断$myPath是否存在
+if [ ! -d "$myPath"]; then
+mkdir "$myPath"
+fi
+
+#这里的-f参数判断$myFile是否存在
+if [ ! -f "$myFile" ]; then
+touch "$myFile"
+fi
+
+#其他参数还有-n,-n是判断一个变量是否是否有值
+if [ ! -n "$myVar" ]; then
+echo "$myVar is empty"
+exit 0
+fi
+
+#两个变量判断是否相等
+if [ "$var1" = "$var2" ]; then
+echo '$var1 eq $var2'
+else
+echo '$var1 not eq $var2'
+fi
+</pre>]]></content>
+    
+    
+      <category term="linux" scheme="http://yuhaya.github.io/tags/linux/"/>
+    
+      <category term="shell" scheme="http://yuhaya.github.io/tags/shell/"/>
+    
+      <category term="shell" scheme="http://yuhaya.github.io/categories/shell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Object-c 深拷贝和浅拷贝]]></title>
+    <link href="http://yuhaya.github.io/2014/03/06/object-c-%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/"/>
+    <id>http://yuhaya.github.io/2014/03/06/object-c-深拷贝和浅拷贝/</id>
+    <published>2014-03-06T12:54:13.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>导航：</p>
+<pre><code>概念
+
+&lt;span style=&quot;color:#E53333;&quot;&gt;数组类型转换&lt;/span&gt; 
+
+第一种：非容器类不可变对象
+
+第二种：容器类不可变对象
+
+第三种：非容器类可变对象
+
+第四种：容器类可变对象
+
+&lt;span style=&quot;background-color:#FFFFFF;color:#E53333;&quot;&gt;概念&lt;/span&gt; 
+
+&lt;span style=&quot;color:#E53333;&quot;&gt;浅 复 制&lt;/span&gt;：对于被复制的对象的每一层复制都是指针复制（复制对象的指针）。
+
+&lt;span style=&quot;color:#E53333;&quot;&gt;深 复 制&lt;/span&gt;：在复制操作时，对于被复制的对象至少有一���复制是对象复制（复制引用对象内容）。
+
+&lt;span style=&quot;color:#E53333;&quot;&gt;完全复制&lt;/span&gt;：在复制操作时，对于被复制的对象的每一层复制都是对象复制。
+</code></pre><blockquote>
+<p>1、在复制操作时，对于对象有n层是对象复制，我们可称作n级深复制，此处n应大于等于1。</p>
+<pre><code>    2、对于完全复制如何实现（目前通用的办法是：迭代法和归档），这里后续是否添加视情况而定，暂时不做讲解。
+
+
+    3、指针复制俗称指针拷贝，对象复制也俗称内容拷贝。&amp;nbsp;
+</code></pre><p>retain：</p>
+<pre><code>    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;始终是浅复制。引用计数每次加一。返回对象是否可变与被复制的对象保持一致。
+
+
+    copy：
+
+
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;对于可变对象为深复制，引用计数不改变;
+
+
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;对于不可变对象是浅复制，引用计数每次加一。始终返回一个不可变对象。
+
+
+    mutableCopy：
+
+
+    &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;始终是深复制，引用计数不改变。始终返回一个可变对象。
+</code></pre><p>不可变对象：值发生改变，其内存首地址随之改变。</p>
+<pre><code>    可变对象：无论值是否改变，其内存首地址都不随之改变。
+
+
+    引用计数：为了让使用者清楚的知道，该对象有多少个拥有者（即有多少个指针指向同一内存地址）。
+</code></pre></blockquote>
+<pre><code>数组类型的转换
+
+1、不可变对象→可变对象的转换：
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;
+</code></pre><pre class="prettyprint"> NSArray *array1= [NSArray arrayWithObjects:@"a",@"b",@"c",@"d",nil];
+ NSMutableArray  *str2=[array1 mutableCopy];</pre>
+
+<pre><code>2、可变对象→不可变对象的转换：
+
+&amp;nbsp; &amp;nbsp;&amp;nbsp;
+</code></pre><pre class="prettyprint">NSMutableArray *array2   = [NSMutableArray arrayWithObjects:@"aa",@"bb",@"cc",@"dd",nil];
+NSArray *array1=[  array2    Copy];</pre>
+
+<pre><code>3、可变对象→可变对象的转换（不同指针变量指向不同的内存地址）：
+</code></pre><pre class="prettyprint">       NSMutableArray *array1= [NSMutableArray arrayWithObjects:@"a",@"b",@"c",@"d",nil];
+       NSMutableArray  *str2=[array1 mutableCopy];</pre>
+
+<pre><code>通过上边的两个例子，我们可轻松的将一个对象在可变和不可变之间转换，并且这里不用考虑内存使用原则（即引用计数的问题）。没错，这就是深拷贝的魅力了。
+
+4、同类型对象之间的指针复制（不同指针变量指向同一块内存地址）：
+
+&amp;nbsp; a、
+</code></pre><pre class="prettyprint">   NSMutableString *str1=[NSMutableString stringWithString:@"two day"];
+   NSMutableString *str2=[str1   retain];
+   [str1  release];</pre>
+
+<pre><code>&amp;nbsp; b、
+</code></pre><pre class="prettyprint">   NSArray *array1= [NSArray arrayWithObjects:@"a",@"b",@"c",@"d",nil];
+   NSArray  *str2=[array1 Copy];
+   [array1 release];</pre>
+
+<pre><code>&amp;nbsp;
+
+&amp;nbsp; &amp;nbsp;通俗的讲，多个指针同时指向同一块内存区域，那么这些个指针同时拥有对该内存区的所有权。所有权的瓜分过程，这时候就要用到浅拷贝了。
+
+则简化为：
+
+问：什么时候用到深浅拷贝？
+
+答：深拷贝是在要将一个对象从可变（不可变）转为不可变（可变）或者将一个对象内容克隆一份时用到；浅拷贝是在要复制一个对象的指针时用到。
+
+＃测试以下代码时需将Project中的Ojective-C automic Reference couting设置为NO(Apple LLVM 5.0-language -Modules)
+
+第一种：非容器类不可变对象
+</code></pre><pre class="prettyprint">        NSString *str1=@"one day";
+
+        printf("初始化赋值引用计数为::::%lu",str1.retainCount);
+        NSString *strCopy1=[str1 retain];
+        printf("\n继续retain引用计数为:::%lu",str1.retainCount);
+        NSString *strCopy2=[str1 copy];
+        printf("\n继续copy后引用计数为::::%lu",str1.retainCount);
+        NSString *strCopy3=[str1 mutableCopy];
+        printf("\n继续mutableCopy后为:::%lu\n",str1.retainCount);
+
+        printf("\n非容器类不可变对象\n原始地址::::::::::%p",str1);
+        printf("\nretain复制::::::::%p",strCopy1);
+        printf("\ncopy复制::::::::::%p",strCopy2);
+        printf("\nmutableCopy复制:::%p\n",strCopy3);
+
+        // 初始化赋值引用计数为：18446744073709551615
+        // 继续retain引用计数为：18446744073709551615
+        // 继续copy后引用计数为：18446744073709551615
+        // 继续mutableCopy后为：18446744073709551615
+
+        //原始地址::::::::::0x1000033d0
+        //retain复制::::::::0x1000033d0//浅复制
+        //copy复制::::::::::0x1000033d0//浅复制
+        //mutableCopy复制:::0x10010c420//深复制</pre>
+
+<pre><code>&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;
+
+&amp;nbsp;小提示：这里很多人都说是赋值，所以就好解释这里没引用计数的概念。而且也能解释为什么
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;NSString *strCopy2=[str1 copy];
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;NSMutableString &amp;nbsp;*strCopy2=[str1 copy];&amp;nbsp;
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;这样都不会报错的原因了。那既然只是简单赋值为什么要这么麻烦呢，直接
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;NSString *strCopy2=*str1;
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;NSMutableString &amp;nbsp;*strCopy2=*str1;
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;其实大家都看出来了，这里是指针变量，只存在“指针的复制”，
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;跟赋值概念完全不同，虽然这里看起来很像。
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;原来该类型是字符串常量时，系统会为我们优化，声明了多个字符串，但是都是常量，且内容相等，那么系统就只为我们申请一块空间。
+
+&amp;nbsp; 疑问： 深复制=浅复制+赋值吗？&amp;nbsp;
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;赋值过程：输入数据→寄存器处理→开辟内存→写入数据。
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;一次深复制，可以得到被复制对象指针，并进行一次赋值操作。
+
+&amp;nbsp;第二种：容器类不可变对象
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;
+</code></pre><pre class="prettyprint"> NSArray *array1= [NSArray arrayWithObjects:@"a",@"b",@"c",@"d",nil];
+
+        printf("\n初始化赋值引用计数为::::::::::::%lu",[array1 retainCount]);
+        NSArray *arrayCopy1 = [array1 retain];
+        printf("\n继续retain后引用计数为:::::::::%lu",array1.retainCount);
+        NSArray *arrayCopy2 = [array1 copy];
+        printf("\n继续copy后引用计数为:::::::::::%lu",array1.retainCount);
+        NSArray *arrayCopy3 = [array1 mutableCopy];
+        printf("\n继续mutableCopy后引用计数为::::%lu\n",array1.retainCount);
+
+        printf("\n容器类不可变数组\n原始地址::::::::::%p\t\t%p",array1,[array1 objectAtIndex:1]);
+        printf("\nretain复制::::::::%p\t%p",arrayCopy1,[arrayCopy1 objectAtIndex:1]);
+        printf("\ncopy复制::::::::::%p\t%p",arrayCopy2,[arrayCopy2 objectAtIndex:1]);
+        printf("\nmutableCopy复制:::%p\t%p",arrayCopy3,[arrayCopy3 objectAtIndex:1]);
+//结果
+//初始化赋值引用计数为::::::::::::1
+        //继续retain后引用计数为:::::::::2
+        //继续copy后引用计数为:::::::::::3
+        //继续mutableCopy后引用计数为::::3
+
+        //容器类不可变数组
+        //原始地址::::::::::0x10010c6b0 0x100003410
+        //retain复制::::::::0x10010c6b0 0x100003410//浅复制
+        //copy复制::::::::::0x10010c6b0 0x100003410//浅复制
+        //mutableCopy复制:::0x10010c760 0x100003410//深复制</pre>
+
+<pre><code>&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;nbsp;
+
+第三种：非容器类可变对象
+
+&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;
+</code></pre><pre class="prettyprint">NSMutableString *str2=[NSMutableString stringWithString:@"two day"];
+
+        printf("\n初始化赋值引用计数为::::::::::::%lu",str2.retainCount);
+        NSMutableString *strCpy1=[str2 retain];
+        printf("\n继续retain后引用计数为:::::::::%lu",str2.retainCount);
+        NSMutableString *strCpy2=[str2 copy];
+        printf("\n继续copy后引用计数为:::::::::::%lu",str2.retainCount);
+        NSMutableString *strCpy3=[str2 mutableCopy];
+        printf("\n继续mutableCopy后引用计数为::::%lu\n",str2.retainCount);
+
+        printf("\n非容器类可变对象\n原始地址::::::::::%p",str2);
+        printf("\nretin复制::::::::%p",strCpy1);
+        printf("\ncopy复制::::::::::%p",strCpy2);
+        printf("\nmutableCopy复制:::%p",strCpy3);
+//结果
+//初始化赋值引用计数为::::::::::::1
+        //继续retain后引用计数为:::::::::2
+        //继续copy后引用计数为:::::::::::2
+        //继续mutableCopy后引用计数为::::2
+
+        //非容器类可变对象
+        //原始地址::::::::::0x10010c560
+        //retain复制::::::::0x10010c560//浅复制
+        //copy复制::::::::::0x100102720//深复制
+        //mutableCopy复制:::0x10010c880//深复制</pre>
+
+<pre><code>&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;
+
+第四种：容器类可变对象
+</code></pre><pre class="prettyprint">        NSMutableArray *array2   = [NSMutableArray arrayWithObjects:@"aa",@"bb",@"cc",@"dd",nil];
+
+        printf("\n初始化赋值引用计数为::::::::::%lu",array2.retainCount);
+        NSMutableArray *arrayCpy1 = [array2 retain];
+        printf("\n继续retain后引用计数为:::::::%lu",array2.retainCount);
+        NSMutableArray *arrayCpy2=[array2 copy];
+        printf("\n继续copy后引用计数为:::::::::%lu",array2.retainCount);
+        NSMutableArray *arrayCpy3 = [array2 mutableCopy];
+        printf("\n继续mutableCopy后引用计数为::%lu\n",array2.retainCount);
+
+        printf("\n容器类可变数组\n原始地址:::::::::::%p\t%p",array2,[array2 objectAtIndex:1]);
+        printf("\nretain复制:::::::::%p\t%p",arrayCpy1,[arrayCpy1 objectAtIndex:1]);
+        printf("\ncopy复制:::::::::::%p\t%p",arrayCpy2,[arrayCpy2 objectAtIndex:1]);
+        printf("\nnmutableCopy复制:::%p\t%p",arrayCpy3,[arrayCpy3 objectAtIndex:1]);
+//结果
+        //初始化赋值引用计数为::::::::::1
+        //继续retain后引用计数为:::::::2
+        //继续copy后引用计数为:::::::::2
+        //继续mutableCopy后引用计数为::2
+
+        //容器类可变数组
+        //原始地址:::::::::::0x10010e6c0 0x1000034b0
+        //retain复制:::::::::0x10010e6c0 0x1000034b0//浅复制
+        //copy复制:::::::::::0x10010e790 0x1000034b0//深复制
+        //nmutableCopy复制:::0x10010e7c0 0x1000034b0//深复制</pre>]]></content>
+    
+    
+      <category term="object-c" scheme="http://yuhaya.github.io/categories/object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[mysql索引的类型和优缺点]]></title>
+    <link href="http://yuhaya.github.io/2014/03/06/mysql%E7%B4%A2%E5%BC%95%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9/"/>
+    <id>http://yuhaya.github.io/2014/03/06/mysql索引的类型和优缺点/</id>
+    <published>2014-03-06T07:24:34.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>现在来介绍了数据库索引，及其优、缺点。针对MySQL索引的特点、应用进行了详细的描 述。分析了如何避免MySQL无法使用，如何使用EXPLAIN分析查询语句，如何优化MySQL索引的应用。本文摘自《MySQL 5权威指南》(3rd)的8.9节。</p>
+<pre><code>索引是一种特殊的文件(InnoDB数据表上的索引是表空间的一个组成部分)，它们包含着对数据表里所有记录的引用指针。
+
+注：[1]索引不是万能的！索引可以加快数据检索操作，但会使数据修改操作变慢。每修改数据记录，索引就必须刷新一次。为了在某种程序上弥补这一缺陷，许 多SQL命令都有一个DELAY_KEY_WRITE项。这个选项的作用是暂时制止MySQL在该命令每插入一条新记录和每修改一条现有之后立刻对索引进 行刷新，对索引的刷新将等到全部记录插入/修改完毕之后再进行。在需要把许多新记录插入某个数据表的场合，DELAY_KEY_WRITE选项的作用将非 常明显。[2]另外，索引还会在硬盘上占用相当大的空间。因此应该只为最经常查询和最经常排序的数据列建立索引。注意，如果某个数据列包含许多重复的内 容，为它建立索引就没有太大的实际效果。
+
+从理论上讲，完全可以为数据表里的每个字段分别建一个索引，但MySQL把同一个数据表里的索引总数限制为16个。
+
+1\. InnoDB数据表的索引
+
+与MyISAM数据表相比，索引对InnoDB数据的重要性要大得多。在InnoDB数据表上，索引对InnoDB数据表的重要性要在得多。在 InnoDB数据表上，索引不仅会在搜索数据记录时发挥作用，还是数据行级锁定机制的苊、基础。”数据行级锁定”的意思是指在事务操作的执行过程中锁定正 在被处理的个别记录，不让其他用户进行访问。这种锁定将影响到(但不限于)SELECT…LOCK IN SHARE MODE、SELECT…FOR UPDATE命令以及INSERT、UPDATE和DELETE命令。
+
+出于效率方面的考虑，InnoDB数据表的数据行级锁定实际发生在它们的索引上，而不是数据表自身上。显然，数据行级锁定机制只有在有关的数据表有一个合 适的索引可供锁定的时候才能发挥效力。
+
+2\. 限制
+
+如果WEHERE子句的查询条件里有不等号(WHERE coloum != …)，MySQL将无法使用索引。
+
+类似地，如果WHERE子句的查询条件里使用了函数(WHERE DAY(column) = …)，MySQL也将无法使用索引。
+
+在JOIN操作中(需要从多个数据表提取数据时)，MySQL只有在主键和外键的数据类型相同时才能使用索引。
+
+如果WHERE子句的查询条件里使用比较操作符LIKE和REGEXP，MySQL只有在搜索模板的第一个字符不是通配符的情况下才能使用索引。比如说， 如果查询条件是LIKE ‘abc%’，MySQL将使用索引；如果查询条件是LIKE ‘%abc’，MySQL将不使用索引。
+
+在ORDER BY操作中，MySQL只有在排序条件不是一个查询条件表达式的情况下才使用索引。(虽然如此，在涉及多个数据表查询里，即使有索引可用，那些索引在加快 ORDER BY方面也没什么作用)
+
+如果某个数据列里包含许多重复的值，就算为它建立了索引也不会有很好的效果。比如说，如果某个数据列里包含的净是些诸如”0/1″或”Y/N”等值，就没 有必要为它创建一个索引。
+
+普通索引、唯一索引和主索引
+
+1\. 普通索引
+
+普通索引(由关键字KEY或INDEX定义的索引)的唯一任务是加快对数据的访问速度。因此，应该只为那些最经常出现在查询条件(WHERE column = …)或排序条件(ORDER BY column)中的数据列创建索引。只要有可能，就应该选择一个数据最整齐、最紧凑的数据列(如一个整数类型的数据列)来创建索引。
+
+2\. 唯一索引
+
+普通索引允许被索引的数据列包含重复的值。比如说，因为人有可能同名，所以同一个姓名在同一个”员工个人资料”数据表里可能���现两次或更多次。
+
+如果能确定某个数据列将只包含彼此各不相同的值，在为这个数据列创建索引的时候就应该用关键字UNIQUE把它定义为一个唯一索引。这么做的好处：一是简 化了MySQL对这个索引的管理工作，这个索引也因此而变得更有效率；二是MySQL会在有新记录插入数据表时，自动检查新记录的这个字段的值是否已经在 某个记录的这个字段里出现过了；如果是，MySQL将拒绝插入那条新记录。也就是说，唯一索引可以保证数据记录的唯一性。事实上，在许多场合，人们创建唯 一索引的目的往往不是为了提高访问速度，而只是为了避免数据出现重复。
+
+3\. 主索引
+
+在前面已经反复多次强调过：必须为主键字段创建一个索引，这个索引就是所谓的”主索引”。主索引与唯一索引的唯一区别是：前者在定义时使用的关键字是 PRIMARY而不是UNIQUE。
+
+4\. 外键索引
+
+如果为某个外键字段定义了一个外键约束条件，MySQL就会定义一个内部索引来帮助自己以最有效率的方式去管理和使用外键约束条件。
+
+5\. 复合索引
+
+索引可以覆盖多个数据列，如像INDEX(columnA, columnB)索引。这种索引的特点是MySQL可以有选择地使用一个这样的索引。如果查询操作只需要用到columnA数据列上的一个索引，就可以使 用复合索引INDEX(columnA, columnB)。不过，这种用法仅适用于在复合索引中排列在前的数据列组合。比如说，INDEX(A, B, C)可以当做A或(A, B)的索引来使用，但不能当做B、C或(B, C)的索引来使用。
+
+6\. 索引的长度
+
+在为CHAR和VARCHAR类型的数据列定义索引时，可以把索引的长度限制为一个给定的字符个数(这个数字必须小于这个字段所允许的最大字符个数)。这 么做的好处是可以生成一个尺寸比较小、检索速度却比较快的索引文件。在绝大多数应用里，数据库中的字符串数据大都以各种各样的名字为主，把索引的长度设置 为10~15个字符已经足以把搜索范围缩小到很少的几条数据记录了。
+
+在为BLOB和TEXT类型的数据列创建索引时，必须对索引的长度做出限制；MySQL所允许的最大索引长度是255个字符。
+
+7.全文索引
+
+文本字段上的普通索引只能加快对出现在字段内容最前面的字符串(也就是字段内容开头的字符)进行检索操作。如果字段里存放的是由几个、甚至是多个单词构成 的较大段文字，普通索引就没什么作用了。这种检索往往以LIKE %word%的形式出现，这对MySQL来说很复杂，如果需要处理的数据量很大，响应时间就会很长。
+
+这类场合正是全文索引(full-text index)可以大显身手的地方。在生成这种类型的索引时，MySQL将把在文本中出现的所有单词创建为一份清单，查询操作将根据这份清单去检索有关的数 据记录。全文索引即可以随数据表一同创建，也可以等日后有必要时再使用下面这条命令添加：
+
+ALTER TABLE tablename ADD FULLTEXT(column1, column2)
+
+有了全文索引，就可以用SELECT查询命令去检索那些包含着一个或多个给定单词的数据记录了。下面是这类查询命令的基本语法：
+
+SELECT * FROM tablename
+
+WHERE MATCH(column1, column2) AGAINST(‘word1′, ‘word2′, ‘word3′)
+
+上面这条命令将把column1和column2字段里有word1、word2和word3的数据记录全部查询出来。
+
+注解：InnoDB数据表不支持全文索引。
+
+查询和索引的优化
+
+只有当数据库里已经有了足够多的测试数据时，它的性能测试结果才有实际参考价值。如果在测试数据库里只有几百条数据记录，它们往往在执行完第一条查询命令 之后就被全部加载到内存里，这将使后续的查询命令都执行得非常快–不管有没有使用索引。只有当数据库里的记录超过了1000条、数据总量也超过了 MySQL服务器上的内存总量时，数据库的性能测试结果才有意义。
+
+在不确定应该在哪些数据列上创建索引的时候，人们从EXPLAIN SELECT命令那里往往可以获得一些帮助。这其实只是简单地给一条普通的SELECT命令加一个EXPLAIN关键字作为前缀而已。有了这个关键 字，MySQL将不是去执行那条SELECT命令，而是去对它进行分析。MySQL将以表格的形式把查询的执行过程和用到的索引(如果有的话)等信息列出 来。
+
+在EXPLAIN命令的输出结果里，第1列是从数据库读取的数据表的名字，它们按被读取的先后顺序排列。type列指定了本数据表与其它数据表之间的关联 关系(JOIN)。在各种类型的关联关系当中，效率最高的是system，然后依次是const、eq_ref、ref、range、index和 All(All的意思是：对应于上一级数据表里的每一条记录，这个数据表里的所有记录都必须被读取一遍–这种情况往往可以用一索引来避免)。
+
+possible_keys数据列给出了MySQL在搜索数据记录时可选用的各个索引。key数据列是MySQL实际选用的索引，这个索引按字节计算的长 度在key_len数据列里给出。比如说，对于一个INTEGER数据列的索引，这个字节长度将是4。如果用到了复合索引，在key_len数据列里还可 以看到MySQL具体使用了它的哪些部分。作为一般规律，key_len数据列里的值越小越好(意思是更快)。
+
+ref数据列给出了关联关系中另一个数据表里的数据列的名字。row数据列是MySQL在执行这个查询时预计会从这个数据表里读出的数据行的个数。row 数据列里的所有数字的乘积可以让我们大致了解这个查询需要处理多少组合。
+
+最后，extra数据列提供了与JOIN操作有关的更多信息，比如说，如果MySQL在执行这个查询时必须创建一个临时数据表，就会在extra列看到 using temporary字样。
+</code></pre>]]></content>
+    
+    
+      <category term="mysql" scheme="http://yuhaya.github.io/categories/mysql/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[MYSQL外键(Foreign Key)的使用]]></title>
+    <link href="http://yuhaya.github.io/2014/03/06/mysql%E5%A4%96%E9%94%AEforeign-key%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yuhaya.github.io/2014/03/06/mysql外键foreign-key的使用/</id>
+    <published>2014-03-06T07:17:45.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>在MySQL 3.23.44版本后，InnoDB引擎类型的表支持了外键约束。</p>
+<p>外键的使用条件：</p>
+<p>1.两个表必须是InnoDB表，MyISAM表暂时不支持外键（据说以后的版本有可能支持，但至少目前不支持）；</p>
+<p>2.外键列必须建立了索引，MySQL 4.1.2以后的版本在建立外键时会自动创建索引，但如果在较早的版本则需要显示建立；&nbsp;</p>
+<p>3.外键关系的两个表的列必须是数据类型相似，也就是可以相互转换类型的列，比如int和tinyint可以，而int和char则不可以；</p>
+<pre><code>外键的好处：可以使得两张表关联，保证数据的一致性和实现一些级联操作；
+
+外键的定义语法：
+</code></pre><p>[CONSTRAINT symbol] FOREIGN KEY [id] (index_col_name, ...)</p>
+<p>&nbsp;&nbsp;&nbsp; REFERENCES tbl_name (index_col_name, ...)</p>
+<p>&nbsp;&nbsp;&nbsp; [ON DELETE {RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT}]</p>
+<p>&nbsp;&nbsp;&nbsp; [ON UPDATE {RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT}]</p>
+<p>该语法可以在 CREATE TABLE 和 ALTER TABLE 时使用，如果不指定CONSTRAINT symbol，MYSQL会自动生成一个名字。</p>
+<p>ON DELETE、ON UPDATE表示事件触发限制，可设参数：</p>
+<blockquote>
+<p>RESTRICT（限制外表中的外键改动）</p>
+<pre><code>    CASCADE（跟随外键改动）
+
+
+    SET NULL（设空值）
+
+
+    SET DEFAULT（设默认值）
+
+
+    NO ACTION（无动作，默认的）
+</code></pre></blockquote>
+<pre><code>搞个例子，简单演示一下使用，做dage和xiaodi两个表，大哥表是主键，小弟表是外键：
+</code></pre><p>建表：</p>
+<pre class="prettyprint"> 1  CREATE   TABLE  `dage` (
+ 2   `id`  int ( 11 )  NOT   NULL  auto_increment,
+ 3   `name`  varchar ( 32 )  default   '' ,
+ 4    PRIMARY   KEY   (`id`)
+ 5 ) ENGINE = InnoDB  DEFAULT  CHARSET = latin1；
+ 6 
+ 7  CREATE   TABLE  `xiaodi` (
+ 8   `id`  int ( 11 )  NOT   NULL  auto_increment,
+ 9   `dage_id`  int ( 11 )  default   NULL ,
+10   `name`  varchar ( 32 )  default   '' ,
+11    PRIMARY   KEY   (`id`),
+12    KEY  `dage_id` (`dage_id`),
+13    CONSTRAINT  `xiaodi_ibfk_1`  FOREIGN   KEY  (`dage_id`)  REFERENCES  `dage` (`id`)
+14 ) ENGINE = InnoDB  DEFAULT  CHARSET = latin1；</pre>
+插入个大哥：&nbsp;
+
+<pre class="prettyprint">1  mysql &gt;   insert   into  dage(name)  values ( ' 铜锣湾 ' );
+2 Query OK,  1  row affected ( 0.01  sec)
+3 mysql &gt;   select   *   from  dage;
+4  + -- --+--------+ 
+5  |  id  |  name    | 
+6  + -- --+--------+ 
+7  |    1   |  铜锣湾  | 
+8  + -- --+--------+ 
+9  1  row  in   set  ( 0.00  sec)</pre>
+插入个小弟：&nbsp;
+
+<pre class="prettyprint">1  mysql &gt;   insert   into  xiaodi(dage_id,name)  values ( 1 , ' 铜锣湾_小弟A ' );
+2 Query OK,  1  row affected ( 0.02  sec)
+3 
+4 mysql &gt;   select   *   from  xiaodi;
+5  + -- --+---------+--------------+ 
+6  |  id  |  dage_id  |  name          | 
+7  + -- --+---------+--------------+ 
+8  |    1   |         1   |  铜锣湾_小弟A  | 
+9  + -- --+---------+--------------+</pre>
+把大哥删除：&nbsp;
+
+<pre class="prettyprint">1  mysql &gt;   delete   from  dage  where  id = 1 ;
+2 ERROR  1451  ( 23000 ): Cannot  delete   or   update  a parent row: a  foreign   key   constraint  fails (`bstar / xiaodi`,  CONSTRAINT  `xiaodi_ibfk_1`  FOREIGN   KEY  (`dage_id`)  REFERENCES  `dage` (`id`))</pre>
+
+<pre><code>提示：不行呀，有约束的，大哥下面还有小弟，可不能扔下我们不管呀！
+
+插入一个新的小弟：
+</code></pre><pre class="prettyprint">1  mysql &gt;   insert   into  xiaodi(dage_id,name)  values ( 2 , ' 旺角_小弟A ' );              
+2 ERROR  1452  ( 23000 ): Cannot  add   or   update  a child row: a  foreign   key   constraint  fails (`bstar / xiaodi`,  CONSTRAINT  `xiaodi_ibfk_1`  FOREIGN   KEY  (`dage_id`)  REFERENCES  `dage` (`id`))
+3 </pre>
+
+<pre><code>提示：小子，想造反呀！你还没大哥呢！
+
+把外键约束增加事件触发限制：
+</code></pre><pre class="prettyprint"> 1  mysql &gt;  show  create   table  xiaodi;
+ 2 
+ 3    CONSTRAINT  `xiaodi_ibfk_1`  FOREIGN   KEY  (`dage_id`)  REFERENCES  `dage` (`id`)
+ 4 
+ 5 mysql &gt;   alter   table  xiaodi  drop   foreign   key  xiaodi_ibfk_1; 
+ 6 Query OK,  1  row affected ( 0.04  sec)
+ 7 Records:  1   Duplicates:  0   Warnings: 
+ 8 mysql &gt;   alter   table  xiaodi  add   foreign   key (dage_id)  references  dage(id)  on   delete   cascade   on   update   cascade ;
+ 9 Query OK,  1  row affected ( 0.04  sec)
+10 Records:  1   Duplicates:  0   Warnings:  0</pre>
+再次试着把大哥删了：&nbsp;
+
+<pre class="prettyprint">1  mysql &gt;   delete   from  dage  where  id = 1 ;
+2 Query OK,  1  row affected ( 0.01  sec)
+3 
+4 mysql &gt;   select   *   from  dage;
+5 Empty  set  ( 0.01  sec)
+6 
+7 mysql &gt;   select   *   from  xiaodi;
+8 Empty  set  ( 0.00  sec)</pre>
+
+<pre><code>得，这回对应的小弟也没了，没办法，谁让你跟我on delete cascade了呢！
+
+例子说明的应该蛮清楚了吧，其他功能对应手册自己实践吧！:-)
+</code></pre>]]></content>
+    
+    
+      <category term="Foreign Key" scheme="http://yuhaya.github.io/tags/Foreign%20Key/"/>
+    
+      <category term="mysql" scheme="http://yuhaya.github.io/categories/mysql/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[linux下限制某个进程的cpu占用率]]></title>
+    <link href="http://yuhaya.github.io/2014/03/05/linux%E4%B8%8B%E9%99%90%E5%88%B6%E6%9F%90%E4%B8%AA%E8%BF%9B%E7%A8%8B%E7%9A%84cpu%E5%8D%A0%E7%94%A8%E7%8E%87/"/>
+    <id>http://yuhaya.github.io/2014/03/05/linux下限制某个进程的cpu占用率/</id>
+    <published>2014-03-05T07:21:08.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="-"> </h1>
+<pre><code>cpulimit&amp;nbsp;
+
+is a simple program which attempts to limit the cpu usage of a process (expressed in&amp;nbsp;percentage, not in cpu time). This is useful to control batch jobs, when you don&#39;t want them to eat too much cpu. It does not act on the nice value or other scheduling priority stuff, but on the&amp;nbsp;real&amp;nbsp;cpu usage. Also, it is able to adapt itself to the overall system load, dynamically and quickly.
+
+[http://cpulimit.sourceforge.net/](http://cpulimit.sourceforge.net/) 
+</code></pre>]]></content>
+    
+    
+      <category term="cpulimit" scheme="http://yuhaya.github.io/tags/cpulimit/"/>
+    
+      <category term="linux" scheme="http://yuhaya.github.io/categories/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[curl常用命令总结]]></title>
+    <link href="http://yuhaya.github.io/2014/03/04/curl%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/"/>
+    <id>http://yuhaya.github.io/2014/03/04/curl常用命令总结/</id>
+    <published>2014-03-04T12:48:42.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>curl命令总结</p>
+<p>curl 是一个利用URL语法在命令行方式下工作的文件传输工具。它支持很多协议：FTP, FTPS, HTTP, HTTPS, GOPHER, TELNET, DICT, FILE 以及 LDAP。</p>
+<p>1、获得一张页面&nbsp;</p>
+<p>使用命令：curl <a href="http://curl.haxx.se&amp;nbsp" target="_blank">http://curl.haxx.se&amp;nbsp</a>;</p>
+<p>这是最简单的使用方法。用这个命令获得了<a href="http://curl.haxx.se指向的页面，同样，如果这里的URL指向的是一个文件或者一幅图都可以直接下载到本地。如果下载的是HTML文档，那么缺省的将不显示文件头部，即HTML文档的header。要全部显示，请加参数" target="_blank">http://curl.haxx.se指向的页面，同样，如果这里的URL指向的是一个文件或者一幅图都可以直接下载到本地。如果下载的是HTML文档，那么缺省的将不显示文件头部，即HTML文档的header。要全部显示，请加参数</a> -i，要只显示头部，用参数 -I。任何时候，可以使用 -v 命令看curl是怎样工作的，它向服务器发送的所有命令都会显示出来。为了断点续传，可以使用-r参数来指定传输范围。&nbsp;</p>
+<p>2、表单（Form）的获取&nbsp;</p>
+<p>web页面中 表单提交数据 GET方法和POST方法。</p>
+<p>2.1 GET方法：</p>
+<p>对于这种网页，curl可以直接处理，例如想获取上面的网页，只要输入：</p>
+<p>curl “www.hotmail.com/when/junk.cgi?birthyear=1905&amp;press=OK”&nbsp;</p>
+<p>2.2 POST方法，POST方法和GET方法的区别在于GET方法使用的时候，浏览器中会产生目标URL，而POST不会。</p>
+<p>&nbsp; 表单用POST方法向服务器提交数据。这时的URL是看不到的，因此需要使用特殊的方法来抓取这个页面：&nbsp;</p>
+<p>&nbsp; curl -d “birthyear=1905&amp;press=OK” www.hotmail.com/when/junk.cgi&nbsp;</p>
+<p>&nbsp; 文件上传：用来上传文件。主要用于把本地文件上传到服务器。此时页面是这样写的：&nbsp;</p>
+<p>&nbsp; curl -F upload=@localfilename -F press=OK URL&nbsp;</p>
+<p>3、使用PUT方法。&nbsp;</p>
+<p>HTTP协议文件上传的标准方法是使用PUT，此时curl命令使用-T参数：&nbsp;</p>
+<p>curl -T uploadfile www.uploadhttp.com/receive.cgi&nbsp;</p>
+<p>4、有关认证。&nbsp;</p>
+<p>curl可以处理各种情况的认证页面，例如下载用户名/密码认证方式的页面（在IE中通常是出现一个输入用户名和密码的输入框）：&nbsp;</p>
+<p>curl -u name:password www.secrets.com&nbsp;</p>
+<p>如果网络是通过http代理服务器出去的，而代理服务器需要用户名和密码，那么输入：&nbsp;</p>
+<p>curl -U proxyuser:proxypassword <a href="http://curl.haxx.se&amp;nbsp" target="_blank">http://curl.haxx.se&amp;nbsp</a>;</p>
+<p>任何需要输入用户名和密码的时候，只在参数中指定用户名而空着密码，curl可以交互式的让用户输入密码。&nbsp;</p>
+<p>5、引用</p>
+<p>有些网络资源访问的时候必须经过另外一个网络地址跳转过去，这用术语来说是：referer，引用。对于这种地址的资源，curl也可以下载：&nbsp;</p>
+<p>curl -e <a href="http://curl.haxx.se" target="_blank">http://curl.haxx.se</a> daniel.haxx.se</p>
+<p>6、指定用户客户端。&nbsp;</p>
+<p>有些网络资源首先需要判断用户使用的是什么浏览器，符合标准了才能够下载或者浏览。此时curl可以把自己“伪装”成任何其他浏览器：&nbsp;</p>
+<p>curl -A “Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)” URL&nbsp;</p>
+<p>这个指令表示curl伪装成了IE5.0，用户平台是Windows 2000。（对方服务器是根据这个字串来判断客户端的类型的，所以即使使用AIX也无所谓）。使用：</p>
+<p>curl -A “Mozilla/4.73 [en] (X11; U; Linux 2.2.15 i686)” URL&nbsp;</p>
+<p>此时curl变成了Netscape，运行在PIII平台的Linux上了。</p>
+<p>7、COOKIES&nbsp;</p>
+<p>Cookie是服务器经常使用的一种记忆客户信息的方法。如果cookie被记录在了文件中，那么使用命令：&nbsp;</p>
+<p>curl -b stored_cookies_in_file www.cookiesite.com&nbsp;</p>
+<p>curl可以根据旧的cookie写出新cookie并发送到网站：&nbsp;</p>
+<p>curl -b cookies.txt -c newcookies.txt www.cookiesite.com</p>
+<p>8、加密的HTTP——HTTPS。&nbsp;</p>
+<p>如果是通过OpenSSL加密的https协议传输的网页，curl可以直接访问：&nbsp;</p>
+<p>curl <a href="https://that.secure.server.com&amp;nbsp" target="_blank">https://that.secure.server.com&amp;nbsp</a>;</p>
+<p>----------------------参数总结以及实例</p>
+<p>curl的命令行工具功能非常强大，这些数据交互的功能基本上都是通过URL方式进行的，我们先来看看curl对多个URL的灵活操作，这些规则使我们的批处理需求应用起来非常方便。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 1、用{}表示多个URL</p>
+<p>&nbsp; &nbsp; 如 <a href="http://site.{one,two,three}.com，只要在{}中写上不同的部分，就可以表示3个URL了。" target="_blank">http://site.{one,two,three}.com，只要在{}中写上不同的部分，就可以表示3个URL了。</a></p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 2、用[]表示多个URL</p>
+<p>&nbsp; &nbsp; 如 ftp://ftp.numericals.com/file[1-100].txt，ftp://ftp.numericals.com/file[001-100].txt，ftp://ftp.letters.com/file[a-z].txt， []中表示按数字或字母的顺序排列。</p>
+<p>&nbsp; &nbsp; 还能表示不连续的排列，如 <a href="http://www.numericals.com/file[1-100:10].txt，http://www.letters.com/file[a-z:2].txt，" target="_blank">http://www.numericals.com/file[1-100:10].txt，http://www.letters.com/file[a-z:2].txt，</a>&quot;:&quot; 后面的数字表示等差排列的阶跃数。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 3、结合起来使用</p>
+<p>&nbsp; &nbsp; 如 <a href="http://any.org/archive[1996-1999]/vol[1-4]/part{a,b,c}.html。" target="_blank">http://any.org/archive[1996-1999]/vol[1-4]/part{a,b,c}.html。</a></p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; curl命令行工具的基本语句为：curl [options] [URL...]，即 curl [选项] [下载地址]。因此，如果你想下载百度的首页，最简单的方法启动cmd，进入curl安装目录，输入命令：curl <a href="http://www.baidu.com，回车，你的输出窗口将立即出现百度首页的html数据。" target="_blank">http://www.baidu.com，回车，你的输出窗口将立即出现百度首页的html数据。</a></p>
+<p>&nbsp; &nbsp; 对于所有的布尔型option，基本上--option表示支持这个选项，--no-option表示禁用这个选项。下面总结几个比较有用的 options。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 1、-o/--output &lt;file&gt;</p>
+<p>&nbsp; &nbsp; 这个基本上要算最常用的选项了，用于将下载的数据保存到某个文件中。如 curl -o baidu.html <a href="http://www.baidu.com则将百度首页保存到baidu.html" target="_blank">http://www.baidu.com则将百度首页保存到baidu.html</a> 文件中了。下载过程中标准输出还会显示下载的统计信息，比如进度、下载字节数、下载速度等。如果指定输出为&quot;-&quot;，则下载数据会输出到标准输出。</p>
+<p>&nbsp; &nbsp; 如果输出的文件是一个多级目录的话，则要配合--create-dirs选项，--create-dirs将自动创建设置的输出目录。</p>
+<p>&nbsp; &nbsp; 如果希望保存到本地的文件名和服务器上的相同，就可以直接用-O选项（大写O），而省去指定本地文件名。</p>
+<p>&nbsp; &nbsp; 如果下载多个数据文件，可以使用上面提到的多URL规则。下载文件名也可以批量自定义，就是使用&quot;#&quot;。可以将&quot;#&quot;加到文件名当中，这样实际文件名中的#将被多个URL中的当前字符串代替，如 curl <a href="http://{site,host}.host[1-5].com" target="_blank">http://{site,host}.host[1-5].com</a> -o &quot;#1_#2&quot;，#1将被&quot;site&quot;或&quot;host&quot;代替，#2将被1-5之间的数字代替，也就是被当前被处理的URL中的字符串代替。</p>
+<p>&nbsp; &nbsp; 另外下载数据的时候，可以加个&quot;-#&quot;选项，用一个进度条来代替文本表示进度。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 2、-c/--cookie-jar &lt;file name&gt; 和 -b/--cookie &lt;name=data&gt;</p>
+<p>&nbsp; &nbsp; 这是两个操作cookie的选项，很多服务器是需要cookie信息的。用前一个选项可以指定一个文件，将其他文件中的cookie或者从服务器得到的 cookie写到文件中；后一个选项则用来向服务器发送cookie信息，可以用&quot;name=data&quot;的形式，也可以直接跟一个保存cookie的文件名。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 3、-x/--proxy &lt;proxyhost[:port]&gt;</p>
+<p>&nbsp; &nbsp; 该选项为http指定代理及端口，如果不指定端口，默认为1080。如 curl -x 201.36.208.19:3128 <a href="http://curl.haxx.se/。" target="_blank">http://curl.haxx.se/。</a></p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 4、-u/--user &lt;user:password&gt; 和 -U/--proxy-user &lt;user:password&gt;</p>
+<p>&nbsp; &nbsp; 登录某些页面或ftp需要先进行认证，输入用户名和密码。curl的这个选项可以直接处理这类操作，用指定的账号和密码进行登录认证。</p>
+<p>&nbsp; &nbsp; 后面的选项指定代理的用户名和密码，这样便可以直接用这个代理访问网页了，如 &nbsp;curl -U user:password -x 201.36.208.19:3128 <a href="http://curl.haxx.se/。" target="_blank">http://curl.haxx.se/。</a></p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 5、-A/--user-agent &lt;agent string&gt;</p>
+<p>&nbsp; &nbsp; 该选项可以指定客户端类型，服务器通过该选项判断用户应用的平台及浏览器信息。如 curl -A &quot;Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)&quot; <a href="http://www.clientinfo.com，" target="_blank">http://www.clientinfo.com，</a></p>
+<p>表示告诉服务器，客户端是运行在Windows 2000系统上的IE6.0。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 6、-d/--data &lt;data&gt;</p>
+<p>&nbsp; &nbsp; 该选项用来以POST方式向http服务器发送特定数据，最常用的就是提交表单。如 curl -d &quot;user=username&amp;password=111&quot; <a href="http://www.login.com，表示用账号username和密码111向站点发送登录申请。其中多个数据段可以用&quot;&amp;&quot;进行连接一起发送；如果数据前面加上符号&quot;@&quot;，则数���来源为后面指定的文件，如" target="_blank">http://www.login.com，表示用账号username和密码111向站点发送登录申请。其中多个数据段可以用&quot;&amp;&quot;进行连接一起发送；如果数据前面加上符号&quot;@&quot;，则数据来源为后面指定的文件，如</a> curl -d password=@D:\pw.txt<a href="http://www.login.com。" target="_blank">http://www.login.com。</a></p>
+<p>&nbsp; &nbsp; 7、-C/--continue-at &lt;offset&gt;</p>
+<p>&nbsp; &nbsp; 改选项提供断点续传功能，与-o选项配合使用。如 curl -c -O <a href="http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3。如果指定offset，则从offset的位置开始续传。如果未指定offset，或者直接用&quot;-C" target="_blank">http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3。如果指定offset，则从offset的位置开始续传。如果未指定offset，或者直接用&quot;-C</a> -&quot;，则curl会自己分析该从什么位置开始续传。</p>
+<p>&nbsp; &nbsp; 8、-r/--range &lt;range&gt;</p>
+<p>&nbsp; &nbsp; 该选项指定下载字节的范围，常应用于分块下载文件。range的表示方式有多种，如100-500，则指定从100开始的400个字节数据；-500表示最后的500个字节；5000-表示从第5000个字节开始的所有字节；另外还可以同时指定多个字节块，中间用&quot;,&quot;分开。如</p>
+<p>&nbsp; &nbsp; curl -r 0-1024000 -o new_divide_1.mp3 <a href="http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3" target="_blank">http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3</a> &amp;</p>
+<p>&nbsp; &nbsp; curl -r 1024001-2048000 -o new_divide_2.mp3 <a href="http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3" target="_blank">http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3</a> &amp;</p>
+<p>&nbsp; &nbsp; curl -r 2048001- -o new_divide_3.mp3 <a href="http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3" target="_blank">http://vfile.home.news.cn/music/public/vd05/200905/31/a8/MUfs052009053117155750a8be70.mp3</a></p>
+<p>&nbsp; &nbsp; 这样就会将目标mp3文件分块下载为3个文件，然后可以用dos的copy命令：copy new_divide_1.mp3/b + new_divide_2.mp3/b + new_divide_3.mp3/b new_divide.mp3即可将3个分块文件合并为一个完整的mp3文件。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 9、-w/--write-out &lt;format&gt;</p>
+<p>&nbsp; &nbsp; 该选项格式化输出一些用户操作的数据信息，用到的格式化输出符除了&quot;\n&quot;，&quot;\r&quot;，&quot;\t&quot;这些常见转义符外，还包括&quot;@&quot;和&quot;%&quot;。其中&quot;@filename&quot;表示输出filename文件中的数据，&quot;@-&quot;表示输出用户写入标准输入的数据；&quot;%&quot;标识符后面跟上定义的关键字，则可以输出对应的curl数据，常用的关键字有：</p>
+<p>&nbsp; &nbsp; http_code —— 上次操作返回的响应码；</p>
+<p>&nbsp; &nbsp; time_total —— 上次操作耗时，单位为秒；</p>
+<p>&nbsp; &nbsp; time_connect —— TCP连接远程主机的耗时，单位为秒；</p>
+<p>&nbsp; &nbsp; time_pretransfer —— 文件真正开始传输之前交互耗时，单位为秒，可能主要包括一些命令处理和协议分析的耗时；</p>
+<p>&nbsp; &nbsp; time_starttransfer —— 文件的第一个字节开始传输之前的耗时，单位为秒，包括time_pretransfer和服务器计算结果的时间；</p>
+<p>&nbsp; &nbsp; size_download —— 下载的总字节数；</p>
+<p>&nbsp; &nbsp; size_upload —— 上传的总字节数；</p>
+<p>&nbsp; &nbsp; size_request —— 发送http请求的总字节数；</p>
+<p>&nbsp; &nbsp; speed_download —— curl成功下载的平均下载速度；</p>
+<p>&nbsp; &nbsp; speed_upload —— curl成功上传的平均上传速度；</p>
+<p>&nbsp; &nbsp; 举例：curl -o page.html -s -w %{time_connect}:%{time_starttransfer}:%{time_total} <a href="http://curl.haxx.se/，其中-s表示安静模式，即略去所有状态信息。" target="_blank">http://curl.haxx.se/，其中-s表示安静模式，即略去所有状态信息。</a></p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 10、--connect-timeout &lt;seconds&gt; 和 -m/--max-time &lt;seconds&gt;</p>
+<p>&nbsp; &nbsp; 前者表示允许的连接的最长耗时，单位为秒；后者表示允许的整个操作的最长耗时，单位为秒，这个选项对于控制一个批处理操作的时长非常有用。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 11、--limit-rate &lt;speed&gt; 、 -Y/--speed-limit &lt;speed&gt; 和 -y/--speed-time &lt;time&gt;</p>
+<p>&nbsp; &nbsp; --limit-rate &lt;speed&gt;指定最大的数据传输率，单位为bytes/s，也可以用&#39;k&#39;或&#39;K&#39;表示kb/s，&#39;m&#39;或&#39;M&#39;表示mb/s，&#39;g&#39;或 &#39;G&#39;表示gb/s，所给的speed为平均传输率，短时间峰值可能会超过此值；</p>
+<p>-Y/--speed-limit &lt;speed&gt;指定最小传输率，单位为bytes/s，如果小于speed值，则传输中止，如此时-y选项没有被设置，默认time为 30；-y/--speed-time &lt;time&gt;指定-Y选项的有效时间段，如果-Y选项没有被设置，默认为1。</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; 12、--max-filesize &lt;bytes&gt;</p>
+<p>&nbsp; &nbsp; 该选项指定所要下载的文件的最大长度，如果超过bytes值，则下载并不开始，curl返回退出码63。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 13、--retry &lt;num&gt; 、 --retry-delay &lt;seconds&gt; 和 --retry-max-time &lt;seconds&gt;</p>
+<p>&nbsp; &nbsp; 当传输过程中出现错误，如超时、FTP 5xx返回码或者HTTP 5xx返回码，curl会进行按照设置进行重试，这几个选项都与重试有关。--retry &lt;num&gt;设置重试次数，--retry-delay &lt;seconds&gt;设置两次重试的间隔时间，--retry-max-time &lt;seconds&gt;设置两次重试间隔的最长时间。默认情况下，curl不进行重试；如果重试，第一次间隔1秒，之后每次都间隔上一次的2倍时间，直到间隔时间达到10分钟，之后的重试都将采用10分钟间隔。如果这3个选项的值被重新设置，则执行设置值。</p>
+<p>&nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; 14、-T/--upload-file &lt;file&gt;</p>
+<p>&nbsp; &nbsp; 该选项是上传命令，如向http服务器上传一个文件：curl -T D:\new_divide.mp3 <a href="http://www.uploadserver.com/path/；向一个ftp服务器上传文件：curl" target="_blank">http://www.uploadserver.com/path/；向一个ftp服务器上传文件：curl</a> -T D:\new_divide.mp3 -u user:password ftp://upload_site:port/path/。</p>
+]]></content>
+    
+    
+      <category term="curl" scheme="http://yuhaya.github.io/tags/curl/"/>
+    
+      <category term="linux" scheme="http://yuhaya.github.io/categories/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[output_buffering详细介绍]]></title>
+    <link href="http://yuhaya.github.io/2014/03/03/output_buffering%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://yuhaya.github.io/2014/03/03/output_buffering详细介绍/</id>
+    <published>2014-03-03T15:09:30.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>HTTP Header</p>
+<p>为什么要使用Output Buffering技术</p>
+<p>Output Buffering的原理</p>
+<p>基本用法</p>
+<p>高级用法</p>
+<p>使事情更为简单</p>
+<p>哈哈，我成功了</p>
+<p>我个人认为，Output buffering是比较纯粹的4.0特征。尽管从概念上看来相当简单，但是output buffering功能非常强大，能使开发者更容易地开发高级而有效的<a href="http://www.fun52.com/web/30/chengxu.html" target="_blank">程序</a>。</p>
+<p>本文将介绍HTTP header，以及output buffering如何帮助您处理HTTP header，并介绍了output buffering的一些高级用法。</p>
+<p>HTTP Header[HTTP 标题]</p>
+<p>对 于使用HTTP 协议建立的每个请求，Web服务器产生的响应通常包括两个部分 – 标题和主体。例如，如果在Web服务器的文档根目录下有一个小文本文件，叫做example.txt，文件中包含文本Hello, world!，那么对此文件的HTTP 请求响应如下所示：</p>
+<p>HTTP/1.1 200 OK</p>
+<p>Date: Sat, 02 Sep 2000 21:40:08 GMT</p>
+<p>Server: Apache/1.3.11 (Unix) mod_macro/1.1.1 PHP/4.0.2-dev</p>
+<p>Last-Modified: Sat, 02 Sep 2000 21:39:49 GMT</p>
+<p>ETag: &quot;12600b-e-39b173a5&quot;</p>
+<p>Accept-Ranges: bytes</p>
+<p>Content-Length: 14</p>
+<p>Connection: close</p>
+<p>Content-Type: text/plain</p>
+<p>Hello, world!</p>
+<p>这 个请求中的第一部分（就是较多的那部分）就是HTTP header。虽然用户在浏览器中看不到HTTP header，但它包含了用于浏览器的信息，例如文档内容类型，使用的协议版本，文档的最后更改日期等等。HTTP header并没有太多的规则，通常情况下，它的格式如下：</p>
+<p>Field: Value[字段：值]</p>
+<p>必须用空行将它们和文档主体分开。</p>
+<p>可以从PHP脚本添加或更改此HTTP header的信息。例如，可以使用 header() 函数：</p>
+<p>header(&quot;Location: <a href="http://www.php.net/&quot;);&nbsp;&nbsp;&nbsp;&amp;nbsp" target="_blank">http://www.php.net/&quot;);&nbsp;&nbsp;&nbsp;&amp;nbsp</a>; // 重定向到 <a href="http://www.php.net/" target="_blank">http://www.php.net/</a></p>
+<p>也可以使用 SetCookie() 函数：</p>
+<p>SetCookie(&quot;foo&quot;, &quot;bar&quot;);</p>
+<p>你可能会知道HTTP cookies是使用 HTTP headers 来实现的。例如，以下PHP文件的 HTTP 请求响应</p>
+<p>` M J f ~ F b3d0&lt;?php</p>
+<p>SetCookie(&quot;foo&quot;, &quot;bar&quot;);</p>
+<p>print &quot;Set cookie.&quot;;</p>
+<p>?&gt;</p>
+<p>将会是这样的：</p>
+<p>HTTP/1.1 200 OK</p>
+<p>Date: Sat, 02 Sep 2000 21:43:02 GMT</p>
+<p>Server: Apache/1.3.11 (Unix) mod_macro/1.1.1<a href="http://www.fun52.com/web/2/PHP.html" target="_blank">PHP</a>/4.0.2-dev</p>
+<p>X-Powered-By: PHP/4.0.2-dev</p>
+<p>Set-Cookie: foo=bar</p>
+<p>Connection: close</p>
+<p>Content-Type: text/html</p>
+<p>Set cookie.</p>
+<p>浏览器读取从服务器返回的 HTTP header，知道送来了一个叫做 foo 的 cookie (在这里是一个 session cookie)，它的值是 bar。</p>
+<p>为什么要使用Output Buffering技术</p>
+<p>早 在PHP/FI 2.0时就很明显需要output buffering技术了。如果你使用过这种版本的PHP，那么可能还记得经常会碰到 Oops, SetCookie called after header has been sent 这个错误消息，并使你捎头抓耳，也弄不清是什么原因。</p>
+<p>如 果你已使用过PHP的最新版本 -- PHP 3.0 甚至 PHP 4.0 -- 那么你会知道这个错误消息: Oops, php_set_cookie called after header has been sent。或者，你在试图调用 PHP 的 header() 函数时会遇到 Cannot add header information - headers already sent 消息。一般来说，output buffering技术用户避免这些烦人的错误消息，同时开发人员也可用于高级的用途。</p>
+<p>这些错误是什么时候产生的呢？如果你在已经发送了HTTP header之后试图添加或修改标题信息，以及在文档主体和标题之间缺少空行时，就会产生这些错误消息。为了理解这是如何产生的，让我们来看看PHP是如何处理HTTP header输出和主体输出的。</p>
+<p>脚本开始执行时，它可以同时发送header(标题)信息和主体信息。</p>
+<p>Header信息(来自 header() 或 SetCookie() 函数)并不会立即发送，相反，它被保存到一个列表中。</p>
+<p>这样就可以允许你修改标题信息，包括缺省的标题(例如 Content-Type 标题）。但是，一旦脚本发送了任何非标题的输出（例如，使用块或 print() 调用)，那么PHP就必须先发送所有的标题，然后再送出空行，终止 HTTP header，而在此之后才会继续发送主体数据。从这时开始，任何添加或修改标题信息的试图都是不允许的，并会发送上述的错误消息之一。</p>
+<p>虽然这并不会引起多大的问题，有时候只是在发出任何输入之前终止HTTP header，从而引起脚本逻辑的复杂化而已。Output buffering技术可以解决这些问题。</p>
+<p>Output Buffering的工作原理</p>
+<p>启用output buffering时，在脚本发送输出时，<a href="http://www.fun52.com/web/2/PHP.html" target="_blank">PHP</a>并 不发送HTTP header。相反，它将此输出通过管道（pipe）输入到动态增加的缓存中（只能在PHP 4.0中使用，它具有中央化的输出机制）。你仍然可以修改，添加标题行，或者设置cookie，因为标题实际上并没有发送。最简单的情况是，当脚本终止 时，PHP将自动发送HTTP header到浏览器，然后再发送输出缓冲中的内容。这简单吧。</p>
+<p>基本用法</p>
+<p>可以使用下面的四个函数，它们可以帮助你控制output buffering：</p>
+<p>ob_start()</p>
+<p>启用output buffering机制。</p>
+<p>Output buffering支持多层次 -- 例如，可以多次调用 ob_start() 函数。</p>
+<p>ob_end_flush()</p>
+<p>发送output buffer（输出缓冲）并禁用output buffering机制。</p>
+<p>ob_end_clean()</p>
+<p>清除output buffer但不发送，并禁用output buffering。</p>
+<p>ob_get_contents()</p>
+<p>将当前的output buffer返回成一个字符串。允许你处理脚本发出的任何输出。</p>
+<p>此外，可以启用 php.ini 中的 output_buffering 指令。如果启用了此指令，那么每个PHP脚本都相当于一开始就调用了ob_start()函数。</p>
+<p>Example 1</p>
+<p>&lt;?php ob_start(); ?&gt;</p>
+<p>&lt;h1&gt;Example 1&lt;/h1&gt;</p>
+<p>&lt;?php</p>
+<p>print &quot;Hello, $user &quot;;</p>
+<p>SetCookie(&quot;Wow&quot;, &quot;This cookie has been set even though we&#39;ve already emitted output!&quot;);</p>
+<p>?&gt;</p>
+<p>这里，尽管你已发送了输出(<a href="http://www.fun52.com/web/18/HTML.html" target="_blank">HTML</a>代 码块中和 print 语句中)，也可以使用 SetCookie() 调用，而不会出错，真的要感谢output buffering机制。请注意使用output buffering机制用于这种目的会引起一定程度上的性能损失，因此最好缺省情况下不要启用此机制。但是，对于复杂一些的脚本，output buffering可以简化逻辑性。</p>
+<p>Example 2</p>
+<p>&lt;?php</p>
+<p>ob_start();</p>
+<p>print &quot;Here&#39;s a pretty dumb way to calculate the length of a string.&quot;;</p>
+<p>$length = strlen(ob_get_buffer());</p>
+<p>ob_end_clean();</p>
+<p>?&gt;</p>
+<pre><code>这个例子显示了一个效率很低的确定字符串长度的。它不是简单的使用strlen()函数处理，而是先启用 output buffering 机制，将字符串打印出来,然后再确定output buffer的长度。最后清除output buffer(并没有发送），然后禁用output buffering机制。
+
+url:http://hi.baidu.com/sgxdqzktvnbgkqq/item/a7fe4ec955e09f3f449416a5
+</code></pre>]]></content>
+    
+    
+      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Mac/Linux/Unix终端：命令行下编译object-c]]></title>
+    <link href="http://yuhaya.github.io/2014/03/02/maclinuxunix%E7%BB%88%E7%AB%AF%EF%BC%9A%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E7%BC%96%E8%AF%91object-c/"/>
+    <id>http://yuhaya.github.io/2014/03/02/maclinuxunix终端：命令行下编译object-c/</id>
+    <published>2014-03-02T13:39:02.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<div style="border:0px;margin:0px;padding:0px;vertical-align:baseline;">
+    测试代码吧：main.m
+</div>
+<div style="border:0px;margin:0px;padding:0px;vertical-align:baseline;">
+    #import &lt;Foundation/Foundation.h&gt;
+
+int main( int argc, char** argv )
+
+{
+
+NSLog( @”this is main function” );
+
+return 0;
+
+}
+</div>
+<div style="border:0px;margin:0px;padding:0px;vertical-align:baseline;">
+    编译命令：#gcc -o main main.m -framework Foundation
+</div>
+<div style="border:0px;margin:0px;padding:0px;vertical-align:baseline;">
+    运行命令：#./main
+</div>
+<div style="border:0px;margin:0px;padding:0px;vertical-align:baseline;">
+    参考学习地址：<a href="http://blog.csdn.net/huangxiansheng1980/article/details/8254786" target="_blank"><a href="http://blog.csdn.net/huangxiansheng1980/article/details/8254786">http://blog.csdn.net/huangxiansheng1980/article/details/8254786</a></a> 
+</div>]]></content>
+    
+    
+      <category term="object-c" scheme="http://yuhaya.github.io/categories/object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[php上传大文件设置]]></title>
+    <link href="http://yuhaya.github.io/2014/02/27/php%E4%B8%8A%E4%BC%A0%E5%A4%A7%E6%96%87%E4%BB%B6%E8%AE%BE%E7%BD%AE/"/>
+    <id>http://yuhaya.github.io/2014/02/27/php上传大文件设置/</id>
+    <published>2014-02-27T09:09:12.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>打开php.ini，首先找到</p>
+<p>;;;;;;;;;;;;;;;;</p>
+<p>; File Uploads ;</p>
+<p>;;;;;;;;;;;;;;;;</p>
+<p>区域，有影响文件上传的以下几个参数：</p>
+<p>file_uploads &nbsp; = &nbsp; on &nbsp; ;是否允许通过HTTP上传文件的开关。默认为ON即是开</p>
+<p>upload_tmp_dir &nbsp; ;文件上传至服务器上存储临时文件的地方，如果没指定就会用系统默认的临时文件夹</p>
+<p>upload_max_filesize &nbsp; = &nbsp; 8m &nbsp; ;望文生意，即允许上传文件大小的最大值。默认为2M</p>
+<p>在</p>
+<p>;;;;;;;;;;;;;;;;;</p>
+<p>; Data Handling ;</p>
+<p>;;;;;;;;;;;;;;;;;</p>
+<p>区域，还有一项：</p>
+<p>post_max_size &nbsp; = &nbsp; 8m ;指通过表单POST给PHP的所能接收的最大值，包括表单里的所有值。默认为8M</p>
+<p>一般地，设置好上述四个参数后，上传&lt;=8M的文件是不成问题，在网络正常的情况下。</p>
+<p>但如果要上传&gt;8M的大体积文件，只设置上述四项还一定能行的通。除非你的网络真有100M/S的上传高速，否则你还得关心关心下面的参数：</p>
+<p>;;;;;;;;;;;;;;;;;;;</p>
+<p>; Resource Limits ;</p>
+<p>;;;;;;;;;;;;;;;;;;;</p>
+<p>max_execution_time &nbsp; = &nbsp; 600 ;每个PHP页面运行的最大时间值(秒)，默认30秒</p>
+<p>max_input_time = 600 ;每个PHP页面接收数据所需的最大时间，默认60秒</p>
+<p>memory_limit &nbsp; = &nbsp; 8m &nbsp; ;每个PHP页面所吃掉的最大内存，默认8M</p>
+]]></content>
+    
+    
+      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Linux man 使用详解]]></title>
+    <link href="http://yuhaya.github.io/2014/02/22/linux-man-%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://yuhaya.github.io/2014/02/22/linux-man-使用详解/</id>
+    <published>2014-02-22T14:59:00.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<pre>1）所有的手册页都属于一个特定的领域，用一个字符来表示。
+Linux下最通用的领域及其名称及说明如下：
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+领域  名称   说明
+1  用户命令，  可由任何人启动的。
+2  系统调用，  即由内核提供的函数。
+3  例程，   即库函数。
+4  设备，   即/dev目录下的特殊文件。
+5  文件格式描述，  例如/etc/passwd。
+6  游戏，   不用解释啦！
+7  杂项，   例如宏命令包、惯例等。
+8  系统管理员工具， 只能由root启动。
+9  其他（Linux特定的）， 用来存放内核例行程序的文档。
+n  新文档，  可能要移到更适合的领域。
+o  老文档，  可能会在一段期限内保留。
+l  本地文档，  与本特定系统有关的。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+例如：man ls就会有LS(1)
+2）man的一些常用参数和用法
+man -a cmd
+打开所有领域内的同名帮助，例如 man fam ，你首先会进入一个fam(1M)的命令版fam帮助，你再按q键
+就会进入FAM(3X)，库函数版的帮助
+man -aw cmd
+显示所有cmd的所有手册文件的路径，如 man -aw fam 就是
+/usr/share/man/man1/fam.1m.gz
+/usr/share/man/man3/fam.3x.gz
+man 领域代号 cmd
+直接指定特定领域内搜索手册页，如 man 3 fam 直接进入库函数版的帮助
+man -M cmd
+指定手册文件的搜索路径，如 man -M /home/mysql/man mysql 显示的就是你安装的mysql的帮助，
+而不是系统自带的旧版mysql的帮助
+man cmd| col -b &gt; cmd.txt
+把man手册信息输出到文本文件
+LANG=语言代号
+man -w cmd
+man 特定语言manpage文件的路径
+查看特定语言版本的手册页
+例如，要查看mplayer的中文man
+shell&gt; LANG=zh
+shell&gt; man -w mplayer
+/usr/share/man/zh/man1/mplayer.1.gz
+新开一个shell窗口（或在原窗口 shell&gt; LANG=en_US.UTF-8)
+shell&gt; man /usr/share/man/zh/man1/mplayer.1.gz
+3）man的配置文件/etc/man.config
+如果你不想每次man cmd都要用-M指定路径，那么可以通过修改配置文件，添加内容如
+MANPATH /home/mysql/man
+man在各领域的搜索次序可以通过修改
+MANSECT         1:8:2:3:4:5:6:7:9:tcl:n:l:p:o
+实现，一般不推荐修改。</pre>
+<pre> </pre>
+<pre>1.从Solaris系统中获得联机帮助
+　Solaris 系统提供了非常丰富的联机帮助.这些帮助主要以两种形式存在，一种是命令的参考手册页(Reference Manual Pages,也即我们常说的man page),另外一种是Answer Book，是Sun公司的资料的电子版。
+　　使用Solaris联机帮助的方法：
+　　a. 使用Reference Manual Page
+　　在命令行上使用man命令：
+　　如：$ man ls &lt;Enter&gt;;&nbsp;&nbsp;
+　　b. 使用Answer Book&nbsp;&nbsp;
+　　在命令行上使用answerbook命令
+　　如：$ answerbook &lt;Enter&gt;;
+　　2\. Man Page的组织
+　　Unix的man page是按照节(section)来组织的.当我们使用man ls的时候，会看到ls(1)，这个括号中的1就表示ls的man page位于section 1。
+　　section通常是由一个主section名和一个可选的次section名组成.主section名通常是一个数字，次section名通常是一个或多个字母组成.
+　　Solaris中各 section 所对应的内容:
+　　1: User Commands and Utilities&nbsp;&nbsp;
+　　2: System Calls&nbsp;&nbsp;
+　　3: C Library Functions&nbsp;&nbsp;
+　　4: File formats&nbsp;&nbsp;
+　　5: Headers,tables and macros&nbsp;&nbsp;
+　　6: Games and demos&nbsp;&nbsp;
+　　7: Device and Network Interfaces&nbsp;&nbsp;
+　　8: Maintance and Accounting commands&nbsp;&nbsp;
+　　9: Device driver interfaces&nbsp;&nbsp;
+　　3.Man Page的存放位置
+　　a.系统本身的 man page存放在/usr/share/man/man*目录中, /usr/man 是/usr/share/man的一个软链接.
+　　注：在安装操作系统时，man page是可选安装。如果未安装，可将其它机器上的/usr/share/man目录 mount 到本机上。或使用安装光盘将相应的package装上。&nbsp;&nbsp;
+　　b.很多应用软件有自己的man page.它们的缺省的安装目录通常是/usr/local/man/man*.通常可以通过修改该软件的配置文件来指定新的安装目录(只需设置到/some/directory/man 这一层)&nbsp;&nbsp;
+　　4.设置 Man Page的搜索路径
+　　当使用man命令查看某个命令或文件的帮助时，man要根据系统的环境变量MANPATH的值来确定搜索的路径。当MANPATH变量未设置时，man 命令缺省查找/usr/share/man目录。
+　　MANPATH的格式：
+　　MANPATH=dir1:dir2:dir3:...dirn; export MANPATH&nbsp;&nbsp;
+　　设置MANPATH的方法
+　　(1).临时性修改MANPATH
+　　在命令行上输入以下命令：
+　　$ MANPATH=$MANPATH:/xxx/xxx/man&lt;Enter&gt;;&nbsp;&nbsp;
+　　$ export MANPATH&lt;Enter&gt;;
+　　(2).永久性修改MANPATH
+　　在用户自己的 .profile文件中加入上述���行内容&nbsp;&nbsp;
+　　5.man 命令的高级使用技巧
+　　a.使用 -s 选项明确指定man page的section 号
+　　如：$ man -s 4 passwd&lt;Enter&gt;;
+-s 选项非常有用。因为man的搜索顺序是根据man.cf中的设置来进行的。当man找到一个匹配时，就不再往下找了。所以当你想查看一下/etc/passwd文件的格式而不是想了解passwd命令的使用时，光使用man passwd 你永远达不到目的。这时使用man -s 4 passwd，强制man只搜索section 4中的文件。&nbsp;&nbsp;
+　　b.使用 -f 选项列出某个命令的全部man page 的一行性摘要
+　　该用法等同于 whatis 命令注：使用该选项或whatis命令时，要用到man的 windex数据库。如果没有windex文件，可以使用catman -w 来创建该文件。&nbsp;&nbsp;
+　　如：$ whatis ls&lt;Enter&gt;;&nbsp;&nbsp;
+　　ls  &nbsp;&nbsp;    ls (1)  &nbsp;&nbsp;&nbsp; - list contents of directory&nbsp;&nbsp;
+　　ls  &nbsp;&nbsp;    ls (1b)  &nbsp;&nbsp;&nbsp; - list the contents of a directory&nbsp;&nbsp;
+　　c.使用 -k 选项列出一行性摘要中含有给定关键字的所有命令
+　　该用法等同于 apropos 命令
+　　如：$ apropos shadow&lt;Enter&gt;;&nbsp;&nbsp;
+　　lckpwdf   lckpwdf (3c) - manipulate shadow password database lock file&nbsp;&nbsp;
+　　putspent   putspent (3c) - write shadow password file entry&nbsp;&nbsp;
+　　pwconv   pwconv (1m) - installs and updates /etc/shadow with information&nbsp;&nbsp; from /etc/passwd&nbsp;&nbsp;
+　　shadow   shadow (4)&nbsp;&nbsp; - shadow password file&nbsp;&nbsp;
+　　ulckpwdf&nbsp;&nbsp; lckpwdf (3c) - manipulate shadow password database lock file&nbsp;&nbsp;
+　　d.使用 -d 选项查看man 命令的工作过程&nbsp;&nbsp;
+　　6\. 使用 Answer Book
+　　Answer Book在Solaris系统中是作为一个package而组织的，它也是系统的可选安装.&nbsp;&nbsp;
+　　使用Answer book的方法&nbsp;&nbsp;
+　　$ answerbook &lt;Enter&gt;;&nbsp;&nbsp; 　　* 如何使用装在其它机器上的 Answer Book?
+　　例如：liszt 上的用户要使用public主机上的AnswerBook
+　　step 1: 在 public 上执行以下命令：
+　　$ DISPLAY=liszt:0.0 ; export DISPLAY &lt;Enter&gt;;
+　　step 2: 在 liszt 上执行以下命令：
+　　$ xhost public &lt;Enter&gt;;
+　　step 3: 在 public 上执行answerbook 命令
+　　$ answerbook &lt;Enter&gt;;</pre>
+<pre>url:http://www.cnblogs.com/chengxuyuancc/archive/2013/02/24/2924054.html</pre>]]></content>
+    
+    
+      <category term="linux" scheme="http://yuhaya.github.io/categories/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[合并zf2库文件]]></title>
+    <link href="http://yuhaya.github.io/2014/02/19/%E5%90%88%E5%B9%B6zf2%E5%BA%93%E6%96%87%E4%BB%B6/"/>
+    <id>http://yuhaya.github.io/2014/02/19/合并zf2库文件/</id>
+    <published>2014-02-19T03:37:34.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<pre class="prettyprint lang-php">&lt;?php
+/**
+ * This makes our life easier when dealing with paths. Everything is relative
+ * to the application root now.
+ */
+header('Content-Type: text/html; charset=utf-8');
+date_default_timezone_set('PRC');
+chdir(dirname(__DIR__));
+define('__ROOT__', dirname(__DIR__));
+define('BASE_PATH', __DIR__);
+define('TEMP_PATH',dirname(__DIR__).'/media/temp/');
+define('DEVELOP_ENV',0);
+if(DEVELOP_ENV){
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+}else{
+    ini_set('display_errors', 0);
+}
+
+function all_files($file_pos = 'all_file.php'){
+    if(file_exists($file_pos)){
+        return;
+    }
+    $file = get_included_files();
+    $black_tip = array(
+        'SplAutoloader.php'
+    );
+    foreach ($file as $k=&gt;$value){
+        foreach ($black_tip as $v){
+            if(preg_match('/'.$v.'/', $value)){
+                unset($file[$k]);
+            }
+        }
+    }
+    $str = "&lt;?php\n return ".var_export($file,true).";\n?&gt;";
+    file_put_contents($file_pos, $str);
+}
+function strip_whitespace($content) {
+    $stripStr = '';
+    $tokens =   token_get_all ($content);
+    $last_space = false;
+    for ($i = 0, $j = count ($tokens); $i &lt; $j; $i++){
+        if (is_string ($tokens[$i])){
+            $last_space = false;
+            $stripStr .= $tokens[$i];
+        }
+        else{
+            switch ($tokens[$i][0]){
+                case T_COMMENT:
+                case T_DOC_COMMENT:
+                case T_OPEN_TAG;
+                case T_CLOSE_TAG;
+                    break;
+                case T_WHITESPACE:
+                    if (!$last_space){
+                        $stripStr .= ' ';
+                        $last_space = true;
+                    }
+                    break;
+                default:
+                    $last_space = false;
+                    $stripStr .= $tokens[$i][1];
+            }
+        }
+    }
+    return $stripStr;
+}
+function complie($arr_file,$file_name,$extra_file){
+    if(!file_exists($file_name)){
+        file_put_contents($file_name, '');
+    }
+    if(file_get_contents($file_name) != ''){
+        file_put_contents($file_name, '');
+    }
+    if(file_get_contents($extra_file) != ''){
+        file_put_contents($extra_file, '');
+    }
+    $run_file = array(
+            $file_name,
+            $extra_file
+        );
+    foreach ($arr_file as $key =&gt; $value) {
+        if(in_array($value, $run_file)){
+            continue;
+        }
+        $res = strip_whitespace(file_get_contents($value));
+        $res = preg_replace('/^\s*/','', $res);//匹配开始空格
+        $dir = str_replace(DIRECTORY_SEPARATOR.basename($value), '', $value);
+        $res = preg_replace('/__DIR__/',"'".$dir."'", $res);//匹配开始空格
+        $position = stripos($res,'namespace');
+        if($position === 0){
+            file_put_contents($file_name, "\n".$res,FILE_APPEND);
+        }else{
+            file_put_contents($extra_file, $value."\n",FILE_APPEND);
+        }
+    }
+
+    $complie = file_get_contents($file_name);
+    $str = "&lt;?php \n".$complie."\n?&gt;";
+    file_put_contents($file_name, $str);
+}
+function load_complie($complie = "complie.php",$all_file = 'all_file.php',$extra_file = 'extra.txt'){
+    if(file_exists($complie)){
+        require $complie;
+    }elseif(file_exists($all_file)){
+        $file_arr = require $all_file;
+        complie($file_arr,$complie,$extra_file);
+    }
+}
+
+if(!DEVELOP_ENV){
+    load_complie(__ROOT__.'/cache/complie.php',__ROOT__.'/cache/all_file.php',__ROOT__.'/cache/extra.txt');
+}
+
+// Setup autoloading
+require 'init_autoloader.php';
+
+// Run the application!
+Zend\Mvc\Application::init(require 'config/application.config.php')-&gt;run();
+
+all_files(__ROOT__.'/cache/all_file.php');</pre>]]></content>
+    
+    
+      <category term="Zend framework 2" scheme="http://yuhaya.github.io/categories/Zend%20framework%202/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[PHP正则表达式]]></title>
+    <link href="http://yuhaya.github.io/2014/02/09/php%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+    <id>http://yuhaya.github.io/2014/02/09/php正则表达式/</id>
+    <published>2014-02-09T03:27:22.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>操作符 描述</p>
+<p>&nbsp;&nbsp;&nbsp; \ 转义符</p>
+<p>&nbsp;&nbsp;&nbsp; (), (?:), (?=), [] 圆括号和方括号</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; *, +, ?, {n}, {n,}, {n,m} 限定符
+</code></pre><p>&nbsp;&nbsp;&nbsp; ^, $, \anymetacharacter 位置和顺序</p>
+<p>&nbsp;&nbsp;&nbsp; | “或”操作</p>
+<p>&nbsp;&nbsp;&nbsp; 全部符号解释</p>
+<p>&nbsp;&nbsp;&nbsp; 字符 描述</p>
+<p>&nbsp;&nbsp;&nbsp; \ 将下一个字符标记为一个特殊字符、或一个原义字符、或一个 向后引用、或一个八进制转义符。例如，&#39;n&#39; 匹配字符 &quot;n&quot;。&#39;\n&#39; 匹配一个换行符。序列 &#39;\&#39; 匹配 &quot;\&quot; 而 &quot;(&quot; 则匹配 &quot;(&quot;。</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; ^ 匹配输入字符串的开始位置。如果设置了 RegExp 对象的 Multiline 属性，^ 也匹配 &#39;\n&#39; 或 &#39;\r&#39; 之后的位置。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; $ 匹配输入字符串的结束位置。如果设置了RegExp 对象的 Multiline 属性，$ 也匹配 &#39;\n&#39; 或 &#39;\r&#39; 之前的位置。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; * 匹配前面的子表达式零次或多次。例如，zo* 能匹配 &quot;z&quot; 以及 &quot;zoo&quot;。* 等价于{0,}。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; + 匹配前面的子表达式一次或多次。例如，&#39;zo+&#39; 能匹配 &quot;zo&quot; 以及 &quot;zoo&quot;，但不能匹配 &quot;z&quot;。+ 等价于 {1,}。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; ? 匹配前面的子表达式零次或一次。例如，&quot;do(es)?&quot; 可以匹配 &quot;do&quot; 或 &quot;does&quot; 中的&quot;do&quot; 。? 等价于 {0,1}。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {n} n 是一个非负整数。匹配确定的 n 次。例如，&#39;o{2}&#39; 不能匹配 &quot;Bob&quot; 中的 &#39;o&#39;，但是能匹配 &quot;food&quot; 中的两个 o。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {n,} n 是一个非负整数。至少匹配n 次。例如，&#39;o{2,}&#39; 不能匹配 &quot;Bob&quot; 中的 &#39;o&#39;，但能匹配 &quot;foooood&quot; 中的所有 o。&#39;o{1,}&#39; 等价于 &#39;o+&#39;。&#39;o{0,}&#39; 则等价于 &#39;o*&#39;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; {n,m} m 和 n 均为非负整数，其中n &amp;lt;= m。最少匹配 n 次且最多匹配 m 次。例如，&quot;o{1,3}&quot; 将匹配 &quot;fooooood&quot; 中的前三个 o。&#39;o{0,1}&#39; 等价于 &#39;o?&#39;。请注意在逗号和两个数之间不能有空格。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; ? 当该字符紧跟在任何一个其他限制符 (*, +, ?, {n}, {n,}, {n,m})
+</code></pre><p>后面时，匹配模式是非贪婪的。非贪婪模式尽可能少的匹配所搜索的字符串，而默认的贪婪模式则尽可能多的匹配所搜索的字符串。例如，对于字符串
+&quot;oooo&quot;，&#39;o+?&#39; 将匹配单个 &quot;o&quot;，而 &#39;o+&#39; 将匹配所有 &#39;o&#39;。</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; . 匹配除 &quot;\n&quot; 之外的任何单个字符。要匹配包括 &#39;\n&#39; 在内的任何字符，请使用象 &#39;[.\n]&#39; 的模式。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; (pattern) 匹配 pattern 并获取这一匹配。所获取的匹配可以从产生的 Matches 集合得到，在VBScript
+</code></pre><p>中使用 SubMatches 集合，在JScript 中则使用 $0…$9 属性。要匹配圆括号字符，请使用 &#39;(&#39; 或 &#39;)&#39;。</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; (?:pattern) 匹配 pattern 但不获取匹配结果，也就是说这是一个非获取匹配，不进行[存储](http://storage.it168.com/)供以后使用。这在使用 &quot;或&quot; 字符 (|) 来组合一个模式的各个部分是很有用。例如， &#39;industr(?:y|ies) 就是一个比 &#39;industry|industries&#39; 更简略的表达式。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; (?=pattern) 正向预查，在任何匹配 pattern
+</code></pre><p>的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，&#39;Windows
+(?=95|98|NT|2000)&#39; 能匹配 &quot;Windows 2000&quot; 中的 &quot;Windows&quot; ，但不能匹配 &quot;Windows 3.1&quot;
+中的
+&quot;Windows&quot;。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; (?!pattern) 负向预查，在任何不匹配 pattern
+</code></pre><p>的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如&#39;Windows
+(?!95|98|NT|2000)&#39; 能匹配 &quot;Windows 3.1&quot; 中的 &quot;Windows&quot;，但不能匹配 &quot;Windows 2000&quot;
+中的 &quot;Windows&quot;。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; x|y 匹配 x 或 y。例如，&#39;z|food&#39; 能匹配 &quot;z&quot; 或 &quot;food&quot;。&#39;(z|f)ood&#39; 则匹配 &quot;zood&quot; 或 &quot;food&quot;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [xyz] 字符集合。匹配所包含的任意一个字符。例如， &#39;[abc]&#39; 可以匹配 &quot;plain&quot; 中的 &#39;a&#39;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [^xyz] 负值字符集合。匹配未包含的任意字符。例如， &#39;[^abc]&#39; 可以匹配 &quot;plain&quot; 中的&#39;p&#39;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [a-z] 字符范围。匹配指定范围内的任意字符。例如，&#39;[a-z]&#39; 可以匹配 &#39;a&#39; 到 &#39;z&#39; 范围内的任意小写字母字符。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [^a-z] 负值字符范围。匹配任何不在指定范围内的任意字符。例如，&#39;[^a-z]&#39; 可以匹配任何不在 &#39;a&#39; 到 &#39;z&#39; 范围内的任意字符。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \b 匹配一个单词边界，也就是指单词和空格间的位置。例如， &#39;er\b&#39; 可以匹配&quot;never&quot; 中的 &#39;er&#39;，但不能匹配 &quot;verb&quot; 中的 &#39;er&#39;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \B 匹配非单词边界。&#39;er\B&#39; 能匹配 &quot;verb&quot; 中的 &#39;er&#39;，但不能匹配 &quot;never&quot; 中的 &#39;er&#39;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \cx 匹配由 x 指明的控制字符。例如， \cM 匹配一个 Control-M 或回车符。x 的值必须为 A-Z 或 a-z 之一。否则，将 c 视为一个原义的 &#39;c&#39; 字符。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \d 匹配一个数字字符。等价于 [0-9]。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \D 匹配一个非数字字符。等价于 [^0-9]。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \f 匹配一个换页符。等价于 \x0c 和 \cL。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \n 匹配一个换行符。等价于 \x0a 和 \cJ。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \r 匹配一个回车符。等价于 \x0d 和 \cM。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \s 匹配任何空白字符，包括空格、制表符、换页符等等。等价于 [ \f\n\r\t\v]。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \S 匹配任何非空白字符。等价于 [^ \f\n\r\t\v]。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \t 匹配一个制表符。等价于 \x09 和 \cI。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \v 匹配一个垂直制表符。等价于 \x0b 和 \cK。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \w 匹配包括下划线的任何单词字符。等价于&#39;[A-Za-z0-9_]&#39;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \W 匹配任何非单词字符。等价于 &#39;[^A-Za-z0-9_]&#39;。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \xn 匹配 n，其中 n 为十六进制转义值。十六进制转义值必须为确定的两个数字长。例如，&#39;\x41&#39; 匹配 &quot;A&quot;。&#39;\x041&#39; 则等价于 &#39;\x04&#39; &amp;amp; &quot;1&quot;。正则表达式中可以使用 ASCII 编码。.
+</code></pre><p>&nbsp;&nbsp;&nbsp; \num 匹配 num，其中 num 是一个正整数。对所获取的匹配的引用。例如，&#39;(.)\1&#39; 匹配两个连续的相同字符。</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; \n 标识一个八进制转义值或一个向后引用。如果 \n 之前至少 n 个获取的子表达式，则 n 为向后引用。否则，如果 n 为八进制数字 (0-7)，则 n 为一个八进制转义值。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \nm 标识一个八进制转义值或一个向后引用。如果 \nm 之前至少有 nm 个获得子表达式，则 nm 为向后引用。如果 \nm
+</code></pre><p>之前至少有 n 个获取，则 n 为一个后跟文字 m 的向后引用。如果前面的条件都不满足，若 n 和 m 均为八���制数字 (0-7)，则 \nm
+将匹配八进制转义值 nm。</p>
+<pre><code>&amp;nbsp;&amp;nbsp;&amp;nbsp; \nml 如果 n 为八进制数字 (0-3)，且 m 和 l 均为八进制数字 (0-7)，则匹配八进制转义值 nml。
+
+&amp;nbsp;&amp;nbsp;&amp;nbsp; \un 匹配 n，其中 n 是一个用四个十六进制数字表示的 Unicode 字符。例如， \u00A9 匹配版权符号 (?)。
+</code></pre><h1 id="-"> </h1>
+<pre><code>    模式修饰符[ ¶](http://www.php.net/manual/zh/reference.pcre.pattern.modifiers.php#reference.pcre.pattern.modifiers)
+
+&lt;p class=&quot;para&quot;&gt;
+    下面列出了当前可用的 PCRE 修饰符。括号中提到的名字是 PCRE 内部这些修饰符的名称。
+</code></pre><p>  模式修饰符中的空格，换行符会被忽略，其他字符会导致错误。</p>
+<p><em>i</em> (<em>PCRE_CASELESS</em>)<span class="simpara"> 如果设置了这个修饰符，模式中的字母会进行大小写不敏感匹配。 </span> <em>m</em> (<em>PCRE_MULTILINE</em>)<span class="simpara"> 默认情况下，PCRE 认为目标字符串是由单行字符组成的(然而实际上它可能会包含多行)，
+   &quot;行首&quot;元字符 (^) 仅匹配字符串的开始位置， 而&quot;行末&quot;元字符 ($) 仅匹配字符串末尾，
+   或者最后的换行符(除非设置了 <em>D</em> 修饰符)。这个行为和 perl 相同。 </span> <span class="simpara"> 当这个修饰符设置之后，“行首”和“行末”就会匹配目标字符串中任意换行符之前或之后，另外，
+       还分别匹配目标字符串的最开始和最末尾位置。这等同于 perl 的 /m 修饰符。如果目标字符串
+       中没有 &quot;\n&quot; 字符，或者模式中没有出现 ^ 或 $，设置这个修饰符不产生任何影响。 </span> <em>s</em> (<em>PCRE_DOTALL</em>)<span class="simpara"> 如果设置了这个修饰符，模式中的点号元字符匹配所有字符，包含换行符。如果没有这个
+       修饰符，点号不匹配换行符。这个修饰符等同于 perl 中的/s修饰符。 一个取反字符类比如
+       [^a] 总是匹配换行符，而不依赖于这个修饰符的设置。 </span> <em>x</em> (<em>PCRE_EXTENDED</em>)<span class="simpara"> 如果设置了这个修饰符，模式中的没有经过转义的或不在字符类中的空白数据字符总会被忽略，
+       并且位于一个未转义的字符类外部的#字符和下一个换行符之间的字符也被忽略。
+        这个修饰符
+       等同于 perl 中的 /x 修饰符，使被编译模式中可以包含注释。 注意：这仅用于数据字符。 空白字符
+       还是不能在模式的特殊字符序列中出现，比如序列 (?( 引入了一个条件子组(译注: 这种语法定义的
+       特殊字符序列中如果出现空白字符会导致编译错误。 比如(?(就会导致错误)。 </span> <em>e</em> (<em>PREG_REPLACE_EVAL</em>)
+    <div class="warning">
+        <strong>Warning</strong></p>
+<pre><code>        本特性已自 PHP 5.5.0
+</code></pre><p>起<em>废弃</em>。强烈建议不要使用本特性。</p>
+<pre><code>&lt;/div&gt;
+</code></pre><p><span class="simpara"> 如果设置了这个被弃用的修饰符， <span class="function"><a href="http://www.php.net/manual/zh/function.preg-replace.php" target="_blank">preg_replace()</a></span> 在进行了对替换字符串的
+       后向引用替换之后, 将替换后的字符串作为php 代码评估执行(eval 函数方式)，并使用执行结果
+       作为实际参与替换的字符串。单引号、双引号、反斜线(<em>\</em>)和 NULL 字符在
+       后向引用替换时会被用反斜线转义. </span>
+    <div class="caution">
+        <strong>Caution</strong></p>
+<pre><code>        The &lt;span class=&quot;function&quot;&gt;[addslashes()](http://www.php.net/manual/zh/function.addslashes.php)&lt;/span&gt; function is run on each matched backreference before
+     the substitution takes place. As such, when the backreference
+     is used as a quoted string, escaped characters will be converted
+     to literals. However, characters which are escaped, which would
+     normally not be converted, will retain their slashes. This makes
+     use of this modifier very complicated.
+
+&lt;/div&gt;
+&lt;div class=&quot;caution&quot;&gt;
+    **Caution**
+
+        请确保 _replacement_ 参数由合法 php 代码字符串组成，否则 php 将会
+   在&lt;span class=&quot;function&quot;&gt;[preg_replace()](http://www.php.net/manual/zh/function.preg-replace.php)&lt;/span&gt; 调用的行上产生一个解释错误。
+
+&lt;/div&gt;
+&lt;div class=&quot;caution&quot;&gt;
+    **Caution**
+
+        Use of this modifier is _discouraged_, as it can easily introduce
+     security vulnerabilites:
+
+    &lt;div class=&quot;informalexample&quot;&gt;
+        &lt;div class=&quot;example-contents&quot;&gt;
+            &lt;div class=&quot;phpcode&quot;&gt;
+                &lt;span style=&quot;color:#000000;&quot;&gt; &lt;span style=&quot;color:#0000BB;&quot;&gt;&amp;lt;?php
+</code></pre><p>$html&nbsp;</span><span style="color:#007700;">=&nbsp;</span><span style="color:#0000BB;">$_POST</span><span style="color:#007700;">[</span><span style="color:#DD0000;">&#39;html&#39;</span><span style="color:#007700;">];</p>
+<p></span><span style="color:#FF8000;">//&nbsp;uppercase&nbsp;headings</p>
+<p></span><span style="color:#0000BB;">$html&nbsp;</span><span style="color:#007700;">=&nbsp;</span><span style="color:#0000BB;">preg_replace</span><span style="color:#007700;">(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#DD0000;">&#39;(&lt;h([1-6])&gt;(.*?)&lt;/h\1&gt;)e&#39;</span><span style="color:#007700;">,</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#DD0000;">&#39;&quot;&lt;h$1&gt;&quot;&nbsp;.&nbsp;strtoupper(&quot;$2&quot;)&nbsp;.&nbsp;&quot;&lt;/h$1&gt;&quot;&#39;</span><span style="color:#007700;">,</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000BB;">$html</p>
+<p></span><span style="color:#007700;">);</span> </span>
+                </div>
+            </div>
+        </div></p>
+<pre><code>        The above example code can be easily exploited by passing in a string such as _&amp;lt;h1&amp;gt;{${eval($_GET[php_code])}}&amp;lt;/h1&amp;gt;_. This gives
+     the attacker the ability to execute arbitrary PHP code and as such gives him
+     nearly complete access to your server.
+
+        To prevent this kind of remote code execution vulnerability the &lt;span class=&quot;function&quot;&gt;[preg_replace_callback()](http://www.php.net/manual/zh/function.preg-replace-callback.php)&lt;/span&gt; function should be used instead:
+
+    &lt;div class=&quot;informalexample&quot;&gt;
+        &lt;div class=&quot;example-contents&quot;&gt;
+            &lt;div class=&quot;phpcode&quot;&gt;
+                &lt;span style=&quot;color:#000000;&quot;&gt; &lt;span style=&quot;color:#0000BB;&quot;&gt;&amp;lt;?php
+</code></pre><p>$html&nbsp;</span><span style="color:#007700;">=&nbsp;</span><span style="color:#0000BB;">$_POST</span><span style="color:#007700;">[</span><span style="color:#DD0000;">&#39;html&#39;</span><span style="color:#007700;">];</p>
+<p></span><span style="color:#FF8000;">//&nbsp;uppercase&nbsp;headings</p>
+<p></span><span style="color:#0000BB;">$html&nbsp;</span><span style="color:#007700;">=&nbsp;</span><span style="color:#0000BB;">preg_replace_callback</span><span style="color:#007700;">(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#DD0000;">&#39;(&lt;h([1-6])&gt;(.*?)&lt;/h\1&gt;)&#39;</span><span style="color:#007700;">,</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;function&nbsp;(</span><span style="color:#0000BB;">$m</span><span style="color:#007700;">)&nbsp;{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color:#DD0000;">&quot;&lt;h</span><span style="color:#0000BB;">$m</span><span style="color:#007700;">[</span><span style="color:#0000BB;">1</span><span style="color:#007700;">]</span><span style="color:#DD0000;">&gt;&quot;&nbsp;</span><span style="color:#007700;">.&nbsp;</span><span style="color:#0000BB;">strtoupper</span><span style="color:#007700;">(</span><span style="color:#0000BB;">$m</span><span style="color:#007700;">[</span><span style="color:#0000BB;">2</span><span style="color:#007700;">])&nbsp;.&nbsp;</span><span style="color:#DD0000;">&quot;&lt;/h</span><span style="color:#0000BB;">$m</span><span style="color:#007700;">[</span><span style="color:#0000BB;">1</span><span style="color:#007700;">]</span><span style="color:#DD0000;">&gt;&quot;</span><span style="color:#007700;">;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;},</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:#0000BB;">$html</p>
+<p></span><span style="color:#007700;">);</span> </span>
+                </div>
+            </div>
+        </div>
+    </div></p>
+<pre><code>&gt; **Note**:
+</code></pre><blockquote>
+<pre><code>        仅 &lt;span class=&quot;function&quot;&gt;[preg_replace()](http://www.php.net/manual/zh/function.preg-replace.php)&lt;/span&gt; 使用此修饰符，其他 PCRE 函数忽略此修饰符。
+</code></pre><p><em>A</em> (<em>PCRE_ANCHORED</em>)<span class="simpara"> 如果设置了这个修饰符，模式被强制为&quot;锚定&quot;模式，也就是说约束匹配使其仅从
+       目标字符串的开始位置搜索。这个效果同样可以使用适当的模式构造出来，并且
+       这也是 perl 种实现这种模式的唯一途径。 </span> <em>D</em> (<em>PCRE_DOLLAR_ENDONLY</em>)<span class="simpara"> 如果这个修饰符被设置，模式中的元字符美元符号仅仅匹配目标字符串的末尾。如果这个修饰符
+       没有设置，当字符串以一个换行符结尾时， 美元符号还会匹配该换行符(但不会匹配之前的任何换行符)。
+   如果设置了修饰符<em>m</em>，这个修饰符被忽略. 在 perl 中没有与此修饰符等同的修饰符。 </span> <em>S</em><span class="simpara"> 当一个模式需要多次使用的时候，为了得到匹配速度的提升，值得花费一些时间
+       对其进行一些额外的分析。如果设置了这个修饰符，这个额外的分析就会执行。当前，
+       这种对一个模式的分析仅仅适用于非锚定模式的匹配(即没有单独的固定开始字符)。 </span> <em>U</em> (<em>PCRE_UNGREEDY</em>)<span class="simpara"> 这个修饰符逆转了量词的&quot;贪婪&quot;模式。 使量词默认为非贪婪的，通过量词后紧跟<em>?</em> 的方式可以使其成为贪婪的。这和 perl 是不兼容的。 它同样可以使用 <a href="http://www.php.net/manual/zh/regexp.reference.internal-options.php" target="_blank">模式内修饰符设置</a> (<em>?U</em>)进行设置， 或者在量词后以问号标记其非贪婪(比如<em>.*?</em>)。 </span>
+<strong>Note</strong>:</p>
+<pre><code>        在非贪婪模式，通常不能匹配超过 [pcre.backtrack_limit](http://www.php.net/manual/zh/pcre.configuration.php#ini.pcre.backtrack-limit) 的字符。
+</code></pre><p><em>X</em> (<em>PCRE_EXTRA</em>)<span class="simpara"> 这个修饰符打开了 PCRE 与 perl 不兼容的附件功能。模式中的任意反斜线后就 ingen 一个
+       没有特殊含义的字符都会导致一个错误，以此保留这些字符以保证向后兼容性。
+        默认情况下，在 perl 中，反斜线紧跟一个没有特殊含义的字符被认为是该字符的原文。
+       当前没有其他特性由这个修饰符控制。 </span> <em>J</em> (<em>PCRE_INFO_JCHANGED</em>)<span class="simpara"> 内部选项设置(?J)修改本地的<em>PCRE_DUPNAMES</em>选项。允许子组重名，
+       (译注：只能通过内部选项设置，外部的 /J 设置会产生错误。) </span> <em>u</em> (<em>PCRE_UTF8</em>)<span class="simpara"> 此修正符打开一个与 perl 不兼容的附加功能。 模式字符串被认为是utf-8的. 这个修饰符
+       从 unix 版php 4.1.0 或更高，win32版 php 4.2.3 开始可用。
+        php 4.3.5 开始检查模式的 utf-8 合法性</span>
+</p></p>
+</blockquote>
+]]></content>
+    
+    
+      <category term="正则" scheme="http://yuhaya.github.io/tags/%E6%AD%A3%E5%88%99/"/>
+    
+      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[ZEND FRAMEWORK 2 :  cache the complete output of your page]]></title>
+    <link href="http://yuhaya.github.io/2014/02/08/zend-framework-2-cache-the-complete-output-of-your-page/"/>
+    <id>http://yuhaya.github.io/2014/02/08/zend-framework-2-cache-the-complete-output-of-your-page/</id>
+    <published>2014-02-08T08:15:13.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>One option would be to cache the complete output of your page, for example based on the route match. You need to listen between routing and dispatching which route has been found as match and then act accordingly:</p>
+<p><pre class="prettyprint lang-php">namespace MyModule;</p>
+<p>use Zend\Mvc\MvcEvent;</p>
+<p>class Module
+{
+    public function onBootstrap(MvcEvent $e)
+    {
+        // A list of routes to be cached
+        $routes = array(&#39;foo/bar&#39;, &#39;foo/baz&#39;);</p>
+<pre><code>    $app = $e-&amp;gt;getApplication();
+    $em  = $app-&amp;gt;getEventManager();
+    $sm  = $app-&amp;gt;getServiceManager();
+
+    $em-&amp;gt;attach(MvcEvent::EVENT_ROUTE, function($e) use ($sm) {
+        $route = $e-&amp;gt;getRouteMatch()-&amp;gt;getMatchedRouteName();
+        $cache = $sm-&amp;gt;get(&#39;cache-service&#39;);
+        $key   = &#39;route-cache-&#39; . $route;
+
+        if ($cache-&amp;gt;hasItem($key)) {
+            // Handle response
+            $content  = $cache-&amp;gt;getItem($key);
+
+            $response = $e-&amp;gt;getResponse();
+            $response-&amp;gt;setContent($content);
+
+            return $response;
+        }
+    }, -1000); // Low, then routing has happened
+
+    $em-&amp;gt;attach(MvcEvent::EVENT_RENDER, function($e) use ($sm, $routes) {
+        $route = $e-&amp;gt;getRouteMatch()-&amp;gt;getMatchedRouteName();
+        if (!in_array($route, $routes)) {
+            return;
+        }
+
+        $response = $e-&amp;gt;getResponse();
+        $content  = $response-&amp;gt;getContent();
+
+        $cache = $sm-&amp;gt;get(&#39;cache-service&#39;);
+        $key   = &#39;route-cache-&#39; . $route;
+        $cache-&amp;gt;setItem($key, $content);
+    }, -1000); // Late, then rendering has happened
+}
+</code></pre><p>}</pre>
+    <p style="vertical-align:baseline;">
+        The second listener checks at the render event. If that happens, the result of the response will be cached.</p>
+<pre><code>    This system (perhaps not with 100% copy/paste, but the concept) works because if you return aResponse&amp;nbsp;during the route or dispatch event, the application will short circuit the application flow and stop further triggering listeners. It will then serve this response as it is.
+
+    Bear in mind it will be the complete page (including layout). If you don&#39;t want that (only the controller), move the logic to the controller. The first event (now route) will be dispatch of the controller. Listen to that early, so the normal execution of the action will be omitted. To cache the result, check the render event for the view layer to listen to.
+</code></pre><p></p></p>
+]]></content>
+    
+    
+      <category term="zf2 cache" scheme="http://yuhaya.github.io/tags/zf2%20cache/"/>
+    
+      <category term="Zend framework 2" scheme="http://yuhaya.github.io/categories/Zend%20framework%202/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[zf2无法自动载入库文件]]></title>
+    <link href="http://yuhaya.github.io/2014/02/08/zf2%E6%97%A0%E6%B3%95%E8%87%AA%E5%8A%A8%E8%BD%BD%E5%85%A5%E5%BA%93%E6%96%87%E4%BB%B6/"/>
+    <id>http://yuhaya.github.io/2014/02/08/zf2无法自动载入库文件/</id>
+    <published>2014-02-08T04:37:20.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>测试环境：</p>
+<pre><code>Centos Version 6.2
+
+PHP Version 5.3.3
+
+Apache/2.2.15
+
+zf2无法自动载入库文件，但所有配置都正常，则原因由于php.ini中的include_path选项未开启
+</code></pre><blockquote>
+<p>include_path用来设置include()或require()或require_once()函数包含文件的参考路径.
+也就是说当使用include()或require()函数包含文件的时候,程序首先以include_path设置的路径作为参考点去找文件,如果找不到,则以程序自身所在的路径为参考点去找所要的文件,如果都找不到,则出错.</p>
+</blockquote>
+]]></content>
+    
+    
+      <category term="include_path" scheme="http://yuhaya.github.io/tags/include_path/"/>
+    
+      <category term="Zend framework 2" scheme="http://yuhaya.github.io/categories/Zend%20framework%202/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[centos下编译安装apc]]></title>
+    <link href="http://yuhaya.github.io/2014/02/08/centos%E4%B8%8B%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85apc/"/>
+    <id>http://yuhaya.github.io/2014/02/08/centos下编译安装apc/</id>
+    <published>2014-02-08T02:05:51.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<pre class="prettyprint lang-php">cd ~
+mkdir setups
+cd setups
+wget http://pecl.php.net/get/APC-3.1.5.tgz
+tar -xvf APC-3.1.5.tgz
+cd APC-3.1.5
+phpize
+./configure --enable-apc --enable-apc-mmap --with-apxs --with-php config=/usr/local/bin/php-config
+make</pre>
+
+<pre><code>&lt;span style=&quot;color:#333333;font-family:Verdana, Arial, Tahoma, Calibri, Geneva, sans-serif;font-size:13px;line-height:normal;background-color:#FAFAFA;&quot;&gt;if you get the error:&lt;/span&gt;
+</code></pre><pre class="prettyprint lang-php">/usr/include/php/ext/pcre/php_pcre.h:29:18: error: pcre.h: No such file or directory
+In file included from /usr/local/src/APC-3.1.5/apc.c:38:
+/usr/include/php/ext/pcre/php_pcre.h:45: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+/usr/include/php/ext/pcre/php_pcre.h:46: error: expected '=', ',', ';', 'asm' or '__attribute__' before '*' token
+/usr/include/php/ext/pcre/php_pcre.h:52: error: expected specifier-qualifier-list before 'pcre'
+/usr/local/src/APC-3.1.5/apc.c:362: error: expected specifier-qualifier-list before 'pcre'
+/usr/local/src/APC-3.1.5/apc.c: In function 'apc_regex_compile_array':
+/usr/local/src/APC-3.1.5/apc.c:419: error: 'apc_regex' has no member named 'preg'
+/usr/local/src/APC-3.1.5/apc.c:419: error: 'apc_regex' has no member named 'preg'
+/usr/local/src/APC-3.1.5/apc.c:420: error: 'apc_regex' has no member named 'nreg'
+/usr/local/src/APC-3.1.5/apc.c:420: error: 'apc_regex' has no member named 'nreg'
+/usr/local/src/APC-3.1.5/apc.c: In function 'apc_regex_match_array':
+/usr/local/src/APC-3.1.5/apc.c:452: error: 'apc_regex' has no member named 'preg'
+/usr/local/src/APC-3.1.5/apc.c:452: error: 'apc_regex' has no member named 'preg'
+/usr/local/src/APC-3.1.5/apc.c:453: error: 'apc_regex' has no member named 'nreg'
+/usr/local/src/APC-3.1.5/apc.c:453: error: 'apc_regex' has no member named 'nreg'
+make: *** [apc.lo] Error 1</pre>
+<span style="color:#333333;font-family:Verdana, Arial, Tahoma, Calibri, Geneva, sans-serif;font-size:13px;line-height:normal;background-color:#FAFAFA;">Then you need to install pcre and make sure you do this from the / directory or it will not install.</span>
+
+<div class="bbcode_container" style="margin:5px 20px 20px;padding:0px;color:#333333;font-family:Verdana, Arial, Tahoma, Calibri, Geneva, sans-serif;font-size:13px;background-color:#FAFAFA;">
+    <div class="bbcode_description" style="margin:0px;padding:0px;">
+        Code:
+    </div>
+</div>
+<pre class="prettyprint lang-php">yum install pcre-devel</pre>
+
+<pre><code>make
+
+make install
+</code></pre>]]></content>
+    
+    
+      <category term="apc" scheme="http://yuhaya.github.io/tags/apc/"/>
+    
+      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Zend Framework 2 : Using Zend\Cache and HydratingResultSet to Save Database Resultset into Cache]]></title>
+    <link href="http://yuhaya.github.io/2014/02/07/zend-framework-2-using-zendcache-and-hydratingresultset-to-save-database-resultset-into-cache/"/>
+    <id>http://yuhaya.github.io/2014/02/07/zend-framework-2-using-zendcache-and-hydratingresultset-to-save-database-resultset-into-cache/</id>
+    <published>2014-02-07T08:46:11.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>Re-load data from the database every web was accessed is not good for your server ‘health’. Zend Framework has a component named Hydrator. The Hydrator is a simple component to provide mechanisms both for hydrating objects, as well as extracting data sets from them.</p>
+<p>To save database ResultSet into cache, You need to use Zend\Db\ResultSet\HydratingResultSet which can extract the resultSet into associative array. In this post, i will show you how to cache your database resultset into filesystem.</p>
+<p>Let’s code :</p>
+<p>1. Register Zend\Cache\Storage\Filesystem into service manager. You can place it at global.php</p>
+<pre class="prettyprint lang-php">return array(
+&nbsp;&nbsp;&nbsp;&nbsp;'db' =&gt; array(/*common code*/),
+&nbsp;&nbsp;&nbsp;&nbsp;'service_manager' =&gt; array(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'factories' =&gt; array(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Zend\Db\Adapter\Adapter' =&gt; 'Zend\Db\Adapter\AdapterServiceFactory',
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Zend\Cache\Storage\Filesystem' =&gt; function($sm){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$cache = Zend\Cache\StorageFactory::factory(array(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'adapter' =&gt; 'filesystem',
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'plugins' =&gt; array(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'exception_handler' =&gt; array('throw_exceptions' =&gt; false),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'serializer'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$cache-&gt;setOptions(array(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'cache_dir' =&gt; './data/cache'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return $cache;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),
+&nbsp;&nbsp;&nbsp;&nbsp;),
+);</pre>
+2\. Define Your Sample class
+
+<pre class="prettyprint lang-php">namespace SampleModule\Model;
+&nbsp;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
+&nbsp;
+class Sample implements InputFilterAwareInterface
+{
+&nbsp;&nbsp;&nbsp;&nbsp;public $id;
+&nbsp;&nbsp;&nbsp;&nbsp;public $name;
+&nbsp;&nbsp;&nbsp;&nbsp;public $gender;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;protected $inputFilter;
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function exchangeArray($data)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;id&nbsp;&nbsp;&nbsp;&nbsp; = (isset($data['id'])) ? $data['id'] : null;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;name = (isset($data['name'])) ? $data['name'] : null;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;gender = (isset($data['gender'])) ? $data['gender'] : null;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;public function getArrayCopy()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return get_object_vars($this);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function setInputFilter(InputFilterInterface $inputFilter)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new \Exception("Not used");
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function getInputFilter()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/* common code here */
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return $this-&gt;inputFilter;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+3\. next, create your Sample table class :
+
+<pre class="prettyprint lang-php">namespace SampleModule\Model;
+&nbsp;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Sql\Select;
+&nbsp;
+use Zend\Cache\Storage\StorageInterface;
+&nbsp;
+class SampleTable extends AbstractTableGateway
+{
+&nbsp;&nbsp;&nbsp;&nbsp;protected $table = 'sampletable';
+&nbsp;&nbsp;&nbsp;&nbsp;protected $cache;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function __construct(Adapter $adapter)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;adapter = $adapter;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;resultSetPrototype = new HydratingResultSet();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;resultSetPrototype-&gt;setObjectPrototype(new Sample());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;initialize();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function setCache(StorageInterface $cache)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;cache = $cache;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function fetchAll()
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( ($resultSet = $this-&gt;cache-&gt;getItem('samplecache')) == FALSE) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$resultSet = $this-&gt;select(function (Select $select){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$select-&gt;columns(array('id', 'name', 'gender'));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$select-&gt;order(array('id asc'));&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});
+&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$resultSet = $resultSet-&gt;toArray();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;cache-&gt;setItem('samplecache',&nbsp; $resultSet );
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return $resultSet;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+4\. Last step, register Zend\Cache in Module.php to inject cache into Sample Table Class.
+
+<pre class="prettyprint lang-php">namespace SampleModule;
+&nbsp;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
+&nbsp;
+class Module&nbsp; implements
+&nbsp;&nbsp;&nbsp;&nbsp;AutoloaderProviderInterface,
+&nbsp;&nbsp;&nbsp;&nbsp;ConfigProviderInterface,
+&nbsp;&nbsp;&nbsp;&nbsp;ServiceProviderInterface
+{
+&nbsp;&nbsp;&nbsp;&nbsp;public function getAutoloaderConfig(){/*common code*/}
+&nbsp;&nbsp;&nbsp;&nbsp;public function getConfig(){/*common code*/}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function getServiceConfig()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;return array(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'factories' =&gt; array(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'SampleModule\Model\SampleTable' =&gt;&nbsp; function($sm){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$dbAdapter&nbsp;&nbsp;&nbsp; = $sm-&gt;get('Zend\Db\Adapter\Adapter');
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$cacheAdapter = $sm-&gt;get('Zend\Cache\Storage\Filesystem');
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$table&nbsp;&nbsp;&nbsp;&nbsp; = new Model\SampleTable($dbAdapter);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$table-&gt;setCache($cacheAdapter);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return $table;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+Remember, the resultset is now an array. Zend\Cache will serialize this and save into file. if we want to call in another resource, we need to call as array, not as Iterator.
+
+for example :
+
+<pre class="prettyprint lang-php">namespace SampleModule\Controller;
+&nbsp;
+use Zend\Mvc\Controller\AbstractActionController;
+&nbsp;&nbsp;
+class TablesampleController extends AbstractActionController
+{
+&nbsp;&nbsp;&nbsp;&nbsp;protected $sampletable;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function indexAction()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$resultSet = $this-&gt;getSampleTable()-&gt;fetchAll();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//JUST TESTING......
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach($resultSet as $row)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo $row['name']."&lt;br /&gt;";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;public function getSampleTable()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!$this-&gt;sampletable){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;sampletable = $this-&gt;getServiceLocator()-&gt;get('SampleModule\Model\SampleTable');
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return $this-&gt;sampletable;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+How about updating data? we have to reset the cache if we want to show updated result.
+
+<pre class="prettyprint lang-php">$this-&gt;cache-&gt;removeItem('samplecache');</pre>]]></content>
+    
+    
+      <category term="Zend framework 2" scheme="http://yuhaya.github.io/categories/Zend%20framework%202/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Homebrew]]></title>
+    <link href="http://yuhaya.github.io/2014/02/04/homebrew/"/>
+    <id>http://yuhaya.github.io/2014/02/04/homebrew/</id>
+    <published>2014-02-04T04:00:30.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://www.xiaoche.me/blog/2012/02/01/homebrew-install/" target="_blank">http://www.xiaoche.me/blog/2012/02/01/homebrew-install/</a></p>
+<pre><code>http://linfan.info/blog/2012/02/25/homebrew-installation-and-usage/
+</code></pre>]]></content>
+    
+    
+      <category term="mac" scheme="http://yuhaya.github.io/categories/mac/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Mac下配置PHP＋MySql环境]]></title>
+    <link href="http://yuhaya.github.io/2014/02/03/mac%E4%B8%8B%E9%85%8D%E7%BD%AEphp%EF%BC%8Bmysql%E7%8E%AF%E5%A2%83/"/>
+    <id>http://yuhaya.github.io/2014/02/03/mac下配置php＋mysql环境/</id>
+    <published>2014-02-03T15:05:23.000Z</published>
+    <updated>2014-03-14T13:38:11.000Z</updated>
+    <content type="html"><![CDATA[<p>由于最近需要布置mantis用来进行bug追踪，在此记录其过程。</p>
+<pre><code>由于PHP apache环境在Mac OS上是自带的，所以不需要另处下安装包，只需要简单配置一下即可。
+
+首先打开终端输入命令：
+</code></pre><pre>sudo vim /etc/apache2/httpd.conf</pre>
+
+<pre><code>其中有一行是这样的
+</code></pre><pre>#LoadModule php5_module libexec/apache2/libphp5.so</pre>
+
+<pre><code>将前面的#号去掉。
+
+然后打开系统偏好设置中的共享，将web共享勾上，如下图
+
+[![1342530830_8503](http://www.3wmao.com/wp-content/uploads/2014/02/1342530830_8503.png)](http://www.3wmao.com/wp-content/uploads/2014/02/1342530830_8503.png)
+
+&lt;p&gt;
+    重启apache, 命令如下：
+</code></pre><pre>sudo apachectl restart</pre>
+
+<pre><code>    这样就可以在浏览器中输入http://localhost/，如果出现
+</code></pre><h1 id="-"> </h1>
+<pre><code>    It works!
+
+    说明成功配置php环境
+
+    下面来配置MySql环境。
+
+    首先下载MySql的dmg安装包。下载地址在：[http://dev.mysql.com/downloads/mysql/](http://dev.mysql.com/downloads/mysql/)
+
+    打开dmg文件，里面有三个安装项，在此我三个都安装，MySQLStartupItem.pkg安装后，mysql会随系统启动而自启动，MySQL.prefPane表示可以在系统偏好设置中看到mysql选项，还有一个就是mysql的安装项。
+
+    这样一来就安装成功了，在系统偏好设置中打开mysql，并将服务开启。安装好后默认的用户名是root，密码为空。为了安全，我们设置一个密码。
+
+    打开终端，如果你输入mysql提示没有这个命令，那么需要配置mysql bin目录的环境变量。目录是，/usr/local/mysql/bin/, &amp;nbsp;将其加入到PATH变量中。在这儿我介绍另一种方法，
+
+    在终端中输入
+</code></pre><pre>sudo vim /etc/bashrc</pre>
+
+<pre><code>    然后在其中加入
+</code></pre><pre>#mysql
+alias mysql='/usr/local/mysql/bin/mysql'
+alias mysqladmin='/usr/local/mysql/bin/mysqladmin'</pre>
+
+<pre><code>    这样一来，在终端中输入mysql就有这个命令了, 其实它与我们C/C++中的宏定义有点类似，别名代替的作用。
+
+    接着我们修改root的密码，命令如下：
+</code></pre><pre>mysqladmin -uroot password 12345</pre>
+
+<pre><code>    这样就将root的密码改为了12345.
+
+    要管理Mysql，如果用命令行比较麻烦，开源的phpMyAdmin采用C/S的模式，方便管理。接着我们就装一个phpMyAdmin. 它是由php开发的，下载地址是：[http://www.phpmyadmin.net/home_page/downloads.php](http://www.phpmyadmin.net/home_page/downloads.php)
+
+    将下载下来的解压放在/Library/WebServer/Documents/目录下，完整的目录为：/Library/WebServer/Documents/phpmyadmin/，那么命令行进入这个目录，
+
+    再输入命令：
+</code></pre><pre>cp config.sample.inc.php config.inc.php
+vim config.inc.php </pre>
+
+<pre><code>    按照下面进行修改：
+</code></pre><pre>$cfg['blowfish_secret'] = '';//用于Cookie加密，随意的长字符串
+$cfg['Servers'][$i]['host'] = '127.0.0.1';//MySQL守护程序做了IP绑定</pre>
+
+<p>现在可以在浏览器中输入URL:<a href="http://localhost/phpmyadmin/" target="_blank"><a href="http://localhost/phpmyadmin/">http://localhost/phpmyadmin/</a></a></p>
+<pre><code>    用服名为:root
+
+    密码为你设置的密码。
+
+    就可以login到mysql的管理界面。
+</code></pre><p>url:<a href="http://www.cnblogs.com/fengyv/archive/2012/07/27/2612096.html" target="_blank">http://www.cnblogs.com/fengyv/archive/2012/07/27/2612096.html</a>
+</p></p>
+]]></content>
+    
+    
+      <category term="mac" scheme="http://yuhaya.github.io/categories/mac/"/>
+    
+  </entry>
+  
+</feed>

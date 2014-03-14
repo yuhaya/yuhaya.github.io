@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>zf2的MVC层介绍 | /sbin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="zf2的MVC层介绍">
+<meta name="og:url" content="http://yuhaya.github.io/2013/10/14/zf2的mvc层介绍/">
+<meta name="og:image">
+<meta name="og:site_name" content="/sbin">
+<meta name="og:description" content="ZendMvc 是一个全新的MVC的实现设计，贯穿zf2框架 ，专注于性能和灵活性。
+
+MVC层顶部由下几部分组成：
+
+ZendServiceManager  Zend框架提供了一组默认的服务定义在 Zend  MVC  Service。 ServiceManager的创建和配置您的应用实例和工作流程。
+ZendEventManager    MVC是事件驱动的。使用这个组件是无处不在，从应用程序">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">/sbin</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Simple code farming life</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+          <a class="main-nav-link" href="/atom.xml">Rss</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yuhaya.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-zf2的mvc层介绍" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/10/14/zf2的mvc层介绍/" class="article-date">
+  <time datetime="2013-10-13T23:14:35.000Z" itemprop="datePublished">10月 14 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Zend framework 2/">Zend framework 2</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      zf2的MVC层介绍
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <tt>ZendMvc 是一个全新的MVC的实现设计，贯穿zf2框架 ，专注于性能和灵活性。</tt>
+
+<h2 id="mvc-">MVC层顶部由下几部分组成：</h2>
+<ul>
+<li><span style="color: #ff0000;">ZendServiceManager</span>  Zend框架提供了一组默认的服务定义在 Zend  MVC  Service。 ServiceManager的创建和配置您的应用实例和工作流程。</li>
+<li><span style="color: #ff0000;">ZendEventManager</span>    MVC是事件驱动的。使用这个组件是无处不在，从应用程序的初始引导，通过返回的响应和请求呼叫，路由和匹配的路由，以及渲染视图设置和检索。</li>
+<li><span style="color: #ff0000;">ZendHttp</span>  具体的请求和响应对象，用于在：</li>
+<li><span style="color: #ff0000;">ZendStdlibDispatchableInterface</span>  所有的“控制器”是简单的调度对象。</li>
+</ul>
+<h2 id="mvc-">MVC内有几个暴露的子组件：</h2>
+<ul>
+<li><span style="color: #ff0000;">ZendMvcRouter</span>   包含有关路由请求的类。换句话说，它匹配到其各自的控制器（或可调度）的要求。</li>
+<li><span style="color: #ff0000;">ZendHttpPhpEnvironment</span>    提供了一组用于HTTP请求和响应对象，以确保该请求被注入与当前环境（包括查询参数， POST参数，HTTP头，等）</li>
+<li><span style="color: #ff0000;">ZendMvcController</span>  一组抽象的“控制器”类的基本职责，如事件接线，行动调度等。</li>
+<li><span style="color: #ff0000;">ZendMvcService</span>   提供了一套ServiceManager的工厂和定义的默认应用程序的工作流程。</li>
+<li><span style="color: #ff0000;">ZendMvcView</span>   提供的默认布线渲染视图脚本分辨率，辅助注册，多选择， ;此外，它提供了大量的听众，领带到MVC工作流程，提供的功能，如自动化模板名称解析，自动创建视图模型和注射等。
+MVC的网关是 <span style="color: #ff0000;">Zend  MVC  Application</span> 对象（以下简称为今后的应用） 。其主要职责是引导资源，请求路由，在路由匹配检索和调度控制器。一旦完成，它会渲染视图，并完成请求，返回和发送响应。</li>
+</ul>
+<h2 id="-">基本的应用程序结构</h2>
+<p>基本的应用程序结构如下：</p>
+<p>[php]
+application_root/
+    config/
+        application.config.php
+        autoload/
+            global.php
+            local.php
+            // etc.
+    data/
+    module/
+    vendor/
+    public/
+        .htaccess
+        index.php
+    init_autoloader.php
+[/php]</p>
+<ul>
+<li><span style="color: #ff0000;">public/index.php</span>   所有的用户请求到您的网站的入口，检索位于在config / application.config.php的一组配置。在返回时，执行 Application 的 run 方法，处理请求，并返回给用户一个响应。</li>
+<li><span style="color: #ff0000;"><tt>config</tt> </span>                包含了通过Zend  ModuleManager会加载模块和合并的配置（例如，数据库配置和凭据） ，我们将详细介绍这更晚一些。</li>
+<li><span style="color: #ff0000;"><tt>vendor</tt> </span>              包含任何第三方的模块或应用程序依赖的库。这可能包括Zend框架，或自定义库。</li>
+<li><span style="color: #ff0000;"><tt>module</tt> </span>             包含一个或多个模块，提供应用程序的功能。
+现在，让我们打开模块，因为他们是一个Web应用程序的基本单位。</li>
+</ul>
+<h2 id="-">模块基本结构</h2>
+<p>一个模块可以包含任何PHP代码，包括MVC功能，库代码，视图脚本，公共资产。如图像，CSS和JavaScript 。唯一的要求 - 即使这是可选的 - 是一个模块作为一个PHP的一个命名空间，该命名空间下包含了Module.php类。这个类的最终由Zend  ModuleManager调用，并执行一些任务。</p>
+<p>[code]
+&amp;lt;pre&amp;gt;module_root&amp;lt;named-after-module-namespace&amp;gt;/
+    Module.php
+    autoload_classmap.php
+    autoload_function.php
+    autoload_register.php
+    config/
+        module.config.php
+    public/
+        images/
+        css/
+        js/
+    src/
+        &amp;lt;module_namespace&amp;gt;/
+            &amp;lt;code files&amp;gt;
+    test/
+        phpunit.xml
+        bootstrap.php
+        &amp;lt;module_namespace&amp;gt;/
+            &amp;lt;test code files&amp;gt;
+    view/
+        &amp;lt;dir-named-after-module-namespace&amp;gt;/
+            &amp;lt;dir-named-after-a-controller&amp;gt;/
+                &amp;lt;.phtml files&amp;gt;
+[/code]</p>
+<p>由于一个模块作为一个命名空间，模块根目录应该是命名空间。此命名空间还可能包括各种供应商的前缀。作为一个例子模块，围绕“user”的功能由Zend提供可能会被命名为“ ZendUser ”，模块根目录也将被这样命名。</p>
+<ul>
+<li><span style="color: #ff0000;">Module.php     </span>将直接处于模块的顶级命名空间中
+[php]
+namespace ZendUser;</li>
+</ul>
+<p>class Module
+{
+}
+[/php]</p>
+<p>init（）方法定义时，这种方法将被一个Zend  ModuleManager 监听器触发，当它加载的模块类，默认情况下，通过manager的一个实例。这可以让你执行任务，如设置模块特定的事件侦听器。但是要注意，在init（）方法被称为每一个页面请求的每一个模块上，应该只用于执行轻量级的任务，如注册事件侦听器。同样地，一个onBootstrap （）方法（接受一个MvcEvent实例）可以被定义，它也为每个页面请求触发，以及应该用于轻量级任务。</p>
+<ul>
+<li><span style="color: #ff0000;">autoload_*.php    </span>不是必需的，但建议。他们提供以下信息：</li>
+</ul>
+<ol>
+<li><span style="color: #3366ff;">autoload<em>classmap.php    </span>应该返回一个 &quot; 类名=&gt;文件名 &quot; 的数组，（ 文件名通过<em>_ DIR</em></em>魔法常数来定义） 。</li>
+<li><span style="color: #3366ff;">autoload_function.php    </span> 应该返回可以被spl_autoload_register （ ）调用的一个PHP回调。通常情况下，这个回调应该利用autoload_classmap.php的地图返回 。<span style="color: #3366ff;">
+</span></li>
+<li><span style="color: #3366ff;">autoload_register.php    </span>应该注册一个PHP回调（通常返回spl_autoload_register autoload_function.php （中） 。
+<span><span>这三个文件的要点是提供合理的默认自动加载模块中包含的类的机制，从而提供一个简单的方式来消耗模块，而不需要</span></span><tt><span><span>的ZendModuleManager</span></span></tt><span><span>（例如，使用ZF2应用程序之外）。</span></span></li>
+</ol>
+<ul>
+<li><p>config    <span><span>目录中应包含特定的模块配置。</span><span>这些文件可以是任何</span></span><tt><span><span>被Zend Config</span></span></tt><span><span>支持的格式 。</span><span>我们建议主要的配置以“module.format”命名，并基于PHP的配置，的“module.config.php”。</span><span>通常情况下，您将创建配置路由器以及依赖注入。</span></span></p>
+</li>
+<li><p>src   <span><span>是一个</span></span><a><span><span>PSR-0标准的目录结构</span></span></a><span><span>模块的源代码。</span><span>通常情况下，你应该至少有一个子命名的目录后，你的模块命名空间。</span></span></p>
+</li>
+<li><p><tt>test</tt>  <span><span>录应该包含你的单元测试。</span><span>通常情况下，这些都是使用</span></span><a><span><span>PHPUnit的</span></span></a><span><span>编写</span><span>，并包含其配置（如</span></span><tt><span><span>phpunit.xml </span></span></tt><tt><span><span>bootstrap.php的</span></span></tt><span><span>）</span><span>有关的文物</span><span>。</span></span></p>
+</li>
+<li><p>public   <span>目录可用于资产，你可能想在你的应用程序的文档根暴露。</span><span>这些措施可能包括图像，CSS文件，JavaScript文件，等这些都暴露留给开发人员。</span></p>
+</li>
+<li><p><tt>view</tt>    包 ​​含控制器视图脚本相关。</p>
+</li>
+</ul>
+<h2 id="-span-span-span-span-"><span><span>引导应用程序</span></span></h2>
+<h3 id="-tt-application-tt-"><tt>Application</tt> 有六个基本的依赖。</h3>
+<ol>
+<li><strong>configuration              </strong>通常是一个数组或对象实施的<tt>Traversable</tt></li>
+<li><strong>ServiceManager</strong>     服务管理器实例</li>
+<li><strong>EventManager</strong>       时间管理器实例，放置于服务管理器，服务名为EventManager</li>
+<li><strong>ModuleManager</strong>     模块管理器实例，放置于服务管理器，服务名为ModuleManager</li>
+<li><strong>Request</strong>     请求模块实例，放置于服务管理器，服务名为Request</li>
+<li><strong>Response</strong>   响应实例，放置于服务管理器，服务名为Response
+这些对实例可能是符合的：</li>
+</ol>
+<p>[php]
+&amp;lt;pre&amp;gt;use ZendEventManagerEventManager;
+use ZendHttpPhpEnvironment;
+use ZendModuleManagerModuleManager;
+use ZendMvcApplication;
+use ZendServiceManagerServiceManager;</p>
+<p>$config = include &#39;config/application.config.php&#39;;</p>
+<p>$serviceManager = new ServiceManager();
+$serviceManager-&amp;gt;setService(&#39;EventManager&#39;, new EventManager());
+$serviceManager-&amp;gt;setService(&#39;ModuleManager&#39;, new ModuleManager($config));
+$serviceManager-&amp;gt;setService(&#39;Request&#39;, new PhpEnvironmentRequest());
+$serviceManager-&amp;gt;setService(&#39;Response&#39;, new PhpEnvironmentResponse());</p>
+<p>$application = new Application($config, $serviceManager);&amp;lt;/pre&amp;gt;
+[/php]</p>
+<p><span>一旦你做到这一点，有两个额外的可以采取的措施。</span><span>第一种方法是“引导”应用程序。</span><span>在默认实现中，执行以下操作：</span></p>
+<ul>
+<li><p>绑定默认路由监听器 ZendMvcRouteListener</p>
+</li>
+<li><p>绑定默认分发监听器 ZendMvcDispatchListener</p>
+</li>
+<li><p>绑定 ViewManager 监听器ZendMvcViewViewManager</p>
+</li>
+<li><p>创建<tt>MvcEvent</tt>，并注入与应用程序，请求和响应;检索路由器（ZendMvcRouterHttpTreeRouteStack）在这个时候，附加到事件。</p>
+</li>
+<li><p>触发事件的“引导”
+<span><span>如果你不希望这些行动，或者要提供替代品，你可以这样做，通过扩展的Application</span></span><span><span> 类或简单的代码，你想会发生什么样的行动。</span></span></p>
+</li>
+</ul>
+<p><span><span>第二个动作，通过采取的配置使Application 去运行</span></span><span><span> run()</span></span><tt><span><span> </span></span></tt><span><span>。</span><span>调用此方法只是执行以下操作：它会触发“route”事件，其次是“dispatch”事件，并在执行过程中，“render”事件，取决于完成时，它会触发“finish”事件，然后返回响应实例。</span><span>如果错误发生在“route”或“dispatch”事件，的“dispatch.error”事件被触发。</span></span></p>
+<p><span><span>这是为了引导应用程序要记住很多事情，事实上，我们并没有覆盖默认情况下，所有可用的服务。</span><span>随MVC </span><span>使用默认</span></span><tt><span><span>ServiceManager的</span></span></tt><span><span>配置</span><span>可以大大简化事情</span><span>。</span></span></p>
+<p>[php]
+use ZendLoaderAutoloaderFactory;
+use ZendMvcServiceServiceManagerConfig;
+use ZendServiceManagerServiceManager;</p>
+<p>// setup autoloader
+AutoloaderFactory::factory();</p>
+<p>// get application stack configuration
+$configuration = include &#39;config/application.config.php&#39;;</p>
+<p>// setup service manager
+$serviceManager = new ServiceManager(new ServiceManagerConfig());
+$serviceManager-&amp;gt;setService(&#39;ApplicationConfig&#39;, $configuration);</p>
+<p>// load modules -- which will provide services, configuration, and more
+$serviceManager-&amp;gt;get(&#39;ModuleManager&#39;)-&amp;gt;loadModules();</p>
+<p>// bootstrap and run application
+$application = $serviceManager-&amp;gt;get(&#39;Application&#39;);
+$application-&amp;gt;bootstrap();
+$response = $application-&amp;gt;run();
+$response-&amp;gt;send();
+[/php]</p>
+<p>使用的init（）方法的Application，可以让这个更简单。这是一个快捷的静态方法，简便，应用程序初始化。</p>
+<p>[php]
+&amp;lt;pre&amp;gt;use ZendLoaderAutoloaderFactory;
+use ZendMvcApplication;
+use ZendMvcServiceServiceManagerConfig;
+use ZendServiceManagerServiceManager;</p>
+<p>// setup autoloader
+AutoloaderFactory::factory();</p>
+<p>// get application stack configuration
+$configuration = include &#39;config/application.config.php&#39;;</p>
+<p>// The init() method does something very similar with the previous example.
+Application::init($configuration)-&amp;gt;run();&amp;lt;/pre&amp;gt;
+[/php]</p>
+<p><tt><span><span>init（）</span></span></tt><span><span>方法将基于以下几点：</span></span></p>
+<ul>
+<li><p>获得应用的配置，通过<tt>service_manager</tt> 的key，创建一个ServiceManager实例，附带的默认ZendMvc服务</p>
+</li>
+<li><p>创建一个的服务名为<tt>ApplicationConfig</tt>应用程序配置阵列;</p>
+</li>
+<li><p><tt>获得ModuleManager会</tt>服务和加载的模块;</p>
+</li>
+<li><p>Application-&gt;bootstrap()  并返回它的实例;
+<pre>注意</p>
+</li>
+</ul>
+<p>如果您使用的init（）方法，你不能指定的服务与您的服务管理器配置的名称为“ApplicationConfig”。保留此名称持有从application.config.php阵列。</p>
+<p>只有以下列服务能被application.config.php覆盖：
+ModuleManager
+SharedEventManager
+EventManager &amp; ZendEventManagerEventManagerInterface
+所有其他模块加载后配置的服务，他们可以被模块重载。</pre>
+<span><span>您会注意到，你有大量的工作流程的控制权是</span><span>使用</span></span><tt><span><span>ServiceManager的</span></span></tt><span><span>，你有什么样的服务，他们是如何被实例化，依赖注入到他们的细粒度控制。</span></span><tt><span><span>放到EventManager的</span></span></tt><span><span>优先系统，可以拦截任何应用程序的事件（“bootstrap”, “route”, “dispatch”, “dispatch.error”, “render”, and “finish”）在执行过程中的任何地方，让您制作自 ​​己的应用程序的工作流程需要。</span></span></p>
+<h2 id="-span-span-span-span-"><span><span>引导一个模块化应用</span></span></h2>
+<p>&nbsp;</p>
+<p><span><span>配置从何而来呢？</span><span>当我们创建一个模块化应用程序，假设是配置来自于它自己。</span><span>我们如何获得这些信息和汇总呢？</span></span></p>
+<p><span>答案是通过ZendModuleManagerModuleManager</span><tt><span><span>会</span></span></tt><span><span>。</span><span>该组件允许您指定存在的模块。</span><span>然后，它会找到每个模块初始化它。</span><span>模块类通过</span></span><tt><span><span>ModuleManager会</span></span></tt><span><span>配合不同的listeners， </span><span>以提供configuration, services, listeners,</span><span>听起来很复杂？</span><span>事实并非如此。</span></span></p>
+<p>&nbsp;</p>
+<h3 id="-span-span-span-span-"><span><span>配置模块管理</span></span></h3>
+<p>&nbsp;</p>
+<p><span>第一个步骤是配置模块管理器。</span><span>只需通知模块管理器模块加载，并有可能提供配置模块监听</span></p>
+<p><span><span><span>记得</span></span><tt><span><span>application.config.php</span></span></tt><span><span>吗？</span><span>我们要提供一些配置。</span></span>。</span></p>
+<p>[php]
+&lt;pre&gt;&lt;?php
+// config/application.config.php
+return array(
+    &#39;modules&#39; =&gt; array(
+        /<em> ... </em>/
+    ),
+    &#39;module_listener_options&#39; =&gt; array(
+        &#39;module_paths&#39; =&gt; array(
+            &#39;./module&#39;,
+            &#39;./vendor&#39;,
+        ),
+    ),
+);&lt;/pre&gt;
+[/php]</p>
+<p>&nbsp;</p>
+<p>As we add modules to the system, we’ll add items to the <tt>modules</tt> array.</p>
+<p>Each <tt>Module</tt> class that has configuration it wants the <tt>Application</tt> to know about should define a <tt>getConfig()</tt> method. That method should return an array or <tt>Traversable</tt> object such as <tt>ZendConfigConfig</tt>. As an example:</p>
+<p>[php]
+&lt;pre&gt;namespace ZendUser;</p>
+<p>class Module
+{
+    public function getConfig()
+    {
+        return include <strong>DIR</strong> . &#39;/config/module.config.php&#39;
+    }
+}&lt;/pre&gt;
+[/php]</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/10/14/zf2的mvc层介绍/" data-id="mpasvty0doysuuz9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mvc/">mvc</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/10/16/登陆绑定回车键盘/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          登陆绑定回车键盘
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/10/09/sphinx配置多个索引源/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">sphinx配置多个索引源</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thinkphp/">thinkphp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thinkphp/">thinkphp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xml/">xml</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Authentication/">Authentication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Foreign Key/">Foreign Key</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MvcEvent/">MvcEvent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/">Xdebug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apc/">apc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/comet/">comet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/controller plugin/">controller plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/coreseek/">coreseek</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cpulimit/">cpulimit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/curl/">curl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/error_reporting/">error_reporting</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/having/">having</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/icon/">icon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include_path/">include_path</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysqli/">mysqli</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/phpMailer/">phpMailer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samba/">samba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seo/">seo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/service manager/">service manager</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/smtp/">smtp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sphinx/">sphinx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spl/">spl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/strlen/">strlen</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tar/">tar</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/where/">where</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2 cache/">zf2 cache</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符集/">字符集</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/键盘绑定/">键盘绑定</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Authentication/" style="font-size: 10.00px;">Authentication</a><a href="/tags/Foreign Key/" style="font-size: 10.00px;">Foreign Key</a><a href="/tags/MvcEvent/" style="font-size: 10.00px;">MvcEvent</a><a href="/tags/Xdebug/" style="font-size: 10.00px;">Xdebug</a><a href="/tags/apc/" style="font-size: 10.00px;">apc</a><a href="/tags/comet/" style="font-size: 10.00px;">comet</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/controller plugin/" style="font-size: 10.00px;">controller plugin</a><a href="/tags/coreseek/" style="font-size: 10.00px;">coreseek</a><a href="/tags/cpulimit/" style="font-size: 10.00px;">cpulimit</a><a href="/tags/curl/" style="font-size: 10.00px;">curl</a><a href="/tags/error_reporting/" style="font-size: 10.00px;">error_reporting</a><a href="/tags/having/" style="font-size: 10.00px;">having</a><a href="/tags/icon/" style="font-size: 10.00px;">icon</a><a href="/tags/include_path/" style="font-size: 10.00px;">include_path</a><a href="/tags/linux/" style="font-size: 15.00px;">linux</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/mysql/" style="font-size: 10.00px;">mysql</a><a href="/tags/mysqli/" style="font-size: 10.00px;">mysqli</a><a href="/tags/phpMailer/" style="font-size: 10.00px;">phpMailer</a><a href="/tags/samba/" style="font-size: 10.00px;">samba</a><a href="/tags/seo/" style="font-size: 10.00px;">seo</a><a href="/tags/service manager/" style="font-size: 10.00px;">service manager</a><a href="/tags/shell/" style="font-size: 10.00px;">shell</a><a href="/tags/smtp/" style="font-size: 10.00px;">smtp</a><a href="/tags/sphinx/" style="font-size: 10.00px;">sphinx</a><a href="/tags/spl/" style="font-size: 10.00px;">spl</a><a href="/tags/strlen/" style="font-size: 10.00px;">strlen</a><a href="/tags/tar/" style="font-size: 10.00px;">tar</a><a href="/tags/where/" style="font-size: 10.00px;">where</a><a href="/tags/zf2 cache/" style="font-size: 20.00px;">zf2 cache</a><a href="/tags/字符集/" style="font-size: 10.00px;">字符集</a><a href="/tags/正则/" style="font-size: 10.00px;">正则</a><a href="/tags/键盘绑定/" style="font-size: 10.00px;">键盘绑定</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">二月 2014</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">一月 2014</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12">十二月 2013</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11">十一月 2013</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10">十月 2013</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">九月 2013</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">八月 2013</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07">七月 2013</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">五月 2013</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">四月 2013</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/13/mysql数据库目录存放位置更改/">mysql数据库目录存放位置更改</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/13/捕获php的致命错误（fatal-error-或-e_error）并处理/">捕获PHP的致命错误（Fatal Error 或 E_ERROR）并处理</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/07/shell判断文件是否存在/">shell判断文件是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/06/object-c-深拷贝和浅拷贝/">Object-c 深拷贝和浅拷贝</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/06/mysql索引的类型和优缺点/">mysql索引的类型和优缺点</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 3wmao<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+    <a href="/atom.xml" class="mobile-nav-link">Rss</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

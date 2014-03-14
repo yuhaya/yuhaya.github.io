@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>htaccess语法之RewriteCond与RewriteRule指令格式详细解释 | /sbin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="htaccess语法之RewriteCond与RewriteRule指令格式详细解释">
+<meta name="og:url" content="http://yuhaya.github.io/2013/07/30/htaccess语法之rewritecond与rewriterule指令格式详细解释/">
+<meta name="og:image">
+<meta name="og:site_name" content="/sbin">
+<meta name="og:description" content="**&lt;span style=&quot;font-size:14px;&quot;&gt;
+&lt;h2 style=&quot;font-size:14px;color:#CC0000;font-family:arial, sans-serif;background-color:#FFFFFF;&quot;&gt;
+    &lt;span style=&quot;background">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">/sbin</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Simple code farming life</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+          <a class="main-nav-link" href="/atom.xml">Rss</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yuhaya.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-htaccess语法之rewritecond与rewriterule指令格式详细解释" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/07/30/htaccess语法之rewritecond与rewriterule指令格式详细解释/" class="article-date">
+  <time datetime="2013-07-30T11:43:13.000Z" itemprop="datePublished">7月 30 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/apache/">apache</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      htaccess语法之RewriteCond与RewriteRule指令格式详细解释
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="-"> </h2>
+<pre><code>**&lt;span style=&quot;font-size:14px;&quot;&gt;
+&lt;h2 style=&quot;font-size:14px;color:#CC0000;font-family:arial, sans-serif;background-color:#FFFFFF;&quot;&gt;
+    &lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;1、Rewrite规则简介：&lt;/span&gt;
+
+    &lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;Rewirte主要的功能就是实现URL的跳转，它的正则表达式是基于Perl语言。可基于服务器级的(httpd.conf)和目录级的(.htaccess)两种方式。如果要想用到rewrite模块，必须先安装或加载rewrite模块。方法有两种一种是编译&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;a&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;pache&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;的时候就直接安装rewrite模块，别一种是编译apache时以DSO模式安装apache,然后再利用源码和apxs来安装rewrite模块。&lt;/span&gt;&lt;strong&gt;&lt;span style=&quot;color:#000000;background-color:#FFFFFF;&quot;&gt;这tm都是废话，反正我用了，那就肯定是我的服务器已经支持了，我们买服务器的时候也肯定会主要到能不能支持htaccess文件了。&lt;/span&gt;**
+
+    &lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;基于服务器级的(httpd.conf)有两种方法，一种是在httpd.conf的全局下直接利用RewriteEngine on来打开rewrite功能;另一种是在局部里利用RewriteEngine on来打开rewrite功能,下面将会举例说明，需要注意的是,必须在每个virtual&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;h&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;ost&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;里RewriteEngine on来打开rewrite功能。否则virtualhost里没有RewriteEngine on它里面的规则也不会生效。&lt;/span&gt;&lt;span style=&quot;color:#FF0000;&quot;&gt;**&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;这里针对的就是&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;v&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;ps&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;服务器的了，如果你是虚拟主机，就你想动(httpd.conf)文件你也没有权限。哈&lt;/span&gt;**&lt;/span&gt;
+
+    &lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;基于目录级的(.htaccess),要注意一点那就是必须打开此目录的FollowSymLinks属性且在.htaccess里要声明RewriteEngine on。&lt;/span&gt;**&lt;span style=&quot;color:#FF0000;&quot;&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;这就重要了，一般我们买的虚拟主机，就是开启这个功能的，所以你在&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;空&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;间&lt;/span&gt;&lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;中任意目录下放入这个文件，都可以起作用的了。&lt;/span&gt;&lt;/span&gt;**
+</code></pre><h3 id="-"> </h3>
+<pre><code>    &lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;放两个在htaccess中使用的例子：&lt;/span&gt;
+</code></pre><h4 id="-"> </h4>
+<pre><code>    &lt;span style=&quot;background-color:#FFFFFF;color:#000000;&quot;&gt;URL重定向：&lt;/span&gt;
+
+&lt;div style=&quot;font-family:arial, sans-serif;background-color:#FFFFFF;&quot;&gt;
+    &lt;div class=&quot;wp_syntax&quot; style=&quot;color:#110000;background-color:#F9F9F9;margin:0px 0px 1.5em;&quot;&gt;
+        &lt;div class=&quot;code&quot; style=&quot;vertical-align:top;padding:2px 4px;&quot;&gt;
+</code></pre><p><pre class="apache"><span style="color:#ADADAD;font-style:italic;">#这个是URL重定向用的，用于将不带www的域名重定向到www的域名上。</span> <span style="color:#00007F;">RewriteCond</span> %{HTTP_HOST} ^(andelse.com)(:<span style="color:#FF0000;">80</span>)? [NC] <span style="color:#00007F;">RewriteRule</span> ^(.*) <a href="http://www.andelse.com/$1" target="_blank">http://www.andelse.com/$1</a> [R=<span style="color:#FF0000;">301</span>,L] <span style="color:#00007F;">order</span> <span style="color:#00007F;">deny</span>,<span style="color:#00007F;">allow</span></pre>
+            </div>
+        </div>
+    </div></p>
+<pre><code>    **&lt;span style=&quot;color:#000000;&quot;&gt;重定向子目录到子域名：&lt;/span&gt;**
+
+&lt;div style=&quot;font-family:arial, sans-serif;background-color:#FFFFFF;&quot;&gt;
+    &lt;div class=&quot;wp_syntax&quot; style=&quot;color:#110000;background-color:#F9F9F9;margin:0px 0px 1.5em;&quot;&gt;
+        &lt;div class=&quot;code&quot; style=&quot;vertical-align:top;padding:2px 4px;&quot;&gt;
+</code></pre><p><pre class="apache"><span style="color:#ADADAD;font-style:italic;"># 重定向andelse.com/forums 到 bbs.andelse.com</span> <span style="color:#00007F;">RewriteCond</span> %{REQUEST_URI} ^/forums/ <span style="color:#00007F;">RewriteRule</span> /forums/(.*) <a href="http://bbs.andelse.com/$1" target="_blank">http://bbs.andelse.com/$1</a> [R=permanent,L]</pre>
+            </div>
+        </div>
+    </div></p>
+<pre><code>    &lt;span style=&quot;color:#000000;&quot;&gt;代码是这么这么写，可是为什么这么写啊，上面的代码都是什么个意思啊。&lt;/span&gt;
+</code></pre><h2 id="-"> </h2>
+<pre><code>    &lt;span style=&quot;color:#000000;&quot;&gt;2.Apache mod_rewrite规则重写的标志一览&lt;/span&gt;
+
+    **&lt;span style=&quot;color:#000000;&quot;&gt;先解释一下那些在括号了写的代码的意思：&lt;/span&gt;**
+
+&lt;div style=&quot;font-family:arial, sans-serif;background-color:#FFFFFF;&quot;&gt;
+    &lt;table class=&quot;solid&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+        &lt;tbody&gt;
+            &lt;tr&gt;
+                &lt;th width=&quot;109&quot; height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#9D9D9D;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;代码&lt;/span&gt;
+                &lt;/th&gt;
+                &lt;th width=&quot;439&quot; height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#9D9D9D;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;解释&lt;/span&gt;
+                &lt;/th&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td width=&quot;109&quot; height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;R[=code]&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td width=&quot;439&quot; style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;强制外部重定向&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;F&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;禁用URL,返回403HTTP状态码。&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;P&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;强制使用代理转发。&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;L&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;表明当前规则是最后一条规则，停止分析以后规则的重写。&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;N&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;重新从第一条规则开始运行重写过程。&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;72&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;C&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td width=&quot;439&quot; style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;与下一条规则关联&lt;/span&gt;
+</code></pre><p><span style="color:#000000;"> 如果规则匹配则正常处理，该标志无效，如果不匹配，那么下面所有关联的规则都跳过。</span></p>
+<pre><code>                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;T=MIME-type&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;强制MIME类型&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;NS&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;只用于不是内部子请&lt;/span&gt;&lt;span style=&quot;color:#000000;&quot;&gt;求&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;NC&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;不区分大小写&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;QSA&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;追加请求字符串&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;NE&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;不在输出转义特殊字符&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;PT&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;传递给下一个处理&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;18&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;S=num&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;跳过num条规则&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td height=&quot;19&quot; style=&quot;border:1px solid #AAAAAA;background-color:#0099CC;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;E=VAR:VAL&lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td style=&quot;border:1px solid #AAAAAA;&quot;&gt;
+                    &lt;span style=&quot;color:#000000;&quot;&gt;设置环境变量&lt;/span&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/div&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;解释摆在这了，到这也许能看懂一部分的代码了。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;现在我们还需要知道，我们可以通过哪些变量控制我们的URL啊。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;这里有3个常用的变量，我们会在诸多htaccess代码中见到这些变量。可是这些变量都是什么内容啊。我们来看看。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;%{HTTP_HOST}　　　　　　　　　　　　　　　　得到主域名&lt;/span&gt;
+</code></pre><p><span style="color:#000000;"> %{REQUEST_URI}　　　　　　　　　　　　　　得到除主域名之外的URL部分</span></p>
+<p><span style="color:#000000;"> %{REQUEST_FILENAME}　　　　　　　　　得到请求的文件名</span></p>
+<pre><code>    &lt;span style=&quot;color:#000000;&quot;&gt;我通过php测试了一下。如果访问localhost/pc/tind.php，打印出如下图的结果。那我们得到上述结果&lt;/span&gt;
+
+    ![](http://www.andelse.com/wp-content/uploads/2012/03/20120323-2.png &quot;20120323-2&quot;)
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;我又使用 localhost/pc/t 测试访问目录t下的index.php文件，打印如下图。请注意，这里使用的url是不带结尾斜杠的，当时，当访问时就会自动追加上结尾的“/”了。所以得到的REQUEST_URI也一定是以“/”结尾的。&lt;/span&gt;
+
+    ![](http://www.andelse.com/wp-content/uploads/2012/03/20120323-3.png &quot;20120323-3&quot;)&lt;span style=&quot;color:#000000;&quot;&gt;php中貌似是没有那个REQUEST_FILENAME变量，我们姑且不管他，就当他是文件名用好了。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;我们知道这两个变量的内容之后，写代码就好办多了吧。&lt;/span&gt;
+</code></pre><h2 id="-"> </h2>
+<pre><code>    &lt;span style=&quot;color:#000000;&quot;&gt;3.两个主要方法RewriteCond和RewriteRule&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;我们在htaccess中使用最多的就是这两个方法了，那怎么使用啊。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;RewriteCond指令定义了规则生效的条件，且在一个RewriteRule指令之前可以有一个或多个RewriteCond指令。 条件之后的重写规则RewriteRule仅在当前URI与Pattern匹配并且满足此处的条件(TestString能够与CondPattern匹配)时才会起作用。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;就是说RewriteCond和RewriteRule是成组使用的，其中RewriteCond可以为多个。RewriteCond来指定匹配的条件，RewriteRule来指定满足条件的式将进行那种转换。前者称为条件，后者称为规则。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;一至多个条件加一条规则组合成一个URL重写规则。如：&lt;/span&gt;
+
+&lt;div style=&quot;font-family:arial, sans-serif;background-color:#FFFFFF;&quot;&gt;
+    &lt;div class=&quot;wp_syntax&quot; style=&quot;color:#110000;background-color:#F9F9F9;margin:0px 0px 1.5em;&quot;&gt;
+        &lt;div class=&quot;code&quot; style=&quot;vertical-align:top;padding:2px 4px;&quot;&gt;
+</code></pre><p><pre class="apache"><span style="color:#00007F;">RewriteCond</span> %{HTTP_HOST} ^www.zzz.com <span style="color:#00007F;">RewriteCond</span> %{REQUEST_URI} !^user.php$ <span style="color:#00007F;">RewriteCond</span> %{REQUEST_URI} .php$ <span style="color:#00007F;">RewriteRule</span> (.*).php$ <a href="http://www.zzz.com/$1/" target="_blank">http://www.zzz.com/$1/</a> [R]</pre>
+            </div>
+        </div>
+    </div></p>
+<pre><code>    &lt;span style=&quot;color:#000000;&quot;&gt;&amp;nbsp;以上面代码进行讲解，两个命令的使用格式如下。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;【说明】定义重写发生的条件&lt;/span&gt;
+</code></pre><p><span style="color:#000000;"> 【语法】</span><span style="color:#000000;">RewriteCond</span><span style="color:#000000;">&nbsp;</span><span style="color:#000000;">TestString</span><span style="color:#000000;">&nbsp;CondPattern [</span><span style="color:#000000;">flags</span><span style="color:#000000;">]</span></p>
+<pre><code>    &lt;span style=&quot;color:#000000;&quot;&gt;【说明】定义重写的规则&lt;/span&gt;
+</code></pre><p><span style="color:#000000;"> 【语法】</span><span style="color:#000000;">RewriteRule</span><span style="color:#000000;">&nbsp;CondPattern&nbsp;</span><span style="color:#000000;">rewritePattern</span><span style="color:#000000;">&nbsp;[</span><span style="color:#000000;">flags</span><span style="color:#000000;">]</span></p>
+<pre><code>    &lt;span style=&quot;color:#000000;&quot;&gt;TestString是要匹配的对象变量，CondPattern是匹配条件，rewritePattern 是重写规则，flags是扩展规则标记。以第一句【RewriteCond %{HTTP_HOST} ^www.zzz.com】分析：%{HTTP_HOST}作为&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color:#000000;&quot;&gt;TestString&lt;/span&gt;&lt;span style=&quot;color:#000000;&quot;&gt;对象，代表的是请求主域名地址。【^www.zzz.com】，作为CondPattern 是针对TestString对象进行的条件匹配，这里是表示以www.zzz.com开头的意思。&lt;/span&gt;
+
+    &lt;span style=&quot;color:#000000;&quot;&gt;以【RewriteRule (.*).php$ http://www.zzz.com/$1/ [R]】来分析：【(.*).php$】作为CondPattern，是针对以上三个条件匹配之后的URL进行条件筛选，表示任何一.php结尾的URL。【http://www.zzz.com/$1/】作为&lt;/span&gt;&lt;span style=&quot;color:#000000;&quot;&gt;rewritePattern&lt;/span&gt;&lt;span style=&quot;color:#000000;&quot;&gt;，意思是将条件CondPattern所匹配的URL进行重组，这里意思是将CondPattern中第一个括号匹配的部分放在http://www.zzz.com/之后组合成新的ＵＲＬ。【[R]】作为扩展规则标记flags，意思是&lt;/span&gt;**&lt;span style=&quot;color:#000000;&quot;&gt;强制重定向&lt;/span&gt;**&lt;span style=&quot;color:#000000;&quot;&gt;。&lt;/span&gt;
+</code></pre><p></span></strong>
+</h2></p>
+<h2 id="-"> </h2>
+<pre><code>**&lt;span style=&quot;font-size:14px;color:#000000;&quot;&gt;RewriteCond指令格式&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;【说明】定义重写发生的条件&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">【语法】RewriteCond TestString CondPattern [flags]</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;RewriteCond指令定义一条规则条件。在一条RewriteRule指令前面可能会有一条或多条RewriteCond指令，只有当RewriteCond的条件(CondPattern)匹配成功时，RewriteRule的重写规则才被应用于当前&lt;/span&gt;[&lt;span style=&quot;font-size:14px;&quot;&gt;URL&lt;/span&gt;](http://www.andelse.com/tag/url)&lt;span style=&quot;font-size:14px;&quot;&gt;处理。&lt;/span&gt;
+</code></pre><h3 id="-"> </h3>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;TestString是一个纯文本的字符串，除了包含普通的字符外，还可以包括下列的变量结构扩展：&lt;/span&gt;
+
+**&lt;span style=&quot;font-size:14px;&quot;&gt;RewriteMap扩展：&lt;/span&gt;**&lt;span style=&quot;font-size:14px;&quot;&gt;引用方法是：${mapname:key|default} 细节请参见RewriteMap指令 。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;TestString可以包含服务器变量 ，引用方法是：%{&lt;/span&gt;**&lt;span style=&quot;font-size:14px;&quot;&gt;NAME_OF_VARIABLE&lt;/span&gt;**&lt;span style=&quot;font-size:14px;&quot;&gt;}&lt;/span&gt;
+
+**&lt;span style=&quot;font-size:14px;&quot;&gt;NAME_OF_VARIABLE&lt;/span&gt;**&lt;span style=&quot;font-size:14px;&quot;&gt;可以是下表列出的字符串之一：&lt;/span&gt;
+</code></pre><div style="font-family:arial, sans-serif;background-color:#FFFFFF;">
+    <table class="solid ke-zeroborder" border="0" cellspacing="0" cellpadding="0" style="border:1px solid #AAAAAA;width:592px;">
+        <tbody>
+            <tr>
+                <td width="201" height="18" style="border:1px solid #AAAAAA;">
+                    <strong><span style="font-size:14px;">HTTP头连接与请求</span></strong>
+                </td>
+                <td width="145" style="border:1px solid #AAAAAA;">
+                    <strong><span style="font-size:14px;">服务器自身</span></strong>
+                </td>
+                <td width="100" style="border:1px solid #AAAAAA;">
+                    <strong><span style="font-size:14px;">日期和时间</span></strong>
+                </td>
+                <td width="146" style="border:1px solid #AAAAAA;">
+                    <strong><span style="font-size:14px;">其它</span></strong>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">HTTP<em>USER_AGENT</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">DOCUMENT_ROOT</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME_YEAR</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#API_VERSION" target="_blank"><strong><span style="font-size:14px;">API_VERSION</span></strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">HTTP_REFERER</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">SERVER_ADMIN</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME_MON</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#THE_REQUEST" target="_blank"><strong><span style="font-size:14px;">THE_REQUEST</span></strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">HTTP_COOKIE</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">SERVER_NAME</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME_DAY</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#REQUEST_URI" target="_blank"><strong><span style="font-size:14px;">REQUEST_URI</span></strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">HTTP_FORWARDED</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">SERVER_ADDR</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME_HOUR</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#REQUEST_FILENAME" target="_blank"><strong><span style="font-size:14px;">REQUEST_FILENAME</span></strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">HTTP</em></span><a href="http://www.andelse.com/tag/host" target="_blank"><span style="font-size:14px;">HOST</span></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">SERVER_PORT</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME_MIN</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#IS_SUBREQ" target="_blank"><strong><span style="font-size:14px;">IS_SUBREQ</span></strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">HTTP_PROXY_CONNECTION</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">SERVER_PROTOCOL</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME_SEC</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#HTTPS" target="_blank"><strong><span style="font-size:14px;">HTTPS</span></strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">HTTP_ACCEPT</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">SERVER_SOFTWARE</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME_WDAY</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">REMOTE_ADDR</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">TIME</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">REMOTE_HOST</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">REMOTE_PORT</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">REMOTE_USER</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">REMOTE_IDENT</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">REQUEST_METHOD</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">SCRIPT_FILENAME</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">PATH_INFO</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">QUERY_STRING</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">AUTH_TYPE</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;这些变量都对应于类似命名的HTTP MIME头、&lt;/span&gt;[&lt;span style=&quot;font-size:14px;&quot;&gt;Apache&lt;/span&gt;](http://www.andelse.com/tag/apache)&lt;span style=&quot;font-size:14px;&quot;&gt;服务器的C变量、Unix&lt;/span&gt;[&lt;span style=&quot;font-size:14px;&quot;&gt;系统&lt;/span&gt;](http://www.andelse.com/tag/%e7%b3%bb%e7%bb%9f)&lt;span style=&quot;font-size:14px;&quot;&gt;中的struct tm字段，其中的大多数在其他的手册或者CGI规范中都有说明。 其中有mod_rewrite所特有的变量如下：&lt;/span&gt;
+
+**&lt;a name=&quot;IS_SUBREQ&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;IS_SUBREQ&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;如果正在处理的请求是一个子请求，它将包含字符串”true”，否则就是”false”。 模块为了解析URI中的附加文件，可能会产生子请求。&lt;/span&gt;
+
+**&lt;a name=&quot;API_VERSION&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;API_VERSION&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;这是正在使用中的Apache模块API(服务器和模块之间内部接口)的版本， 其定义位于include/ap_mmn.h中。 此模块API版本对应于正在使用的Apache的版本(比如在Apache 1.3.14的发行版中这个值是19990320:10)。 通常，对它感兴趣的是模块的开发者。&lt;/span&gt;
+
+**&lt;a name=&quot;THE_REQUEST&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;THE_REQUEST&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;这是由浏览器发送的完整的HTTP请求行(比如：”GET /index.html HTTP/1.1″)。 它不包含任何浏览器发送的其它头信息。&lt;/span&gt;
+
+**&lt;a name=&quot;REQUEST_URI&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;REQUEST_URI&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;这是在HTTP请求行中所请求的资源(比如上述例子中的”/index.html”)。&lt;/span&gt;
+
+**&lt;a name=&quot;REQUEST_FILENAME&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;REQUEST_FILENAME&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;这是与请求相匹配的完整的本地文件系统的文件路径名。&lt;/span&gt;
+
+**&lt;a name=&quot;HTTPS&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;HTTPS&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;如果连接使用了SSL/TLS，它将包含字符串”on”，否则就是”off”(无论mod_ssl 是否已经加载，该变量都可以安全的使用)。&lt;/span&gt;
+
+**&lt;span style=&quot;font-size:14px;&quot;&gt;其它注意事项：&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;SCRIPT_FILENAME和REQUEST_FILENAME包含的值是相同的——即Apache服务器内部的request_rec结构中的 filename字段。 第一个就是大家都知道的CGI变量名，而第二个则是REQUEST_URI(request_rec结构中的uri字段)的一个副本。&lt;/span&gt;
+</code></pre><div style="font-family:arial, sans-serif;background-color:#FFFFFF;">
+
+1.  <span style="font-size:14px;">特殊形式：%{ENV:variable} ，其中的variable可以是任意环境变量。 它是通过查找Apache内部结构或者(如果没找到的话)由Apache服务器进程通过getenv()得到的。</span>
+2.  <span style="font-size:14px;">���殊形式：%{SSL:variable} ，其中的variable可以是一个SSL环境变量 的名字，无论mod_ssl 模块是否已经加载都可以使用(未加载时为空字符串)。 比如：%{SSL:SSL_CIPHER_USEKEYSIZE}将会被替换为128。</span>
+3.  <span style="font-size:14px;">特殊形式：%{HTTP:header} ，其中的header可以是任意HTTP MIME头的名称。 它总是可以通过查找HTTP请求而得到。 比如：%{HTTP:Proxy-Connection}将被替换为Proxy-Connection:HTTP头的值。</span>
+4.  <span style="font-size:14px;">预设形式：%{LA-U:variable} ，variable的最终值在执行一个内部(基于URL的)子请求后确定。 当需要使用一个目前未知但是会在之后的过程中设置的变量的时候，就可以使用这个方法。 例如，需要在服务器级配置(httpd.conf文件)中根据REMOTE_USER变量进行重写， 就必须使用%{LA-U:REMOTE_USER}。 因为此变量是由URL重写(mod??_rewrite)步骤之后的认证步骤设置的。 但是另一方面，因为mod_rewrite是通过API修正步骤来实现目录级(.</span><a href="http://www.andelse.com/tag/htaccess" target="_blank"><span style="font-size:14px;">htaccess</span></a><span style="font-size:14px;">文件)配置的， 而认证步骤先于API修正步骤，所以可以用%{REMOTE_USER}。</span>
+5.  <span style="font-size:14px;">预设形式：%{LA-F:variable} ，variable的最终值在执行一个内部(基于文件名的)子请求后确定。 大多数情况下和上述的LA-U是相同的。</span>
+</div>
+
+<h3 id="-"> </h3>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;●CondPattern是条件模式，即一个应用于当前TestString实例的正则表达式。TestString将被首先计算，然后再与CondPattern匹配。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;注意：CondPattern是一个perl兼容的正则表达式，但是还有若干增补：&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;1、可以在CondPattern串的开头使用”!’(惊叹号)来指定 不匹配 。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">2、CondPatterns有若干特殊的变种。 除了正则表达式的标准用法，还有下列用法：</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;“&amp;lt;CondPattern”————-(词典顺序的小于)&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;将CondPattern视为纯字符串，与TestString按词典顺序进行比较。 如果TestString小于CondPattern则为真。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“&gt;CondPattern”————-(词典顺序的大于)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;将CondPattern视为纯字符串，与TestString按词典顺序进行比较。 如果TestString大于CondPattern则为真。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“=CondPattern”————-(词典顺序的等于)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;将CondPattern视为纯字符串，与TestString按词典顺序进行比较。 如果TestString等于CondPattern(两个字符串逐个字符地完全相等)则为真。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;如果CondPattern是”&quot;—(两个双引号)，则TestString将与空字符串进行比较。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“-d”————-(目录)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;将TestString视为一个路径名并测试它是否为一个存在的目录。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“-f “————-(常规文件)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;将TestString视为一个路径名并测试它是否为一个存在的常规文件。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“-s “————-(非空的常规文件)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;将TestString视为一个路径名并测试它是否为一个存在的、尺寸大于0的常规文件。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“-l “————-(符号连接)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;将TestString视为一个路径名并测试它是否为一个存在的符号连接。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“-x “————-(可执行)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;将TestString视为一个路径名并测试它是否为一个存在的、具有可执行权限的文件。 该权限由操作系统检测。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“-F “————-(对子请求存在的文件)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;检查TestString是否为一个有效的文件，而且可以在服务器当前的访问控制配置下被访问。 它使用一个内部子请求来做检查，由于会降低服务器的性能，所以请谨慎使用！&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“-U “————-(对子请求存在的URL)</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;检查TestString是否为一个有效的URL，而且可以在服务器当前的访问控制配置下被访问。 它使用一个内部子请求来做检查，由于会降低服务器的性能，所以请谨慎使用！&lt;/span&gt;
+</code></pre><p><strong><span style="font-size:14px;">注意：</span></strong><span style="font-size:14px;">&nbsp;所有这些测试都可以用惊叹号作前缀(“!”)以实现测试条件的反转。</span></p>
+<h3 id="-"> </h3>
+<pre><code>&lt;a name=&quot;flags&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;●在CondPattern之后追加特殊的标记[flags] 作为RewriteCond指令的第三个参数。flags是一个以逗号分隔的以下标记的列表：&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;“nocase|NC”—————(忽略大小写)&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;它使测试忽略大小写，扩展后的TestString和CondPattern中’AZ’ 和’a-z’是没有区别的。 此标记仅用于TestString和CondPattern的比较，而对文件系统和子请求的检查不起作用。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“ornext|OR”—————(或下一条件)</span></p>
+<div style="font-family:arial, sans-serif;background-color:#FFFFFF;">
+    <table class="solid" cellspacing="0" cellpadding="0" style="border:1px solid #AAAAAA;">
+        <tbody>
+            <tr>
+                <th width="109" height="18" style="border:1px solid #AAAAAA;background-color:#9D9D9D;">
+                    <span style="font-size:14px;">代码简写</span>
+                </th>
+                <th width="100" height="18" style="border:1px solid #AAAAAA;background-color:#9D9D9D;">
+                    <span style="font-size:14px;">全写</span>
+                </th>
+                <th width="339" height="18" style="border:1px solid #AAAAAA;background-color:#9D9D9D;">
+                    <span style="font-size:14px;">解释</span>
+                </th>
+            </tr>
+            <tr>
+                <td width="109" height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">R[=code]</span>
+                </td>
+                <td width="100" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#redirect" target="_blank"><strong><span style="font-size:14px;">redirect</span></strong></a>
+                </td>
+                <td width="339" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">强制外部</span><a href="http://www.andelse.com/tag/%e9%87%8d%e5%ae%9a%e5%90%91" target="_blank"><span style="font-size:14px;">重定向</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">F</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#forbidden" target="_blank"><strong><span style="font-size:14px;">forbidden</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">禁用URL,返回403HTTP状态码。</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">G</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <strong><span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#gone" target="_blank"><span style="font-size:14px;">gone</span></a></strong>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">强制URL为已废弃的</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">P</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#proxy" target="_blank"><strong><span style="font-size:14px;">proxy</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">强制使用代理转发。</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">L</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#last" target="_blank"><strong><span style="font-size:14px;">last</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">表明当前规则是最后一条规则，停止分析以后规则的重写。</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">N</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#next" target="_blank"><strong><span style="font-size:14px;">next</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">重新从第一条规则开始运行重写过程。</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="72" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">C</span>
+                </td>
+                <td width="100" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#chain" target="_blank"><strong><span style="font-size:14px;">chain</span></strong></a>
+                </td>
+                <td width="339" style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">与下一条规则关联</span>
+
+<span style="font-size:14px;">如果规则匹配则正常处理，该标志无效，如果不匹配，那么下面所有关联的规则都跳过。</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">T=MIME-type</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#type" target="_blank"><strong><span style="font-size:14px;">type</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">强制MIME类型</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">NS</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#nosubreq" target="_blank"><strong><span style="font-size:14px;">nosubreq</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">只用于不是内部子请</span><span style="font-size:14px;">求</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">NC</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#nocase" target="_blank"><strong><span style="font-size:14px;">nocase</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">不区分大小写</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">QSA</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#qsappend" target="_blank"><strong><span style="font-size:14px;">qsappend</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">追加请求字符串</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">NE</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#noescape" target="_blank"><strong><span style="font-size:14px;">noescape</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">不���输出转义特殊字符</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">PT</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#passthrough" target="_blank"><strong><span style="font-size:14px;">passthrough</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">传递给下一个处理</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="18" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">S=num</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#skip" target="_blank"><strong><span style="font-size:14px;">skip</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">跳过num条规则</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="19" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">E=VAR:VAL</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">&nbsp;</span><a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#" target="_blank"><strong><span style="font-size:14px;">env</span></strong></a>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">设置环境变量</span>
+                </td>
+            </tr>
+            <tr>
+                <td height="39" style="border:1px solid #AAAAAA;background-color:#0099CC;">
+                    <span style="font-size:14px;">CO=NAME:VAL:</span><a href="http://www.andelse.com/tag/dom" target="_blank"><span style="font-size:14px;">dom</span></a><span style="font-size:14px;">ain[:lifetime[:path]]</span>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <strong><span style="font-size:14px;">&nbsp;</span>[<strong></strong><span style="font-size:14px;">cookie</span>](<a href="http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#cookie" target="_blank">http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#cookie</a>)</strong>
+                </td>
+                <td style="border:1px solid #AAAAAA;">
+                    <span style="font-size:14px;">设置cookie</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<pre><code>**&lt;a name=&quot;redirect&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;redirect|R [=code] (强制重定向 redirect)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;以 http://thishost[:thisport]/(使新的URL成为一个URI) 为前缀的Substitution可以强制性执行一个外部重定向。 如果code没有指定，则产生一个HTTP响应代码302(临时性移动)。 如果需要使用在300-400范围内的其他响应代码，只需在此指定这个数值即可， 另外，还可以使用下列符号名称之一: temp (默认的), permanent, seeother. 用它可以把规范化的URL反馈给客户端，如, 重写“/~”为 “/u/”，或对/u/user加上斜杠，等等。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;注意: 在使用这个标记时，必须确保该替换字段是一个有效的URL! 否则，它会指向一个无效的位置! 并且要记住，此标记本身只是对URL加上 http://thishost[:thisport]/的前缀，重写操作仍然会继续。 通常，你会希望停止重写操作而立即重定向，则还需要使用’L’标记.&lt;/span&gt;
+
+**&lt;a name=&quot;forbidden&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;forbidden|F (强制URL为被禁止的 forbidden)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;强制当前URL为被禁止的，即，立即反馈一个HTTP响应代码403(被禁止的)。 使用这个标记，可以链接若干RewriteConds以有条件地阻塞某些URL。&lt;/span&gt;
+
+**&lt;a name=&quot;gone&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;gone|G’(强制URL为已废弃的 gone)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;强制当前URL为已废弃的，即，立即反馈一个HTTP响应代码410(已废弃的)。 使用这个标记，可以标明页面已经被废弃而不存在了.&lt;/span&gt;
+
+**&lt;a name=&quot;proxy&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;proxy|P (强制为代理 proxy)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;此标记使替换成分被内部地强制为代理请求，并立即(即， 重写规则处理立即中断)把处理移交给代理模块。 你必须确保此替换串是一个有效的(比如常见的以 http://hostname开头的)能够为Apache代理模块所处理的URI。 使用这个标记，可以把某些远程成分映射到本地服务器名称&lt;/span&gt;[&lt;span style=&quot;font-size:14px;&quot;&gt;空间&lt;/span&gt;](http://www.andelse.com/tag/hostspace)&lt;span style=&quot;font-size:14px;&quot;&gt;， 从而增强了ProxyPass指令的功能。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;注意: 要使用这个功能，代理模块必须编译在Apache服务器中。 如果你不能确定，可以检查“httpd -l”的输出中是否有mod_proxy.c。 如果有，则mod_rewrite可以使用这个功能； 如果没有，则必须启用mod_proxy并重新编译“httpd”程序。&lt;/span&gt;
+
+**&lt;a name=&quot;last&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;last|L (最后一个规则 last)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;立即停止重写操作，并不再应用其他重写规则。 它对应于Perl中的last命令或C语言中的break命令。 这个标记可以阻止当前已被重写的URL为其后继的规则所重写。 举例，使用它可以重写根路径的URL(’/’)为实际存在的URL, 比如, ‘/e/www/’.&lt;/span&gt;
+
+**&lt;a name=&quot;next&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;next|N (重新执行 next round)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;重新执行重写操作(从第一个规则重新开始). 这时再次进行处理的URL已经不是原始的URL了，而是经最后一个重写规则处理的URL。 它对应于Perl中的next命令或C语言中的continue命令。 此标记可以重新开始重写操作，即, 立即回到循环的头部。&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">但是要小心，不要制造死循环!</span></p>
+<pre><code>**&lt;a name=&quot;chain&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;chain|C (与下一个规则相链接 chained)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;此标记使当前规则与下一个(其本身又可以与其后继规则相链接的， 并可以如此反复的)规则相链接。 它产生这样一个效果: 如果一个规则被匹配，通常会继续处理其后继规则， 即，这个标记不起作用；如果规则不能被匹配， 则其后继的链接的规则会被忽略。比如，在执行一个外部重定向时， 对一个目录级规则集，你可能需要删除“.www” (此处不应该出现“.www”的)。&lt;/span&gt;
+
+**&lt;a name=&quot;type&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;type|T=MIME-type(强制MIME类型 type)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;强制目标文件的MIME类型为MIME-type。 比如，它可以用于模拟mod_alias中的ScriptAlias指令， 以内部地强制被映射目录中的所有文件的MIME类型为“application/x-httpd-cgi”。&lt;/span&gt;
+
+**&lt;a name=&quot;nosubreq&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;nosubreq|NS (仅用于不对内部子请求进行处理 no internal sub-request)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;在当前请求是一个内部子请求时，此标记强制重写引擎跳过该重写规则。 比如，在mod_include试图搜索可能的目录默认文件(index.xxx)时， Apache会内部地产生子请求。对子请求，它不一定有用的，而且如果整个规则集都起作用， 它甚至可能会引发错误。所以，可以用这个标记来排除某些规则。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;根据你的需要遵循以下原则: 如果你使用了有CGI脚本的URL前缀，以强制它们由CGI脚本处理， 而对子请求处理的出错率(或者开销)很高，在这种情况下，可以使用这个标记。&lt;/span&gt;
+
+**&lt;a name=&quot;nocase&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;nocase|NC (忽略大小写 no case)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;它使Pattern忽略大小写，即, 在Pattern与当前URL匹配时，’A-Z’ 和’a-z’没有区别。&lt;/span&gt;
+
+**&lt;a name=&quot;qsappend&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;qsappend|QSA (追加请求串 query string append)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;此标记强制重写引擎在已有的替换串中追加一个请求串，而不是简单的替换。 如果需要通过重写规则在请求串中增加信息，就可以使用这个标记。&lt;/span&gt;
+
+**&lt;a name=&quot;noescape&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;noescape|NE (在输出中不对URI作转义 no URI escaping)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;此标记阻止mod_rewrite对重写结果应用常规的URI转义规则。 一般情况下，特殊字符(如’%’, ‘$’, ‘;’等)会被转义为等值的十六进制&lt;/span&gt;[&lt;span style=&quot;font-size:14px;&quot;&gt;编码&lt;/span&gt;](http://www.andelse.com/tag/%e7%bc%96%e7%a0%81)&lt;span style=&quot;font-size:14px;&quot;&gt;。 此标记可以阻止这样的转义，以允许百分号等符号出现在输出中，如：&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule /foo/(.*) /bar?arg=P1=$1 [R,NE] 可以使’/foo/zed’转向到一个安全的请求’/bar?arg=P1=zed’.&lt;/span&gt;
+
+**&lt;a name=&quot;passthrough&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;passthrough|PT (移交给下一个处理器 pass through)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;此标记强制重写引擎将内部结构request_rec中的uri字段设置为 filename字段的值，它只是一个小修改，使之能对来自其他URI到文件名翻译器的 Alias，ScriptAlias, Redirect 等指令的输出进行后续处理。举一个能说明其含义的例子： 如果要通过mod_rewrite的重写引擎重写/abc为/def， 然后通过mod_alias使/def转变为/ghi，可以这样:&lt;/span&gt;
+</code></pre><div style="font-family:arial, sans-serif;background-color:#FFFFFF;">
+    <span style="font-size:14px;">RewriteRule ^/abc(.*) /def$1 [PT]Alias /def /ghi</span>
+</div>
+
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;如果省略了PT标记，虽然mod_rewrite运作正常， 即, 作为一个使用API的URI到文件名翻译器， 它可以重写uri=/abc/…为filename=/def/…， 但是，后续的mod_alias在试图作URI到文件名的翻译时，则会失效。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;注意: 如果需要混合使用不同的包含URI到文件名翻译器的模块时， 就必须使用这个标记。。 混合使用mod_alias和mod_rewrite就是个典型的例子。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;For Apache&amp;nbsp;&lt;/span&gt;[&lt;span style=&quot;font-size:14px;&quot;&gt;hack&lt;/span&gt;](http://www.andelse.com/tag/hack)&lt;span style=&quot;font-size:14px;&quot;&gt;ers&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;如果当前Apache API除了URI到文件名hook之外，还有一个文件名到文件名的hook， 就不需要这个标记了! 但是，如果没有这样一个hook，则此标记是唯一的解决方案。 Apache Group讨论过这个问题，并在Apache 2.0 版本中会增加这样一个hook。&lt;/span&gt;
+
+**&lt;a name=&quot;skip&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;skip|S=num (跳过后继的规则 skip)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;此标记强制重写引擎跳过当前匹配规则后继的num个规则。 它可以实现一个伪if-then-else的构造: 最后一个规则是then从句，而被跳过的skip=N个规则是else从句. (它和’chain|C’标记是不同的!)&lt;/span&gt;
+
+**&lt;a name=&quot;env&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;env|E=VAR:VAL (设置环境变量 environment variable)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;此标记使环境变量VAR的值为VAL, VAL可以包含可扩展的反向引用的正则表达式$N和%N。 此标记可以多次使用以设置多个变量。 这些变量可以在其后许多情况下被间接引用，但通常是在XSSI (via&amp;nbsp;) or CGI (如 $ENV{’VAR’})中， 也可以在后继的RewriteCond指令的pattern中通过%{ENV:VAR}作引用。 使用它可以从URL中剥离并记住一些信息。&lt;/span&gt;
+
+**&lt;a name=&quot;cookie&quot;&gt;&lt;/a&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;cookie|CO=NAME:VAL:domain[:lifetime[:path]] (设置cookie)&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;它在客户端浏览器上设置一个cookie。 cookie的名称是NAME，其值是VAL。 domain字段是该cookie的域，比如’.apache.org’, 可选的lifetime是cookie生命期的分钟数， 可选的path是cookie的路径。&lt;/span&gt;
+</code></pre><h3 id="-"> </h3>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;●举例说明RewriteCond命令规则&lt;/span&gt;
+</code></pre><div style="font-family:arial, sans-serif;background-color:#FFFFFF;">
+    &gt; <span style="font-size:14px;">RewriteCond %{REMOTE_HOST} ^andelse.com [OR]</span>
+&gt; 
+&gt; <span style="font-size:14px;">RewriteCond %{REMOTE_HOST} ^<em>.andelse.com</span>
+&gt; 
+&gt; <span style="font-size:14px;">RewriteRule …针对这2个</span><a href="http://www.andelse.com/tag/%e4%b8%bb%e6%9c%ba" target="_blank"><span style="font-size:14px;">主机</span></a><span style="font-size:14px;">的规则集</span>
+&gt; 
+&gt;             <span style="font-size:14px;">RewriteCond % { HTTP_USER_AGENT }&nbsp; ^Mozilla.</em></span>
+&gt; 
+&gt; <span style="font-size:14px;">RewriteRule ^/$ /homepage. max .html&nbsp; [ L ]</span>
+&gt; 
+&gt; <span style="font-size:14px;">如果你使用的浏览器识别标志是’Mozilla’，则你将得到内容最大化的主页homepage. max .html(含有Frames等等)。</span>
+</div>
+
+<h2 id="-"> </h2>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule&lt;/span&gt;**&lt;span style=&quot;font-size:14px;&quot;&gt;指令格式&lt;/span&gt;**
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;【说明】定义重写的规则&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">【语法】RewriteRule Pattern rewritePattern [flags]</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule指令，可以定义一条重写规则，规则间的顺序非常重要。对Apache1.2及以后的版本，模板(Pattern)是一个POSIX正则式，用以匹配当前的URL。���前的URL不一定是最初提交的URL，因为可能用一些规则在此规则前已经对URL进行了处理。rewritePattern 大多数文章写为Substitution ，这里为了更清楚的认识故写为rewritePattern 。&lt;/span&gt;
+</code></pre><h3 id="-"> </h3>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;●Pattern 可以使用如下特殊匹配規則，如php等其他語言類似。&lt;/span&gt;
+
+&lt;span style=&quot;font-size:14px;&quot;&gt;“.” ——————- 换行符以外的所有字符&lt;/span&gt;
+</code></pre><p><span style="font-size:14px;">“w” —————- 匹配字母或数字或下划线或汉字</span></p>
+<p><span style="font-size:14px;">“s” —————– 匹配任意的空白符</span></p>
+<p><span style="font-size:14px;">“d” —————– 匹配数字</span></p>
+<p><span style="font-size:14px;">“b” —————– 匹配单词的开始或结束</span></p>
+<p><span style="font-size:14px;">“^” —————— 匹配字符串的开始</span></p>
+<p><span style="font-size:14px;">“$” —————— 匹配字符串的结束</span></p>
+<p><span style="font-size:14px;">“*” —————— 重复零次或更多次</span></p>
+<p><span style="font-size:14px;">“+” —————— 重复一次或更多次</span></p>
+<p><span style="font-size:14px;">“?” ——————- 重复零次或一次</span></p>
+<p><span style="font-size:14px;">“{n}” —————- 重复n次</span></p>
+<p><span style="font-size:14px;">“{n,}” ————— 重复n次或更多次</span></p>
+<p><span style="font-size:14px;">“{n,m}” ————- 重复n到m次</span></p>
+<p><span style="font-size:14px;">“[0-9]” ————– 匹配单个数字</span></p>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;rewritePattern 是针对Pattern 匹配后的URL进行rewritePattern 规定的替换。应用替换时，前面Pattern 第一个（）中匹配的内容后面rewritePattern 就可以用$1引用，第二个（）中匹配的就用$2应用……以此类推。&lt;/span&gt;
+</code></pre><h3 id="-"> </h3>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;●在rewritePattern 之后追加特殊的标记[flags] 作为RewriteRule 指令的第三个参数。flags可以使用的标记，和&lt;/span&gt;[&lt;span style=&quot;font-size:14px;&quot;&gt;上面RewriteCond使用的一样&lt;/span&gt;](http://www.andelse.com/rewritecond-rewriterule-syntax-explained-detail.html#flags)&lt;span style=&quot;font-size:14px;&quot;&gt;。&lt;/span&gt;
+</code></pre><h3 id="-"> </h3>
+<pre><code>&lt;span style=&quot;font-size:14px;&quot;&gt;●举例说明RewriteRule语法&lt;/span&gt;
+</code></pre><blockquote>
+<p><span style="font-size:14px;">RewriteRule index.html index.php</span></p>
+<pre><code>    &lt;span style=&quot;font-size:14px;&quot;&gt;比如：http://www.andelse.cn/index.html&amp;nbsp; -&amp;gt; http://www.andelse.cn/index.php&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule ^test([0-9]*).html$ test.php?id=$1&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;比如：http://www.andelse.cn/test8.html&amp;nbsp; -&amp;gt; http://www.andelse.cn/test.php?id=8&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule ^cat-([0-9]+)-([0-9]+).html$ cat.php?id1=$1&amp;amp;id2=$2&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;比如：http://www.andelse.cn/cat-1-3.html -&amp;gt; http://www.andelse.cn/cat.php?id1=1&amp;amp;id2=3&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule ^cat-([a-zA-Z0-9-]*)-([0-9]+)-([0-9]+).html$ cat.php?id0=$1&amp;amp;id1=$2&amp;amp;id2=$3&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;比如：http://www.andelse.cn/cat-zbc2ac-3-5.html -&amp;gt; http://www.andelse.cn/cat.php?id0=zbc2ac&amp;amp;id1=3&amp;amp;id2=5&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule ^cat1-([0-9]+)-([0-9]+)-([0-9]+).html$ cat1.php?id1=$1&amp;amp;id2=$2&amp;amp;id3=$3&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;比如：http://www.andelse.cn/cat1-4-3-8.html -&amp;gt; http://www.andelse.cn/cat1.php?id1=4&amp;amp;id2=3&amp;amp;id3=8&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule ^cat([0-9]*)/$ cat.php?id1=$1&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;比如：http://www.andelse.cn/cat5/ -&amp;gt; http://www.andelse.cn/cat.php?id1=5&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;RewriteRule ^catm([0-9]*)/([0-9]*)/$ catm.php?id1=$1&amp;amp;id2=$2&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;比如：http://www.andelse.cn/catm6/3/ -&amp;gt; http://www.andelse.cn/catm.php?id1=6&amp;amp;id2=3&lt;/span&gt;
+
+    &lt;span style=&quot;font-size:14px;&quot;&gt;url:**www.andelse.com**&lt;/span&gt;
+</code></pre></blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/07/30/htaccess语法之rewritecond与rewriterule指令格式详细解释/" data-id="6ddf6szu29z38z3z" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2013/08/01/判断js对象是否拥有某属性/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          判断JS对象是否拥有某属性
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/07/30/增强wordpress原生编辑器/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">增强wordpress原生编辑器</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thinkphp/">thinkphp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thinkphp/">thinkphp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xml/">xml</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Authentication/">Authentication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Foreign Key/">Foreign Key</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MvcEvent/">MvcEvent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/">Xdebug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apc/">apc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/comet/">comet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/controller plugin/">controller plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/coreseek/">coreseek</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cpulimit/">cpulimit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/curl/">curl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/error_reporting/">error_reporting</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/having/">having</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/icon/">icon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include_path/">include_path</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysqli/">mysqli</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/phpMailer/">phpMailer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samba/">samba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seo/">seo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/service manager/">service manager</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/smtp/">smtp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sphinx/">sphinx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spl/">spl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/strlen/">strlen</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tar/">tar</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/where/">where</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2 cache/">zf2 cache</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符集/">字符集</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/键盘绑定/">键盘绑定</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Authentication/" style="font-size: 10.00px;">Authentication</a><a href="/tags/Foreign Key/" style="font-size: 10.00px;">Foreign Key</a><a href="/tags/MvcEvent/" style="font-size: 10.00px;">MvcEvent</a><a href="/tags/Xdebug/" style="font-size: 10.00px;">Xdebug</a><a href="/tags/apc/" style="font-size: 10.00px;">apc</a><a href="/tags/comet/" style="font-size: 10.00px;">comet</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/controller plugin/" style="font-size: 10.00px;">controller plugin</a><a href="/tags/coreseek/" style="font-size: 10.00px;">coreseek</a><a href="/tags/cpulimit/" style="font-size: 10.00px;">cpulimit</a><a href="/tags/curl/" style="font-size: 10.00px;">curl</a><a href="/tags/error_reporting/" style="font-size: 10.00px;">error_reporting</a><a href="/tags/having/" style="font-size: 10.00px;">having</a><a href="/tags/icon/" style="font-size: 10.00px;">icon</a><a href="/tags/include_path/" style="font-size: 10.00px;">include_path</a><a href="/tags/linux/" style="font-size: 15.00px;">linux</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/mysql/" style="font-size: 10.00px;">mysql</a><a href="/tags/mysqli/" style="font-size: 10.00px;">mysqli</a><a href="/tags/phpMailer/" style="font-size: 10.00px;">phpMailer</a><a href="/tags/samba/" style="font-size: 10.00px;">samba</a><a href="/tags/seo/" style="font-size: 10.00px;">seo</a><a href="/tags/service manager/" style="font-size: 10.00px;">service manager</a><a href="/tags/shell/" style="font-size: 10.00px;">shell</a><a href="/tags/smtp/" style="font-size: 10.00px;">smtp</a><a href="/tags/sphinx/" style="font-size: 10.00px;">sphinx</a><a href="/tags/spl/" style="font-size: 10.00px;">spl</a><a href="/tags/strlen/" style="font-size: 10.00px;">strlen</a><a href="/tags/tar/" style="font-size: 10.00px;">tar</a><a href="/tags/where/" style="font-size: 10.00px;">where</a><a href="/tags/zf2 cache/" style="font-size: 20.00px;">zf2 cache</a><a href="/tags/字符集/" style="font-size: 10.00px;">字符集</a><a href="/tags/正则/" style="font-size: 10.00px;">正则</a><a href="/tags/键盘绑定/" style="font-size: 10.00px;">键盘绑定</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">二月 2014</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">一月 2014</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12">十二月 2013</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11">十一月 2013</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10">十月 2013</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">九月 2013</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">八月 2013</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07">七月 2013</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">五月 2013</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">四月 2013</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/13/mysql数据库目录存放位置更改/">mysql数据库目录存放位置更改</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/13/捕获php的致命错误（fatal-error-或-e_error）并处理/">捕获PHP的致命错误（Fatal Error 或 E_ERROR）并处理</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/07/shell判断文件是否存在/">shell判断文件是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/06/object-c-深拷贝和浅拷贝/">Object-c 深拷贝和浅拷贝</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/06/mysql索引的类型和优缺点/">mysql索引的类型和优缺点</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 3wmao<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+    <a href="/atom.xml" class="mobile-nav-link">Rss</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

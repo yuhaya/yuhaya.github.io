@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>/sbin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title">
+<meta name="og:url" content="http://yuhaya.github.io/page/18/">
+<meta name="og:image">
+<meta name="og:site_name" content="/sbin">
+<meta name="og:description">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">/sbin</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Simple code farming life</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+          <a class="main-nav-link" href="/atom.xml">Rss</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yuhaya.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-jquery插件开发" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/20/jquery插件开发/" class="article-date">
+  <time datetime="2013-09-20T10:25:36.000Z" itemprop="datePublished">9月 20 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/jquery/">jquery</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/20/jquery插件开发/">jQuery插件开发</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>如果你看到这篇文章，我确信你毫无疑问会认为jQuery是一个使用简便的库。jQuery可能使用起来很简单，但是它仍然有一些奇怪的地方，对它基本功能和概念不熟悉的人可能会难以掌握。但是不用担心，我下面已经把代码划分成小部分，做了一个简单的指导。那些语法看起来可能过于复杂，但是如果进入到它的思想和模式中，它是非常简单易懂的。</p>
+<p>下面，我们有了一个插件的基本层次：</p>
+<p>[code lang=&quot;javascript&quot;]
+(function($) {
+    var privateFunction = function() {
+        // 代码在这里运行
+    }</p>
+<pre><code>var methods = {
+    init: function(options) {
+        return this.each(function() {
+            var $this = $(this);
+            var settings = $this.data(&#39;pluginName&#39;);
+
+            if(typeof(settings) == &#39;undefined&#39;) {
+
+                var defaults = {
+                    propertyName: &#39;value&#39;,
+                    onSomeEvent: function() {}
+                }
+
+                settings = $.extend({}, defaults, options);
+
+                $this.data(&#39;pluginName&#39;, settings);
+            } else {
+                settings = $.extend({}, settings, options);
+            }
+
+            // 代码在这里运行
+
+        });
+    },
+    destroy: function(options) {
+        return $(this).each(function() {
+            var $this = $(this);
+
+            $this.removeData(&#39;pluginName&#39;);
+        });
+    },
+    val: function(options) {
+        var someValue = this.eq(0).html();
+
+        return someValue;
+    }
+};
+
+$.fn.pluginName = function() {
+    var method = arguments[0];
+
+    if(methods[method]) {
+        method = methods[method];
+        arguments = Array.prototype.slice.call(arguments, 1);
+    } else if( typeof(method) == &#39;object&#39; || !method ) {
+        method = methods.init;
+    } else {
+        $.error( &#39;Method &#39; +  method + &#39; does not exist on jQuery.pluginName&#39; );
+        return this;
+    }
+
+    return method.apply(this, arguments);
+
+}
+</code></pre><p>})(jQuery);</p>
+<p>[/code]</p>
+<p>你可能会注意到，我所提到代码的结构和其他插件代码有很大的不同。根据你的使用和需求的不同，插件的开发方式也可能会呈现多样化。我的目的是澄清代码中的一些概念，足够让你找到适合自己的方法去理解和开发一个jQuery插件。</p>
+<p>现在，来解剖我们的代码吧！</p>
+<p><strong>容器：一个即时执行函数</strong></p>
+<p>根本上来说，每个插件的代码是被包含在一个即时执行的函数当中，如下：</p>
+<p>[code lang=&quot;javascript&quot;]
+(function(arg1, arg2) {
+   // 代码
+})(arg1, arg2);
+[/code]</p>
+<p>即时执行函数，顾名思义，是一个函数。让它与众不同的是，它被包含在一对小括号里面，这让所有的代码都在匿名函数的局部作用域中运行。这并不是说DOM（全局变量）在函数内是被屏蔽的，而是外部无法访问到函数内部的公共变量和对象命名空间。这是一个很好的开始，这样你声明你的变量和对象的时候，就不用担心着变量名和已经存在的代码有冲突。</p>
+<p>现在，因为函数内部所有的所有公共变量是无法访问的，这样要把jQuery本身作为一个内部的公共变量来使用就会成为问题。就像普通的函数一样，即时函数也根据引用传入对象参数。我们可以将jQuery对象传入函数，如下：</p>
+<p>[code]
+(function($) {</p>
+<p>   // 局部作用域中使用$来引用jQuery
+})(jQuery);
+[/code]</p>
+<p>我们传入了一个把公共变量“jQuery”传入了一个即时执行的函数里面，在函数局部（容器）中我们可以通过“$”来引用它。也就是说，我们把容器当做一个函数来调用，而这个函数的参数就是jQuery。因为我们引用的“jQuery”作为公共变量传入，而不是它的简写“$”，这样我们就可以兼容Prototype库。如果你不用Prototype或者其它用“$”做简写的库的话，你不这样做也不会造成什么影响，但是知道这种用法仍是一件好事。</p>
+<p>插件：一个函数</p>
+<p>一个jQuery插件本质上是我们塞进jQuery命名空间中一个庞大的函数，当然，我们可以很轻易地用“jQuery.pluginName=function”，来达到我们的目的，但是如果我们这样做的话我们的插件的代码是处于没有被保护的暴露状态的。“jQuery.fn”是“jQuery.prototype”的简写，意味当我们通过jQuery命名空间去获取我们的插件的时候，它仅可写（不可修改）。它事实上可以为你干点什么事呢？它让你恰当地组织自己的代码，和理解如何保护你的代码不受运行时候不需要的修改。最���的说法就是，这是一个很好的实践！</p>
+<p>通过一个插件，我们获得一个基本的jQuery函数：</p>
+<p><a href="function($">code lang=&quot;javascript&quot;</a> {</p>
+<pre><code>$.fn.pluginName = function(options) {
+
+    // 代码在此处运行
+
+    return this;
+}
+</code></pre><p>})(jQuery);[/code]</p>
+<p>上面的代码中的函数可以像其他的jQuery函数那样通过“$(‘#element’).pluginName()”来调用。注意，我是如何把“return this”语句加进去的；这小片的代码通过返回一个原来元素的集合（包含在this当中）的引用来产生链式调用的效果，而这些元素是被一个jQuery对象所包裹的。你也应该注意，“this”在这个特定的作用域中是一个jQuery对象，相当于“$(‘#element’)”。</p>
+<p>根据返回的对象，我们可以总结出，在上面的代码中，使用“$(‘#element’).pluginName()”的效果和使用“$(‘#element’)”的效果是一样的。在你的即时执行函数作用域中，没必要用“$(this)”的方式来把this包裹到一个jQuery对象中，因为this本身已经是被包装好的jQuery对象。</p>
+<p>多个元素：理解Sizzle</p>
+<p>jQuery使用的选择器引擎叫Sizzle，Sizzle可以为你的函数提供多元素操作（例如对所有类名相同的元素）。这是jQuery几个优秀的特性之一，但这也是你在开发插件过程中需要考虑的事情。即使你不准备为你的插件提供多元素支持，但为这做准备仍然是一个很好的实践。</p>
+<p>这里我添加了一小段代码，它让你的插件代码为多元素集合中每个元素单独地起作用：</p>
+<p>[code lang=&quot;javascript&quot;]
+function($) {</p>
+<pre><code>// 向jQuery中被保护的“fn”命名空间中添加你的插件代码，用“pluginName”作为插件的函数名称
+$.fn.pluginName = function(options) {
+
+    // 返回“this”（函数each（）的返回值也是this），以便进行链式调用。
+    return this.each(function() {
+
+        // 此处运行代码，可以通过“this”来获得每个单独的元素
+        // 例如： $(this).show()；
+        var $this = $(this);
+
+    });
+
+}
+</code></pre><p>})(jQuery);
+[/code]</p>
+<p>在以上示例代码中，我并不是用 each（）在我的选择器中每个元素上运行代码。在那个被 each（）调用的函数的局部作用域中，你可以通过this来引用每个被单独处理的元素，也就是说你可以通过$(this)来引用它的jQuery对象。在局部作用域中，我用$this变量存储起jQuery对象，而不是每次调用函数的时候都使用$(this)，这会是个很好的实践。当然，这样做并不总是必要的；但我已经额外把它包含在我的代码中。还有要注意的是，我们将会对每个单独方法都使用 each（），这样到时我们就可以返回我们需要的值，而不是一个jQuery对象。</p>
+<p>下面是一个例子，假如我们的插件支持一个 val 的方法，它可以返回我们需要的值：</p>
+<p>[code lang=&quot;javascript&quot;]
+$(&#39;#element&#39;).pluginName(&#39;val&#39;);
+// 会返回我们需要的值，而不是一个jQuery对象
+[/code]</p>
+<p>功能：公有方法和私有方法</p>
+<p>一个基本的函数可能在某些情况下可以良好地工作，但是一个稍微复杂一点的插件就需要提供各种各样的方法和私有函数。你可能会使用不同的命名空间去为你的插件提供各种方法，但是最好不要让你的源代码因为多余的命名空间而变得混乱。</p>
+<p>下面的代码定义了一个存储公有方法的JSON对象，以及展示了如何使用插件中的主函数中去判断哪些方法被调用，和如何在让方法作用到选择器每个元素上。</p>
+<p>[code lang=&quot;javascript&quot;]
+(function($) {</p>
+<pre><code>// 在我们插件容器内，创造一个公共变量来构建一个私有方法
+var privateFunction = function() {
+    // code here
+}
+
+// 通过字面量创造一个对象，存储我们需要的共有方法
+var methods = {
+    // 在字面量对象中定义每个单独的方法
+    init: function() {
+
+        // 为了更好的灵活性，对来自主函数，并进入每个方法中的选择器其中的每个单独的元素都执行代码
+        return this.each(function() {
+            // 为每个独立的元素创建一个jQuery对象
+            var $this = $(this);
+
+            // 执行代码
+            // 例如： privateFunction();
+        });
+    },
+    destroy: function() {
+        // 对选择器每个元素都执行方法
+        return this.each(function() {
+            // 执行代码
+        });
+    }
+};
+
+$.fn.pluginName = function() {
+    // 获取我们的方法，遗憾的是，如果我们用function(method){}来实现，这样会毁掉一切的
+    var method = arguments[0];
+
+    // 检验方法是否存在
+    if(methods[method]) {
+
+        // 如果方法存在，存储起来以便使用
+        // 注意：我这样做是为了等下更方便地使用each（）
+        method = methods[method];
+
+    // 如果方法不存在，检验对象是否为一个对象（JSON对象）或者method方法没有被传入
+    } else if( typeof(method) == &#39;object&#39; || !method ) {
+
+        // 如果我们传入的是一个对象参数，或者根本没有参数，init方法会被调用
+        method = methods.init;
+    } else {
+
+        // 如果方法不存在或者参数没传入，则报出错误。需要调用的方法没有被正确调用
+        $.error( &#39;Method &#39; +  method + &#39; does not exist on jQuery.pluginName&#39; );
+        return this;
+    }
+
+    // 调用我们选中的方法
+    // 再一次注意我们是如何将each（）从这里转移到每个单独的方法上的
+    return method.call(this);
+
+}
+</code></pre><p>})(jQuery);
+[/code]</p>
+<p>注意我把 privateFunction 当做了一个函数内部的全局变量。考虑到所有的代码的运行都是在插件容器内进行的，所以这种做法是可以被接受的，因为它只在插件的作用域中可用。在插件中的主函数中，我检验了传入参数所指向的方法是否存在。如果方法不存在或者传入的是参数为对象， init 方法会被运行。最后，如果传入的参数不是一个对象而是一个不存在的方法，我们会报出一个错误信息。</p>
+<p>同样要注意的是，我是如何在每个方法中都使用 this.each() 的。当我们在主函数中调用 method.call(this) 的时候，这里的 this 事实上就是一个jQuery对象，作为 this 传入每个方法中。所以在我们方法的即时作用域中，它已经是一个jQuery对象。只有在被 each（）所调用的函数中，我们才有必要将this包装在一个jQuery对象中。</p>
+<p>[code lang=&quot;javascript&quot;]
+/<em>
+ 注意这些例子可以在目前的插件代码中正确运行，并不是所有的插件都使用同样的代码结构
+</em>/
+// 为每个类名为 &quot;.className&quot; 的元素执行init方法
+$(&#39;.className&#39;).pluginName();
+$(&#39;.className&#39;).pluginName(&#39;init&#39;);
+$(&#39;.className&#39;).pluginName(&#39;init&#39;, {}); // 向init方法传入“{}”对象作为函数参数
+$(&#39;.className&#39;).pluginName({}); // 向init方法传入“{}”对象作为函数参数</p>
+<p>// 为每个类名为 “.className” 的元素执行destroy方法
+$(&#39;.className&#39;).pluginName(&#39;destroy&#39;);
+$(&#39;.className&#39;).pluginName(&#39;destroy&#39;, {}); // 向destroy方法传入“{}”对象作为函数参数</p>
+<p>// 所有代码都可以正常运行
+$(&#39;.className&#39;).pluginName(&#39;init&#39;, &#39;argument1&#39;, &#39;argument2&#39;); // 把 &quot;argument 1&quot; 和 &quot;argument 2&quot; 传入 &quot;init&quot;</p>
+<p>// 不正确的使用
+$(&#39;.className&#39;).pluginName(&#39;nonexistantMethod&#39;);
+$(&#39;.className&#39;).pluginName(&#39;nonexistantMethod&#39;, {});
+$(&#39;.className&#39;).pluginName(&#39;argument 1&#39;); // 会尝试调用 &quot;argument 1&quot; 方法
+$(&#39;.className&#39;).pluginName(&#39;argument 1&#39;, &#39;argument 2&#39;); // 会尝试调用 &quot;argument 1&quot; ，“argument 2”方法
+$(&#39;.className&#39;).pluginName(&#39;privateFunction&#39;); // &#39;privateFunction&#39; 不是一个方法
+[/code]</p>
+<p>在上面的例子中多次出现了 {} ，表示的是传入方法中的参数。在这小节中，上面代码可以可以正常运行，但是参数不会被传入方法中。继续阅读下一小节，你会知道如何向方法传入参数。</p>
+<p>设置插件：传入参数</p>
+<p>许多插件都支持参数传入，如配置参数和回调函数。你可以通过传入JS键值对对象或者函数参数，为方法提供信息。如果你的方法支持多于一个或两个参数，那么没有比传入对象参数更恰当的方式。</p>
+<p>[code lang=&quot;javascript&quot;]
+(function($) {
+    var methods = {
+        init: function(options) {</p>
+<pre><code>        // 在每个元素上执行方法
+        return this.each(function() {
+            var $this = $(this);
+
+            // 创建一个默认设置对象
+            var defaults = {
+                propertyName: &#39;value&#39;,
+                onSomeEvent: function() {}
+            }
+
+            // 使用extend方法从options和defaults对象中构造出一个settings对象
+            var settings = $.extend({}, defaults, options);
+
+            // 执行代码
+
+        });
+    }
+};
+
+$.fn.pluginName = function() {
+    var method = arguments[0];
+
+    if(methods[method]) {
+        method = methods[method];
+
+        // 我们的方法是作为参数传入的，把它从参数列表中删除，因为调用方法时并不需要它
+        arguments = Array.prototype.slice.call(arguments, 1);
+    } else if( typeof(method) == &#39;object&#39; || !method ) {
+        method = methods.init;
+    } else {
+        $.error( &#39;Method &#39; +  method + &#39; does not exist on jQuery.pluginName&#39; );
+        return this;
+    }
+
+    // 用apply方法来调用我们的方法并传入参数
+    return method.apply(this, arguments);
+
+}
+</code></pre><p>})(jQuery);
+[/code]</p>
+<p>正如上面所示，一个“options”参数被添加到方法当中，和“arguments”也被添加到了主函数中。如果一个方法已经被声明，在参数传入方法之前，调用那个方法的参数会从参数列表中删除掉。我用了“apply（）”来代替了“call（）”，“apply（）”本质上是和“call（）”做着同样的工作的，但不同的是它允许参数的传入。这种结构也允许多个参数的传入，如果你愿意这样做，你也可以为你的方法修改参数列表，例如：“init:function(arg1, arg2){}”。</p>
+<p>如果你是使用JS对象作为参数传入，你可能需要定义一个默认对象。一旦默认对象被声明，你可以使用“$.extend”来合并参数对象和默认对象中的值，以形成一个新的参数对象来使用（在我们的例子中就是“settings”）；</p>
+<p>这里有一些例子，用来演示以上的逻辑：</p>
+<p>[code lang=&quot;javascript&quot;]
+var options = {
+    customParameter: &#39;Test 1&#39;,
+    propertyName: &#39;Test 2&#39;
+}</p>
+<p>var defaults = {
+    propertyName: &#39;Test 3&#39;,
+    onSomeEvent: &#39;Test 4&#39;
+}</p>
+<p>var settings = $.extend({}, defaults, options);
+/<em>
+settings == {
+    propertyName: &#39;Test 2&#39;,
+    onSomeEvent: &#39;Test 4&#39;,
+    customParameter: &#39;Test 1&#39;
+}
+</em>/
+[/code]</p>
+<p>保存设置：添加持久性数据</p>
+<p>有时你会想在你的插件中保存设置和信息，这时jQuery中的“data（）”函数就可以派上用场了。它在使用上是非常简单的，它会尝试获取和元素相关的数据，如果数据不存在，它就会创造相应的数据并添加到元素上。一旦你使用了“data（）”来为元素添加信息，请确认你已经记住，当不再需要数据的时候，用“removeData（）”来删除相应的数据。</p>
+<p>[code lang=&quot;javascript&quot;]
+(function($) {
+    var privateFunction = function() {
+        // 执行代码
+    }</p>
+<pre><code>var methods = {
+    init: function(options) {
+
+        // 在每个元素上执行方法
+        return this.each(function() {
+            var $this = $(this);
+
+            // 尝试去获取settings，如果不存在，则返回“undefined”
+            var settings = $this.data(&#39;pluginName&#39;);
+
+            // 如果获取settings失败，则根据options和default创建它
+            if(typeof(settings) == &#39;undefined&#39;) {
+
+                var defaults = {
+                    propertyName: &#39;value&#39;,
+                    onSomeEvent: function() {}
+                }
+
+                settings = $.extend({}, defaults, options);
+
+                // 保存我们新创建的settings
+                $this.data(&#39;pluginName&#39;, settings);
+            } else {
+                / 如果我们获取了settings，则将它和options进行合并（这不是必须的，你可以选择不这样做）
+                settings = $.extend({}, settings, options);
+
+                // 如果你想每次都保存options，可以添加下面代码：
+                // $this.data(&#39;pluginName&#39;, settings);
+            }
+
+            // 执行代码
+
+        });
+    },
+    destroy: function(options) {
+        // 在每个元素中执行代码
+        return $(this).each(function() {
+            var $this = $(this);
+
+            // 执行代码
+
+            // 删除元素对应的数据
+            $this.removeData(&#39;pluginName&#39;);
+        });
+    },
+    val: function(options) {
+        // 这里的代码通过.eq(0)来获取选择器中的第一个元素的，我们或获取它的HTML内容作为我们的返回值
+        var someValue = this.eq(0).html();
+
+        // 返回值
+        return someValue;
+    }
+};
+
+$.fn.pluginName = function() {
+    var method = arguments[0];
+
+    if(methods[method]) {
+        method = methods[method];
+        arguments = Array.prototype.slice.call(arguments, 1);
+    } else if( typeof(method) == &#39;object&#39; || !method ) {
+        method = methods.init;
+    } else {
+        $.error( &#39;Method &#39; +  method + &#39; does not exist on jQuery.pluginName&#39; );
+        return this;
+    }
+
+    return method.apply(this, arguments);
+
+}
+</code></pre><p>})(jQuery);
+[/code]</p>
+<p>在上面的代码中，我检验了元素的数据是否存在。如果数据不存在，“options”和“default”会被合并，构建成一个新的settings，然后用“data（）”保存在元素中。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/09/20/jquery插件开发/" data-id="p645son9dowhlnfj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-jquery-extend-函数详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/20/jquery-extend-函数详解/" class="article-date">
+  <time datetime="2013-09-20T10:06:33.000Z" itemprop="datePublished">9月 20 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/jquery/">jquery</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/20/jquery-extend-函数详解/">jQuery.extend 函数详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>JQuery的extend扩展方法：
+Jquery的扩展方法extend是我们在写插件的过程中常用的方法，该方法有一些重载原型，在此，我们一起去了解了解。
+<strong> 一、Jquery的扩展方法原型是:</strong></p>
+<p>[code lang=&quot;javascript&quot;]extend(dest,src1,src2,src3...);[/code]</p>
+<p>它的含义是将src1,src2,src3...合并到dest中,返回值为合并后的dest,由此可以看出该方法合并后，是修改了dest的结构的。如果想要得到合并的结果却又不想修改dest的结构，可以如下使用：</p>
+<p>[code lang=&quot;javascript&quot;]var newSrc=$.extend({},src1,src2,src3...)//也就是将&quot;{}&quot;作为dest参数。[/code]</p>
+<p>这样就可以将src1,src2,src3...进行合并，然后将合并结果返回给newSrc了。如下例：</p>
+<p>[code lang=&quot;javascript&quot;]var result=$.extend({},{name:&quot;Tom&quot;,age:21},{name:&quot;Jerry&quot;,sex:&quot;Boy&quot;})[/code]</p>
+<p>那么合并后的结果</p>
+<p>[code lang=&quot;javascript&quot;]result={name:&quot;Jerry&quot;,age:21,sex:&quot;Boy&quot;}[/code]</p>
+<p>也就是说后面的参数如果和前面的参数存在相同的名称，那么后面的会覆盖前面的参数值。</p>
+<p><strong>二、省略dest参数</strong>
+上述的extend方法原型中的dest参数是可以省略的，如果省略了，则该方法就只能有一个src参数，而且是将该src合并到调用extend方法的对象中去，如：
+<strong>1、$.extend(src)
+</strong> 　　该方法就是将src合并到jquery的全局对象中去，如：</p>
+<p>[code lang=&quot;javascript&quot;]$.extend({
+ hello:function(){alert(&#39;hello&#39;);}
+ });[/code]</p>
+<p>就是将hello方法合并到jquery的全局对象中。
+<strong>2、$.fn.extend(src)</strong>
+该方法将src合并到jquery的实例对象中去，如:</p>
+<p>[code lang=&quot;javascript&quot;]$.fn.extend({
+ hello:function(){alert(&#39;hello&#39;);}
+ });[/code]</pre>
+就是将hello方法合并到jquery的实例对象中。</p>
+<p>下面例举几个常用的扩展实例：</p>
+<p>[code lang=&quot;javascript&quot;]$.extend({net:{}});[/code]</p>
+<p>这是在jquery全局对象中扩展一个net命名空间。</p>
+<p>[code lang=&quot;javascript&quot;]$.extend($.net,{
+ hello:function(){alert(&#39;hello&#39;);}
+ })[/code]</p>
+<p>这是将hello方法扩展到之前扩展的Jquery的net命名空间中去。</p>
+<p><strong>三、Jquery的extend方法还有一个重载原型：</strong></p>
+<p>[code lang=&quot;javascript&quot;]extend(boolean,dest,src1,src2,src3...)[/code]</p>
+<p>第一个参数boolean代表是否进行深度拷贝，其余参数和前面介绍的一致，什么叫深层拷贝，我们看一个例子：</p>
+<p>[code lang=&quot;javascript&quot;]var result=$.extend( true, {},
+ { name: &quot;John&quot;, location: {city: &quot;Boston&quot;,county:&quot;USA&quot;} },
+ { last: &quot;Resig&quot;, location: {state: &quot;MA&quot;,county:&quot;China&quot;} } );[/code]</p>
+<p>我们可以看出src1中嵌套子对象location:{city:&quot;Boston&quot;},src2中也嵌套子对象location:{state:&quot;MA&quot;},第一个深度拷贝参数为true，那么合并后的结果就是：</p>
+<p>[code lang=&quot;javascript&quot;]result={name:&quot;John&quot;,last:&quot;Resig&quot;,
+ location:{city:&quot;Boston&quot;,state:&quot;MA&quot;,county:&quot;China&quot;}}[/code]</p>
+<p>也就是说它会将src中的嵌套子对象也进行合并，而如果第一个参数boolean为false，我们看看合并的结果是什么，如下：</p>
+<p>[code lang=&quot;javascript&quot;]var result=$.extend( false, {},
+{ name: &quot;John&quot;, location:{city: &quot;Boston&quot;,county:&quot;USA&quot;} },
+{ last: &quot;Resig&quot;, location: {state: &quot;MA&quot;,county:&quot;China&quot;} }
+ );[/code]</p>
+<p>那么合并后的结果就是:</p>
+<p>[code lang=&quot;javascript&quot;]result={name:&quot;John&quot;,last:&quot;Resig&quot;,location:{state:&quot;MA&quot;,county:&quot;China&quot;}}[/code]</p>
+<p>url:<a href="http://www.cnblogs.com/RascallySnake/archive/2010/05/07/1729563.html" target="_blank"><a href="http://www.cnblogs.com/RascallySnake/archive/2010/05/07/1729563.html">http://www.cnblogs.com/RascallySnake/archive/2010/05/07/1729563.html</a></a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/09/20/jquery-extend-函数详解/" data-id="jz88ijo956sstkem" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-jquery队列控制方法详解queuedequeueclearqueue" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/20/jquery队列控制方法详解queuedequeueclearqueue/" class="article-date">
+  <time datetime="2013-09-20T08:23:37.000Z" itemprop="datePublished">9月 20 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/jquery/">jquery</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/20/jquery队列控制方法详解queuedequeueclearqueue/">jQuery队列控制方法详解queue()/dequeue()/clearQueue()</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>jQuery核心中, 有一组队列控制方法, 这组方法由queue()/dequeue()/clearQueue()三个方法组成, 它对需要连续按序执行的函数的控制可以说是简明自如, 主要应用于animate ()方法, ajax以及其他要按时间顺序执行的事件中.</p>
+<p>先解释一下这组方法各自的含义.
+<strong>queue(name,[callback]): </strong>当只传入一个参数时, 它返回并指向第一个匹配元素的队列(将是一个函数数组,队列名默认是fx); 当有两个参数传入时, 第一个参数还是默认为fx的的队列名, 第二个参数又分两种情况, 当第二个参数是一个函数时, 它将在匹配的元素的队列最后添加一个函数. 当第二个参数是一个函数数组时,它将匹配元素的队列用新的一个队列来代替(函数数组)<a href="http://demo.jb51.net/js/jquery_queue/index.htm">
+</a><strong>dequeue(name): </strong>这个好理解, 就是从队列最前端移除一个队列函数, 并执行它.
+<strong>clearQueue([queueName]):</strong>这是1.4新增的方法. 清空对象上尚未执行的所有队列. 参数可选,默认为fx. 但个人觉得这个方法没多大用, 用queue()方法传入两个参数的第二种参数即可实现clearQueue方法.
+现在, 我们要实现这样一个效果, 有标有1至7的数字方块, 要求这七个方块自左到右依次下落<a href="http://demo.jb51.net/js/jquery_queue/index.htm">
+</a><img src="http://files.jb51.net/upload/201012/20101202125342283.png" alt="">
+css与html部分我就不贴出来了,DEMO演示中有. 若按常规做法, 可能需要用如下jQ代码来实现:</p>
+<p><div>代码如下:</div></p>
+<p><div></p>
+<p><div id="code82831">[code language=&quot;javascript&quot;]
+var _slideFun=[
+function(){$(&#39;.one&#39;).delay(500).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.two&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.three&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.four&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.five&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.six&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.seven&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,function(){
+alert(&#39;按序落体运动结束! Yeah!&#39;);
+});}
+];
+$(&#39;#demo&#39;).queue(&#39;slideList&#39;,_slideFun);
+var _takeOne=function(){
+$(&#39;#demo&#39;).dequeue(&#39;slideList&#39;);
+};
+_takeOne();
+[/code]</p>
+<p></div>
+</div>
+嗯, 没错, 效果很完美的呈现给出来了, 但这种晕眩的代码, 你能忍受吗? 即便可以忍受, 如果此时, 你想调换一个某个的执行顺序, 比如, 你想让5落下后再���始下落3, 或者新加8至15八个方块, 怎么办? 重写吗? 在里面小心冀冀的改吗? 显然, 我们需要另外一种列简明便捷的方法来实现这个效果, 那就是jQuery队列控制方法.请看如下代码:</p>
+<p><div>代码如下:</div></p>
+<p><div id="code82831">[code language=&quot;javascript&quot;]
+var _slideFun=[
+function(){$(&#39;.one&#39;).delay(500).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.two&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.three&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.four&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.five&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.six&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,_takeOne);},
+function(){$(&#39;.seven&#39;).delay(300).animate({top:&#39;+=270px&#39;},500,function(){
+alert(&#39;按序落体运动结束! Yeah!&#39;);
+});}
+];
+$(&#39;#demo&#39;).queue(&#39;slideList&#39;,_slideFun);
+var _takeOne=function(){
+$(&#39;#demo&#39;).dequeue(&#39;slideList&#39;);
+};
+_takeOne();
+[/code]</p>
+<p></div>
+这样一来, 看起来是不是简明多了. 如何实现?
+1. 新建一个数组,把动画函数依次放进去(这样更改顺序,新加动画是不是方便多了?);
+2. 用queue将这组动画函数数组加入到slideList队列中;
+3. 用dequeue取出slideList队列中第一个函数, 并执行它;
+4. 初始执行第一个函数.
+DEMO演示中也有详解的注释, 如果上面的说明还看不明白,请看源码.
+至于clearQueue()方法,就不多说了, 演示中停止按钮调用的就是clearQueue()方法,当然你还可以用queue()方法直接将现在的函数列队替换成[]空数组实现(个人比较推荐空数组替换.,更直观).</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/09/20/jquery队列控制方法详解queuedequeueclearqueue/" data-id="bwi6y68cphx6i5f8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-只借助html分别禁用ie8-ie9的兼容视图模式（compatibility-view）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/20/只借助html分别禁用ie8-ie9的兼容视图模式（compatibility-view）/" class="article-date">
+  <time datetime="2013-09-20T02:07:59.000Z" itemprop="datePublished">9月 20 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/html/">html</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/20/只借助html分别禁用ie8-ie9的兼容视图模式（compatibility-view）/">只借助HTML分别禁用IE8, IE9的兼容视图模式（Compatibility View）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>从 IE 8 开始，IE 添加了兼容模式，开启后会以低一版本的 IE 进行渲染。但是有时这样会导致网页出问题，于是我们通常在 html 中添加下列代码来使 IE 使用固定的渲染模式：</p>
+<p><div id="crayon-52169dd315df2998671797" data-settings=" no-popup minimize scroll-always wrap"></p>
+<p><div data-settings=" show"></p>
+<p><div></p>
+<p><div title="纯文本显示代码"></div></p>
+<p><div title="切换自动换行"></div></p>
+<p><div title="Expand Code"></div>
+XHTML</div>
+</div></p>
+<p><div></div></p>
+<p><div></p>
+<p><table></p>
+<p><tbody></p>
+<p><tr></p>
+<p><td data-settings="show"></p>
+<p><div></p>
+<p><div data-line="crayon-52169dd315df2998671797-1">1</div></p>
+<p><div data-line="crayon-52169dd315df2998671797-2">2</div>
+</div></td></p>
+<p><td></p>
+<p><div></p>
+<p><div id="crayon-52169dd315df2998671797-1">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=8&quot;&gt; &lt;!--以IE8模式渲染--&gt;</div></p>
+<p><div id="crayon-52169dd315df2998671797-2">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=7&quot;&gt; &lt;!--以IE7模式渲染--&gt;</div>
+</div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+但是我就遇到了一种情况，在 IE8 下只有不使用兼容模式页面才能显示正常，但是如果设定为 IE8 的模式，在 IE9 中却会导致 CSS3 失效。看来，我需要<strong>针对 IE8、IE9 <em>分别 </em>禁用兼容模式。</strong>怎么办呢？可以在后台判断浏览器版本，如果是 IE8 就输出<code>content=&quot;IE=8&quot;</code>，如果是 IE9 就输出<code>content=&quot;IE=9&quot;</code>。但是这样 html 是无法实现的。其实，可以单纯使用下面的代码来实现：</p>
+<p><div id="crayon-52169dd315e0f435715151" data-settings=" no-popup minimize scroll-always wrap"></p>
+<p><div data-settings=" show"></p>
+<p><div></p>
+<p><div title="纯文本显示代码"></div></p>
+<p><div title="切换自动换行"></div></p>
+<p><div title="Expand Code"></div>
+XHTML</div>
+</div></p>
+<p><div></div></p>
+<p><div></p>
+<p><table></p>
+<p><tbody></p>
+<p><tr></p>
+<p><td data-settings="show"></p>
+<p><div></p>
+<p><div data-line="crayon-52169dd315e0f435715151-1">1</div>
+</div></td></p>
+<p><td></p>
+<p><div></p>
+<p><div id="crayon-52169dd315e0f435715151-1">&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=9; IE=8; IE=7; IE=EDGE&quot;&gt;</div>
+</div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+我测试后完全解决了问题。这样设置后，IE 中设置兼容模式的按钮也会消失。你可以按 F12 打开开发模式来检查。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/09/20/只借助html分别禁用ie8-ie9的兼容视图模式（compatibility-view）/" data-id="dz2qdiidvfiqendi" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-js-获取浏览器和屏幕宽高信息" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/16/js-获取浏览器和屏幕宽高信息/" class="article-date">
+  <time datetime="2013-09-15T23:32:01.000Z" itemprop="datePublished">9月 16 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/javascript/">javascript</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/16/js-获取浏览器和屏幕宽高信息/">JS 获取浏览器和屏幕宽高信息</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>网页可见区域宽：document.body.clientWidth
+网页可见区域高：document.body.clientHeight
+网页可见区域宽：document.body.offsetWidth (包括边线的宽)
+网页可见区域高：document.body.offsetHeight (包括边线的宽)
+网页正文全文宽：document.body.scrollWidth
+网页正文全文高：document.body.scrollHeight
+网页被卷去的高：document.body.scrollTop
+网页被卷去的左：document.body.scrollLeft
+网页正文部分上：window.screenTop
+网页正文部分左：window.screenLeft
+屏幕分辨率的高：window.screen.height
+屏幕分辨率的宽：window.screen.width
+屏幕可用工作区高度：window.screen.availHeight
+屏幕可用工作区宽度：window.screen.availWidth
+HTML精确定位:scrollLeft,scrollWidth,clientWidth,offsetWidth
+scrollHeight: 获取对象的滚动高度。
+scrollLeft:设置或获取位于对象左边界和窗口中目前可见内容的最左端之间的距离
+scrollTop:设置或获取位于对象最顶端和窗���中可见内容的最顶端之间的距离
+scrollWidth:获取对象的滚动宽度
+offsetHeight:获取对象相对于版面或由父坐标 offsetParent 属性指定的父坐标的高度
+offsetLeft:获取对象相对于版面或由 offsetParent 属性指定的父坐标的计算左侧位置
+offsetTop:获取对象相对于版面或由 offsetTop 属性指定的父坐标的计算顶端位置
+event.clientX 相对文档的水平座标
+event.clientY 相对文档的垂直座标
+event.offsetX 相对容器的水平坐标
+event.offsetY 相对容器的垂直坐标
+document.documentElement.scrollTop 垂直方向滚动的值
+event.clientX+document.documentElement.scrollTop 相对文档的水平座标+垂直方向滚动的量</p>
+<p>IE，FireFox 差异如下：</p>
+<p>IE6.0、FF1.06+：</p>
+<p>clientWidth = width + padding</p>
+<p>clientHeight = height + padding</p>
+<p>offsetWidth = width + padding + border</p>
+<p>offsetHeight = height + padding + border</p>
+<p>IE5.0/5.5：
+clientWidth = width - border</p>
+<p>clientHeight = height - border</p>
+<p>offsetWidth = width</p>
+<p>offsetHeight = height</p>
+<p>(需要提一下：CSS中的margin属性，与clientWidth、offsetWidth、clientHeight、offsetHeight均无关)</p>
+<p>－－－－－－－－－－－－－－－－－－－</p>
+<p>技术要点
+本节代码主要使用了Document对象关于窗口的一些属性，这些属性的主要功能和用法如下。</p>
+<p>要得到窗口的尺寸，对于不同的浏览器，需要使用不同的属性和方法：若要检测窗口的真实尺寸，在Netscape下需要使用Window的属性；在IE下需要深入Document内部对body进行检测；在DOM环境下，若要得到窗口的尺寸，需要注意根元素的尺寸，而不是元素。</p>
+<p>Window对象的innerWidth属性包含当前窗口的内部宽度。Window对象的innerHeight属性包含当前窗口的内部高度。</p>
+<p>Document对象的body属性对应HTML文档的标签。Document对象的documentElement属性则表示HTML文档的根节点。</p>
+<p>document.body.clientHeight表示HTML文档所在窗口的当前高度。document.body. clientWidth表示HTML文档所在窗口的当前宽度。</p>
+<p>实现代码 &lt;!——————————文件名：30.3.htm——————————&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;
+&quot;<a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" target="_blank"><a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd</a></a>&quot;&gt;
+&lt;html xmlns=&quot;<a href="http://www.w3.org/1999/xhtml" target="_blank"><a href="http://www.w3.org/1999/xhtml">http://www.w3.org/1999/xhtml</a></a>&quot;&gt;
+&lt;head&gt;
+&lt;title&gt;请调整浏览器窗口&lt;/title&gt;
+&lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=gb2312&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h2 align=&quot;center&quot;&gt;请调整浏览器窗口大小&lt;/h2&gt;&lt;hr&gt;
+&lt;form action=&quot;#&quot; method=&quot;get&quot; name=&quot;form1&quot; id=&quot;form1&quot;&gt;
+&lt;!–显示浏览器窗口的实际尺寸–&gt;
+浏览器窗口 的 实际高度: &lt;input type=&quot;text&quot; name=&quot;availHeight&quot; size=&quot;4&quot;&gt;&lt;br&gt;
+浏览器窗口 的 实际宽度: &lt;input type=&quot;text&quot; name=&quot;availWidth&quot; size=&quot;4&quot;&gt;&lt;br&gt;
+&lt;/form&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+&lt;!–
+var winWidth = 0;
+var winHeight = 0;
+function findDimensions() //函数：获取尺寸
+{
+//获取窗口宽度
+if (window.innerWidth)
+winWidth = window.innerWidth;
+else if ((document.body) &amp;&amp; (document.body.clientWidth))
+winWidth = document.body.clientWidth;
+//获取窗口高度
+if (window.innerHeight)
+winHeight = window.innerHeight;
+else if ((document.body) &amp;&amp; (document.body.clientHeight))
+winHeight = document.body.clientHeight;
+//通过深入Document内部对body进行检测，获取窗口大小
+if (document.documentElement &amp;&amp; document.documentElement.clientHeight &amp;&amp; document.documentElement.clientWidth)
+{
+winHeight = document.documentElement.clientHeight;
+winWidth = document.documentElement.clientWidth;
+}
+//结果输出至两个文本框
+document.form1.availHeight.value= winHeight;
+document.form1.availWidth.value= winWidth;
+}
+findDimensions();
+//调用函数，获取数值
+window.onresize=findDimensions;
+//–&gt;
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</p>
+<p>源程序解读</p>
+<p>（1）程序首先建立一个表单，包含两个文本框，用于显示窗口当前的宽度和高度，并且，其数值会随窗口大小的改变而变化。</p>
+<p>（2）在随后的JavaScript代码中，首先定义了两个变量winWidth和winHeight，用于保存窗口的高度值和宽度值。</p>
+<p>（3）然后，在函数findDimensions ( )中，使用window.innerHeight和window.innerWidth得到窗口的高度和宽度，并将二者保存在前述两个变量中。</p>
+<p>（4）再通过深入Document内部对body进行检测，获取窗口大小，并存储在前述两个变量中。</p>
+<p>（5）在函数的最后，通过按名称访问表单元素，结果输出至两个文本框。</p>
+<p>（6）在JavaScript代码的最后，通过调用findDimensions ( )函数，完成整个操作。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/09/16/js-获取浏览器和屏幕宽高信息/" data-id="ckoeshe0qsfpqxs4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-jquery插件uploadify的使用文档帮助教程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/11/jquery插件uploadify的使用文档帮助教程/" class="article-date">
+  <time datetime="2013-09-11T06:39:54.000Z" itemprop="datePublished">9月 11 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/jquery/">jquery</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/11/jquery插件uploadify的使用文档帮助教程/">JQuery插件Uploadify的使用文档帮助教程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>首先按下面的步骤来实现一个简单的上传功能。</p>
+<p>1 创建Web项目，命名为JQueryUploadDemo，从官网上下载最新的版本解压后添加到项目中。</p>
+<p>2 在项目中添加UploadHandler.ashx文件用来处理文件的上传。</p>
+<p>3 在项目中添加UploadFile文件夹，用来存放上传的文件。</p>
+<p>进行完上面三步后项目的基本结构如下图:</p>
+<p><a href="http://img1.itokit.com/uploadfile/2011/0909/20110909092642240.png" target="_blank"><img src="http://img0.itokit.com/uploadfile/2011/0909/20110909092643188.png" alt="2010-01-05_094439" title="2010-01-05_094439"></a></p>
+<p>&nbsp;</p>
+<ol>
+<li>&lt;html xmlns=&quot;<a href="http://www.w3.org/1999/xhtml&quot;&amp;gt" target="_blank">http://www.w3.org/1999/xhtml&quot;&amp;gt</a>;</li>
+<li>&lt;head runat=&quot;server&quot;&gt;</li>
+<li>&lt;title&gt;Uploadify&lt;/title&gt;</li>
+<li>&lt;link href=&quot;JS/jquery.uploadify-v2.1.0/example/css/default.css&quot;</li>
+<li>rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;</li>
+<li>&lt;link href=&quot;JS/jquery.uploadify-v2.1.0/uploadify.css&quot;</li>
+<li>rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+8.9.  &lt;script type=&quot;text/javascript&quot;</li>
+<li>src=&quot;JS/jquery.uploadify-v2.1.0/jquery-1.3.2.min.js&quot;&gt;&lt;/script&gt;
+11.12.  &lt;script type=&quot;text/javascript&quot;</li>
+<li>src=&quot;JS/jquery.uploadify-v2.1.0/swfobject.js&quot;&gt;&lt;/script&gt;
+14.15.  &lt;script type=&quot;text/javascript&quot;</li>
+<li>src=&quot;JS/jquery.uploadify-v2.1.0/jquery.uploadify.v2.1.0.min.js&quot;&gt;&lt;/script&gt;
+17.18.  &lt;script type=&quot;text/javascript&quot;&gt;</li>
+<li>$(document).ready(function()</li>
+<li>{</li>
+<li>$(&quot;#uploadify&quot;).uploadify({</li>
+<li>&#39;uploader&#39;: &#39;JS/jquery.uploadify-v2.1.0/uploadify.swf&#39;,</li>
+<li>&#39;script&#39;: &#39;UploadHandler.ashx&#39;,</li>
+<li>&#39;cancelImg&#39;: &#39;JS/jquery.uploadify-v2.1.0/cancel.png&#39;,</li>
+<li>&#39;folder&#39;: &#39;UploadFile&#39;,</li>
+<li>&#39;queueID&#39;: &#39;fileQueue&#39;,</li>
+<li>&#39;auto&#39;: false,</li>
+<li>&#39;multi&#39;: true</li>
+<li>});</li>
+<li>});</li>
+<li>&lt;/script&gt;
+32.33.  &lt;/head&gt;</li>
+<li>&lt;body&gt;</li>
+<li>&lt;div id=&quot;fileQueue&quot;&gt;&lt;/div&gt;</li>
+<li>&lt;input type=&quot;file&quot; name=&quot;uploadify&quot; id=&quot;uploadify&quot; /&gt;</li>
+<li>&lt;p&gt;</li>
+<li>&lt;a href=&quot;javascript:$(&#39;#uploadify&#39;).uploadifyUpload()&quot;&gt;上传&lt;/a&gt;|</li>
+<li>&lt;a href=&quot;javascript:$(&#39;#uploadify&#39;).uploadifyClearQueue()&quot;&gt;取消上传&lt;/a&gt;</li>
+<li>&lt;/p&gt;</li>
+<li>&lt;/body&gt;</li>
+<li>&lt;/html&gt;
+7 选择了两个文件后，点击上传，就可以看到UploadFile文件夹中会增加这两个文件。</li>
+</ol>
+<p>上面简单地实现了一个上传的功能，依靠函数uploadify实现，uploadify函数的参数为json格式，可以对json对象的key值的修改来进行自定义的设置，如multi设置为true或false来控制是否可以进行多文件上传，下面就来介绍下这些key值的意思：</p>
+<p><strong>uploader</strong> ： uploadify.swf 文件的相对路径，该swf文件是一个带有文字BROWSE的按钮，点击后淡出打开文件对话框，默认值：uploadify.swf。
+<strong>script</strong> ：   后台处理程序的相对路径 。默认值：uploadify.php
+<strong>checkScript</strong> ：用来判断上传选择的文件在<a href="http://www.itokit.com/tag.php?tag=%B7%FE%CE%F1%C6%F7" target="_blank">服务器</a>是否存在的后台处理程序的相对路径
+<strong>fileDataName</strong> ：设置一个名字，在<a href="http://www.itokit.com/tag.php?tag=%B7%FE%CE%F1%C6%F7" target="_blank">服务器</a>处理程序中根据该名字来取上传文件的数据。默认为Filedata
+<strong>method</strong> ： 提交方式Post 或Get 默认为Post
+<strong>scriptAccess ：</strong>flash脚本文件的访问模式，如果在本地测试设置为always，默认值：sameDomain
+<strong>folder ：</strong>  上传文件存放的目录 。
+<strong>queueID ：</strong> 文件队列的ID，该ID与存放文件队列的div的ID一致。
+<strong>queueSizeLimit ：</strong> 当允许多文件生成时，设置选择文件的个数，默认值：999 。
+<strong>multi ：</strong> 设置为true时可以上传多个文件。
+<strong>auto ：</strong> 设置为true当选择文件后就直接上传了，为false需要点击上传按钮才上传 。
+<strong>fileDesc ：</strong> 这个属性值必须设置fileExt属性后才有效，用来设置选择文件对话框中的提示文本，如设置fileDesc为“请选择rar doc pdf文件”，打开文件选择框效果如下图：</p>
+<p><a href="http://img1.itokit.com/uploadfile/2011/0909/20110909093203282.png" target="_blank"><img src="http://img3.itokit.com/uploadfile/2011/0909/20110909093204472.png" alt="2010-01-05_220920" title="2010-01-05_220920"></a></p>
+<p><strong>fileExt ：</strong> 设置可以选择的文件的类型，格式如：&#39;<em>.doc;</em>.pdf;<em>.rar&#39; 。
+<strong>sizeLimit ：</strong> 上传文件的大小限制 。
+<strong>simUploadLimit ：</strong> 允许同时上传的个数 默认值：1 。
+<strong>buttonText ：</strong> 浏览按钮的文本，默认值：BROWSE 。
+<strong>buttonImg ：</strong> 浏览按钮的图片的路径 。
+<strong>hideButton ：</strong> 设置为true则隐藏浏览按钮的图片 。
+<strong>rollover ：</strong> 值为true和false，设置为true时当鼠标移到浏览按钮上时有反转效果。
+<strong>width ：</strong> 设置浏览按钮的宽度 ，默认值：110。
+<strong>height ：</strong> 设置浏览按钮的高度 ，默认值：30。
+<strong>wmode ：</strong> 设置该项为transparent 可以使浏览按钮的flash背景文件透明，并且flash文件会被置为页面的最高层。 默认值：opaque 。
+<em>*cancelImg</em></em> ：选择文件到文件队列中后的每一个文件上的关闭按钮图标，如下图：</p>
+<p><a href="http://img2.itokit.com/uploadfile/2011/0909/20110909093205961.png" target="_blank"><img src="http://img1.itokit.com/uploadfile/2011/0909/20110909093205684.png" alt="2010-01-05_220626" title="2010-01-05_220626"></a></p>
+<p>&nbsp;</p>
+<p>上面介绍的key值的value都为字符串或是布尔类型，比较简单，接下来要介绍的key值的value为一个函数，可以在选择文件、出错或其他一些操作的时候返回一些信息给用户。</p>
+<p><strong>onInit :</strong> 做一些初始化的工作<strong>。</strong></p>
+<p><strong>onSelect ：</strong>选择文件时触发，该函数有三个参数</p>
+<ul>
+<li>event:事件对象。</li>
+<li>queueID：文件的唯一标识，由6为随机字符组成。</li>
+<li>fileObj：选择的文件对象，有name、size、creationDate、modificationDate、type 5个属性。
+*
+代码如下：
+<div><div id="code_7532">
+</li>
+</ul>
+<ol>
+<li>$(document).ready(function()</li>
+<li>{</li>
+<li>$(&quot;#uploadify&quot;).uploadify({</li>
+<li>&#39;uploader&#39;: &#39;JS/jquery.uploadify-v2.1.0/uploadify.swf&#39;,</li>
+<li>&#39;script&#39;: &#39;UploadHandler.ashx&#39;,</li>
+<li>&#39;cancelImg&#39;: &#39;JS/jquery.uploadify-v2.1.0/cancel.png&#39;,</li>
+<li>&#39;folder&#39;: &#39;UploadFile&#39;,</li>
+<li>&#39;queueID&#39;: &#39;fileQueue&#39;,</li>
+<li>&#39;auto&#39;: false,</li>
+<li>&#39;multi&#39;: true,</li>
+<li>&#39;onInit&#39;:function(){alert(&quot;1&quot;);},</li>
+<li>&#39;onSelect&#39;: function(e, queueId, fileObj)</li>
+<li>{</li>
+<li>alert(&quot;唯一标识:&quot; + queueId + &quot;rn&quot; +</li>
+<li>&quot;文件名：&quot; + fileObj.name + &quot;rn&quot; +</li>
+<li>&quot;文件大小：&quot; + fileObj.size + &quot;rn&quot; +</li>
+<li>&quot;创建时间：&quot; + fileObj.creationDate + &quot;rn&quot; +</li>
+<li>&quot;最后修改时间：&quot; + fileObj.modificationDate + &quot;rn&quot; +</li>
+<li>&quot;文件类型：&quot; + fileObj.type</li>
+<li>);
+21.22.  }</li>
+<li>});</li>
+<li>});
+</div>
+</div>
+&nbsp;</li>
+</ol>
+<p>当选择一个文件后弹出的消息如下图：</p>
+<p><a href="http://img2.itokit.com/uploadfile/2011/0909/20110909093206989.png" target="_blank"><img src="http://img0.itokit.com/uploadfile/2011/0909/20110909093207378.png" alt="2010-01-05_225323" title="2010-01-05_225323"></a></p>
+<p><strong>onSelectOnce</strong> ：在单文件或多文件上传时，选择文件时触发。该函数有两个参数event，data，data对象有以下几个属性：</p>
+<ul>
+<li>fileCount：选择文件的总数。</li>
+<li>filesSelected：同时选择文件的个数，如果一次选择了3个文件该属性值为3。</li>
+<li>filesReplaced：如果文件队列中已经存在A和B两个文件，再次选择文件时又选择了A和B，该属性值为2。</li>
+<li>allBytesTotal：所有选择的文件的总大小。
+&nbsp;</li>
+</ul>
+<p><strong>onCancel :</strong> 当点击文件队列中文件的关闭按钮或点击取消上传时触发。该函数有event、queueId、fileObj、data四个参数，前三个参数同<strong>onSelect</strong> 中的三个参数，data对象有两个属性fileCount和allBytesTotal。</p>
+<ul>
+<li>fileCount：取消一个文件后，文件队列中剩余文件的个数。</li>
+<li>allBytesTotal：取消一个文件后，文件队列中剩余文件的大小。
+&nbsp;</li>
+</ul>
+<p><strong>onClearQueue</strong> <strong>：</strong>当调用函数fileUploadClearQueue时���发。有event和data两个参数，同<strong>onCancel </strong>中的两个对应参数。</p>
+<p><strong>onQueueFull ：</strong>当设置了queueSizeLimit并且选择的文件个数超出了queueSizeLimit的值时触发。该函数有两个参数event和queueSizeLimit。</p>
+<p><strong>onError ：</strong>当上传过程中发生错误时触发。该函数有event、queueId、fileObj、errorObj四个参数，其中前三个参数同上，errorObj对象有type和info两个属性。</p>
+<ul>
+<li>type：错误的类型，有三种‘HTTP’, ‘IO’, or ‘Security’</li>
+<li>info：错误的描述
+&nbsp;</li>
+</ul>
+<p><strong>onOpen ：</strong>点击上传时触发，如果auto设置为true则是选择文件时触发，如果有多个文件上传则遍历整个文件队列。该函数有event、queueId、fileObj三个参数，参数的解释同上。</p>
+<p><strong>onProgress</strong> ：点击上传时触发，如果auto设置为true则是选择文件时触发，如果有多个文件上传则遍历整个文件队列，在onOpen之后触发。该函数有event、queueId、fileObj、data四个参数，前三个参数的解释同上。data对象有四个属性percentage、bytesLoaded、allBytesLoaded、speed：</p>
+<ul>
+<li>percentage：当前完成的百分比</li>
+<li>bytesLoaded：当前上传的大小</li>
+<li>allBytesLoaded：文件队列中已经上传完的大小</li>
+<li>speed：上传速率 kb/s
+&nbsp;</li>
+</ul>
+<p><strong>onComplete</strong>：文件上传完成后触发。该函数有四个参数event、queueId、fileObj、response、data五个参数，前三个参数同上。response为后台处理程序返回的值，在上面的例子中为1或0，data有两个属性fileCount和speed</p>
+<ul>
+<li>fileCount：剩余没有上传完成的文件的个数。</li>
+<li>speed：文件上传的平均速率 kb/s
+注：fileObj对象和上面讲到的有些不太一样，onComplete 的fileObj对象有个filePath属性可以取出上传文件的路径。</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>onAllComplete：</strong>文件队列中所有的文件上传完成后触发。该函数有event和data两个参数，data有四个属性，分别为：</p>
+<ul>
+<li>filesUploaded :上传的所有文件个数。</li>
+<li>errors ：出现错误的个数。</li>
+<li>allBytesLoaded ：所有上传文件的总大小。</li>
+<li>speed ：平均上传速率 kb/s</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/09/11/jquery插件uploadify的使用文档帮助教程/" data-id="eqhr23karpglrwua" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-jquery-fn-extend与jquery-extend" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/09/08/jquery-fn-extend与jquery-extend/" class="article-date">
+  <time datetime="2013-09-08T03:50:05.000Z" itemprop="datePublished">9月 8 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/jquery/">jquery</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/09/08/jquery-fn-extend与jquery-extend/">jquery.fn.extend与jquery.extend</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>jQuery为开发插件提拱了两个方法，分别是：</p>
+<p>JavaScript代码</p>
+<div>
+
+<em>   jQuery.fn.extend(object);
+</em>   jQuery.extend(object);
+</div>
+jQuery.extend(object); 为扩展jQuery类本身.为类添加新的方法。
+
+jQuery.fn.extend(object);给jQuery对象添加方法。
+
+fn 是什么东西呢。查看jQuery代码，就不难发现。
+
+JavaScript代码
+<div>
+
+<em>   jQuery.fn = jQuery.prototype = {
+</div>
+<div>
+
+</em>   init: function( selector, context ) {//….
+<strong>   //……
+</strong>   };
+</div>
+原来 jQuery.fn = jQuery.prototype.对prototype肯定不会陌生啦。
+
+虽然 javascript　没有明确的类的概念，但是用类来理解它，会更方便。
+
+jQuery便是一个封装得非常好的类，比如我们用 语句　$(“#btn1″) 会生成一个 jQuery类的实例。
+
+jQuery.extend(object);　为jQuery类添加添加类方法，可以理解为添加静态方法。如：
+
+XML/HTML代码
+<div>
+
+<em>   $.extend({
+<em>*   add:function(a,b){return a+b;}
+</em></em>   });
+</div>
+便为　jQuery　添加一个为 add　的　“静态方法”，之后便可以在引入 jQuery　的地方，使用这个方法了，
+<div>
+<div>JavaScript代码</div>
+
+<ul>
+<li>$.add(3,4); //return 7
+</div>
+jQuery.fn.extend(object); 对jQuery.prototype进得扩展，就是为jQuery类添加“成员函数”。jQuery类的实例可以使用这个“成员函数”。</li>
+</ul>
+<p>比如我们要开发一个插件，做一个特殊的编辑框，当它被点击时，便alert 当前编辑框里的内容。可以这么做：</p>
+<div>
+<div>JavaScript代码</div>
+
+<ul>
+<li>$.fn.extend({
+<strong>   alertWhileClick:function(){
+</strong>   $(this).click(function(){
+**   alert($(this).val());</li>
+<li>});
+<strong>   }
+</strong>   });
+**   $(“#input1″).alertWhileClick(); //页面上为：&lt;input id=”input1″ type=”text”/&gt;
+</div>
+$(“#input1″)　为一个jQuery实例，当它调用成员方法 alertWhileClick后，便实现了扩展，每次被点击时它会先弹出目前编辑里的内容。</li>
+</ul>
+<p>真实的开发过程中，当然不会做这么小白的插件，事实上jQuery提拱了丰富的操作文档，事件，CSS ,Ajax、效果的方法，结合这些方法，便可以开发出更加 Niubility 的插件。</p>
+<p>注意：</p>
+<p>在这里还有一个特殊的地方，就是在函数开头的地方有jQuery.extend = jQuery.fn.extend，而在程序的前面已经将jQuery.prototype赋值给jQuery.fn了，所以在后面的调用中会出现 jQuery.extend()和jQuery.fn.extend()的不同调用，这两个方法调用产生的结果也不一样，jQuery.extend() 的调用并不会把方法扩展到对象的实例上，引用它的方法也需要通过jQuery类来实现，如jQuery.init()，而 jQuery.fn.extend()的调用把方法扩展到了对象的prototype上，所以实例化一个jQuery对象的时候，它就具有了这些方法，这 是很重要的，在jQuery.js中到处体现这一点</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/09/08/jquery-fn-extend与jquery-extend/" data-id="wbury5h8nr09g9ew" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql中mysqladmin命令用法简介" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/30/mysql中mysqladmin命令用法简介/" class="article-date">
+  <time datetime="2013-08-29T23:46:43.000Z" itemprop="datePublished">8月 30 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/08/30/mysql中mysqladmin命令用法简介/">mysql中mysqladmin命令用法简介</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>mysql中mysqladmin命令用法简介:
+问题:
+用shell写一个脚本用来监控mysql进程运行状态，测试一下能不能连上mysql，不能的话则发邮件报警。至于怎么监控，其实有很多命令，比如大部分在mysql/bin目录下的命令都可以用来测试mysql进程的运行状态，只要挂掉了则命令就会返回错误。
+mysqladmin，如何创建新表！
+用于执行管理性操作。语法是：
+shell&gt;; mysqladmin [OPTIONS] command [command-option] command ...
+通过执行mysqladmin --help，你可以得到你mysqladmin的版本所支持的一个选项列表。
+目前mysqladmin支持下列命令：
+create databasename 创建一个新数据库
+drop databasename 删除一个数据库及其所有表
+extended-status 给出服务器的一个扩展状态消息
+flush-hosts 洗掉所有缓存的主机
+flush-logs 洗掉所有日志
+flush-tables 洗掉所有表
+flush-privileges 再次装载授权表(同reload)
+kill id,id,... 杀死mysql线程
+password 新口令，将老口令改为新口令
+ping 检查mysqld是否活着
+processlist 显示服务其中活跃线程列表
+reload 重载授权表
+refresh 洗掉所有表并关闭和打开日志文件
+shutdown 关掉服务器
+status 给出服务器的简短状态消息
+variables 打印出可用变量
+version 得到服务器的版本信息
+所有命令可以被缩短为其唯一的前缀。例如：
+shell&gt;; mysqladmin proc stat
++----+-------+-----------+----+-------------+------+-------+------+
+| Id | User | Host | db | Command | Time | State | Info |
++----+-------+-----------+----+-------------+------+-------+------+
+| 6 | monty | localhost | | Processlist | 0 | | |
++----+-------+-----------+----+-------------+------+-------+------+
+Uptime: 10077 Threads: 1 Questions: 9 Slow queries: 0 Opens: 6 Flush tables: 1
+Open tables: 2 Memory in use: 1092K Max memory used: 1116K
+mysqladmin status命令结果有下述列：
+Uptime MySQL服务器已经运行的秒数
+Threads 活跃线程（客户）的数量
+Questions 从mysqld启动起来自客户问题的数量
+Slow queries 已经超过long_query_time秒的查询数量
+Opens mysqld已经打开了多少表
+Flush tables flush ..., refresh和reload命令数量
+Open tables 现在被打开的表数量
+Memory in use 由mysqld代码直接分配的内存(只有在MySQL用--with-debug编译时可用)
+Max memory used 由mysqld代码直接分配的最大内存(只有在MySQL用--with-debug编译时可用)
+主要是管理 不是使用 使用的话直接进入mysql create table
+也可以mysqldmin create database
+./<em>*</em>.sql(这里面是导出或者自己写的语句)
+不过在myssql官方手册上有很详细的介绍.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/08/30/mysql中mysqladmin命令用法简介/" data-id="sv9il902tc5317zd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql外键foreign-key的用法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/30/mysql外键foreign-key的用法/" class="article-date">
+  <time datetime="2013-08-29T23:44:34.000Z" itemprop="datePublished">8月 30 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/08/30/mysql外键foreign-key的用法/">mysql外键(foreign key)的用法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在mysql中MyISAM和InnoDB存储引擎都支持外键（foreign key），但是MyISAM只能支持语法，却不能实际使用。下面通过例子记录下InnoDB中外键的使用方法：</p>
+<p>创建主表：
+mysql&gt; create table parent(id int not null,primary key(id)) engine=innodb;
+Query OK, 0 rows affected (0.04 sec)</p>
+<p>创建从表：
+mysql&gt; create table child(id int,parent_id int,foreign key (parent_id) references parent(id) on delete cascade) engine=innodb;
+Query OK, 0 rows affected (0.04 sec)
+插入主表测试数据：
+mysql&gt; insert into parent values(1),(2),(3);
+Query OK, 3 rows affected (0.03 sec)
+Records: 3 Duplicates: 0 Warnings: 0
+插入从表测试数据：
+mysql&gt; insert into child values(1,1),(1,2),(1,3),(1,4);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (<code>test/child</code>, CONSTRAINT <code>child_ibfk_1</code> FOREIGN KEY (<code>parent_id</code>) REFERENCES <code>parent</code> (<code>id</code>) ON DELETE CASCADE)
+因为4不在主表中，插入时发生了外键约束错误。
+只插入前三条：
+mysql&gt; insert into child values(1,1),(1,2),(1,3);
+Query OK, 3 rows affected (0.03 sec)
+Records: 3 Duplicates: 0 Warnings: 0
+成功！
+删除主表记录，从表也将同时删除相应记录：
+mysql&gt; delete from parent where id=1;
+Query OK, 1 row affected (0.03 sec)
+mysql&gt; select * from child;
++------+-----------+
+| id | parent_id |
++------+-----------+
+| 1 | 2 |
+| 1 | 3 |
++------+-----------+
+2 rows in set (0.00 sec)</p>
+<p>更新child中的外键，如果对应的主键不存在，则报错：
+mysql&gt; update child set parent_id=4 where parent_id=2;
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (<code>test/child</code>, CONSTRAINT <code>child_ibfk_1</code> FOREIGN KEY (<code>parent_id</code>) REFERENCES <code>parent</code> (<code>id</code>) ON DELETE CASCADE)</p>
+<p>如果改为主表中存在的值，则可以正常更新：
+mysql&gt; update child set parent_id=2 where parent_id=2;
+Query OK, 0 rows affected (0.01 sec)
+Rows matched: 1 Changed: 0 Warnings: 0</p>
+<p>如果要在父表中更新或者删除一行，并且在子表中也有一行或者多行匹配，此时子表的操作有5个选择：
+· CASCADE: 从父表删除或更新且自动删除或更新子表中匹配的行。ON DELETE CASCADE和ON UPDATE CASCADE都可用。在两个表之间，你不应定义若干在父表或子表中的同一列采取动作的ON UPDATE CASCADE子句。
+· SET NULL: 从父表删除或更新行，并设置子表中的外键列为NULL。如果外键列没有指定NOT NULL限定词，这就是唯一合法的。ON DELETE SET NULL和ON UPDATE SET NULL子句被支持。
+· NO ACTION: 在ANSI SQL-92标准中，NO ACTION意味这不采取动作，就是如果有一个相关的外键值在被参考的表里，删除或更新主要键值的企图不被允许进行（Gruber, 掌握SQL, 2000:181）。 InnoDB拒绝对父表的删除或更新操作。
+· RESTRICT: 拒绝对父表的删除或更新操作。NO ACTION和RESTRICT都一样，删除ON DELETE或ON UPDATE子句。（一些数据库系统有延期检查，并且NO ACTION是一个延期检查。在MySQL中，外键约束是被立即检查的，所以NO ACTION和RESTRICT是同样的）。
+· SET DEFAULT: 这个动作被解析程序识别，但InnoDB拒绝包含ON DELETE SET DEFAULT或ON UPDATE SET DEFAULT子句的表定义。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/08/30/mysql外键foreign-key的用法/" data-id="zkwh40bnqgec6u7z" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql中having语句与where语句的用法与区别" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/08/30/mysql中having语句与where语句的用法与区别/" class="article-date">
+  <time datetime="2013-08-29T23:32:15.000Z" itemprop="datePublished">8月 30 2013</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/08/30/mysql中having语句与where语句的用法与区别/">mysql中having语句与where语句的用法与区别</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们在写sql语句的时候,经常会使用where语句,很少会用到having,其实在mysql中having子句也是设定条件的语句与where有相 似之处但也有区别。having子句在查询过程中慢于聚合语句(sum,min,max,avg,count).而where子句在查询过程中则快于聚合 语句(sum,min,max,avg,count)。
+简单说来：</p>
+<p>where子句：
+select sum(num) as rmb from order where id&gt;10
+//只有先查询出id大于10的记录才能进行聚合语句</p>
+<p>having子句:
+select reportsto as manager, count(<em>) as reports from employees
+group by reportsto having count(</em>) &gt; 4</p>
+<p>以test库为例.having条件表达示为聚合语句。肯定的说having子句查询过程慢于聚合语句。
+再换句说话说把上面的having换成where则会出错。统计分组数据时用到聚合语句。
+对分组数据再次判断时要用having。如果不用这些关系就不存在使用having。直接使用where就行了。
+having就是来弥补where在分组数据判断时的不足。因为where要快于聚合语句。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2013/08/30/mysql中having语句与where语句的用法与区别/" data-id="ubli47osvsmaob3v" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/having/">having</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/where/">where</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" href="/page/17/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="page-number current">18</span><a class="page-number" href="/page/19/">19</a><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/">27</a><a class="extend next" href="/page/19/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thinkphp/">thinkphp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C/C++/">C/C++</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GDB/">GDB</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend framework 2/">Zend framework 2</a><span class="category-list-count">55</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/android/">android</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/apache/">apache</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/dedecms/">dedecms</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/html/javascript/">javascript</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">7</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/java/linux/">linux</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jquery/">jquery</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mac/">mac</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memcache/">memcache</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/object-c/">object-c</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sea.js/">sea.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sphinx/">sphinx</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/thinkphp/">thinkphp</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/xml/">xml</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Authentication/">Authentication</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Foreign Key/">Foreign Key</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MvcEvent/">MvcEvent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xdebug/">Xdebug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apc/">apc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/comet/">comet</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/controller plugin/">controller plugin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/coreseek/">coreseek</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cpulimit/">cpulimit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/curl/">curl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/error_reporting/">error_reporting</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/having/">having</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/icon/">icon</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/include_path/">include_path</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysqli/">mysqli</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/phpMailer/">phpMailer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/samba/">samba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/seo/">seo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/service manager/">service manager</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/smtp/">smtp</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sphinx/">sphinx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spl/">spl</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/strlen/">strlen</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tar/">tar</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/where/">where</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2 cache/">zf2 cache</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符集/">字符集</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/正则/">正则</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/键盘绑定/">键盘绑定</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Authentication/" style="font-size: 10.00px;">Authentication</a><a href="/tags/Foreign Key/" style="font-size: 10.00px;">Foreign Key</a><a href="/tags/MvcEvent/" style="font-size: 10.00px;">MvcEvent</a><a href="/tags/Xdebug/" style="font-size: 10.00px;">Xdebug</a><a href="/tags/apc/" style="font-size: 10.00px;">apc</a><a href="/tags/comet/" style="font-size: 10.00px;">comet</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/controller plugin/" style="font-size: 10.00px;">controller plugin</a><a href="/tags/coreseek/" style="font-size: 10.00px;">coreseek</a><a href="/tags/cpulimit/" style="font-size: 10.00px;">cpulimit</a><a href="/tags/curl/" style="font-size: 10.00px;">curl</a><a href="/tags/error_reporting/" style="font-size: 10.00px;">error_reporting</a><a href="/tags/having/" style="font-size: 10.00px;">having</a><a href="/tags/icon/" style="font-size: 10.00px;">icon</a><a href="/tags/include_path/" style="font-size: 10.00px;">include_path</a><a href="/tags/linux/" style="font-size: 15.00px;">linux</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/mysql/" style="font-size: 10.00px;">mysql</a><a href="/tags/mysqli/" style="font-size: 10.00px;">mysqli</a><a href="/tags/phpMailer/" style="font-size: 10.00px;">phpMailer</a><a href="/tags/samba/" style="font-size: 10.00px;">samba</a><a href="/tags/seo/" style="font-size: 10.00px;">seo</a><a href="/tags/service manager/" style="font-size: 10.00px;">service manager</a><a href="/tags/shell/" style="font-size: 10.00px;">shell</a><a href="/tags/smtp/" style="font-size: 10.00px;">smtp</a><a href="/tags/sphinx/" style="font-size: 10.00px;">sphinx</a><a href="/tags/spl/" style="font-size: 10.00px;">spl</a><a href="/tags/strlen/" style="font-size: 10.00px;">strlen</a><a href="/tags/tar/" style="font-size: 10.00px;">tar</a><a href="/tags/where/" style="font-size: 10.00px;">where</a><a href="/tags/zf2 cache/" style="font-size: 20.00px;">zf2 cache</a><a href="/tags/字符集/" style="font-size: 10.00px;">字符集</a><a href="/tags/正则/" style="font-size: 10.00px;">正则</a><a href="/tags/键盘绑定/" style="font-size: 10.00px;">键盘绑定</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">二月 2014</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">一月 2014</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12">十二月 2013</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11">十一月 2013</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10">十月 2013</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">九月 2013</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">八月 2013</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/07">七月 2013</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/06">六月 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">五月 2013</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">四月 2013</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/03">三月 2013</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/13/mysql数据库目录存放位置更改/">mysql数据库目录存放位置更改</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/13/捕获php的致命错误（fatal-error-或-e_error）并处理/">捕获PHP的致命错误（Fatal Error 或 E_ERROR）并处理</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/07/shell判断文件是否存在/">shell判断文件是否存在</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/06/object-c-深拷贝和浅拷贝/">Object-c 深拷贝和浅拷贝</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/06/mysql索引的类型和优缺点/">mysql索引的类型和优缺点</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 3wmao<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+    <a href="/atom.xml" class="mobile-nav-link">Rss</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>
