@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | /sbin</title>
+  <title>C和C++中Const 修饰指针 | /sbin</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Hello World"/>
+  <meta property="og:title" content="C和C++中Const 修饰指针"/>
   <meta property="og:site_name" content="/sbin"/>
 
   
@@ -100,7 +100,7 @@
   <header>
     
   
-    <h1 class="title">Hello World</h1>
+    <h1 class="title">C和C++中Const 修饰指针</h1>
   
 
 
@@ -120,7 +120,71 @@
   </header>
   <section class="entry">
     
-      <p>Welcome to <a href="http://zespia.tw/hexo" target="_blank">Hexo</a>! This is your very first post. Check <a href="http://zespia.tw/hexo/docs" target="_blank">documentation</a> to learn how to use.</p>
+      <p>C、C++中Const修饰指针时总是记不住到底作用的是指针还是指针指向的变量内容：</p>
+<p>最近总结了一个绝招，可以绝对理清楚！那就是<code>就近原则</code></p>
+<p>所谓就近原则，意思就是const靠哪个近，就作用在那个上面！</p>
+<blockquote>
+<p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
+</blockquote>
+<p>但是有一个问题：既然说到是const修饰指针，那就一定有如 <code>char const * pContent</code>; 那这个const在*和变量名之间，到底靠谁近呢？</p>
+<blockquote>
+<p>这里要解释说明的是：const靠谁近指的是类型（如int、char等）和变量名（如这里的pContent），不能算*，因此这里const当然靠char近，所以pContent是一个指向字符常量的指针;</p>
+</blockquote>
+<p>有了这一条就近原则，const问题迎刃而解！;</p>
+<p>1) const在前面;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">const</span> <span class="keyword">int</span> nValue； <span class="comment">//nValue是const&amp;nbsp;</span>
+
+<span class="keyword">const</span> <span class="keyword">char</span> *pContent; <span class="comment">//*pContent是const, pContent可变&amp;nbsp;</span>
+
+<span class="keyword">const</span> (<span class="keyword">char</span> *) pContent; <span class="comment">//pContent是const,*pContent可变&amp;nbsp;</span>
+
+<span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent是const,*pContent可变&amp;nbsp;</span>
+
+<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent和*pContent都是const&amp;nbsp;</span>
+</pre></td></tr></table></figure>
+
+
+
+
+<p>2) const在后面，与上面的声明对等&nbsp;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">int</span> <span class="keyword">const</span> nValue； <span class="comment">// nValue是const&amp;nbsp;</span>
+
+<span class="keyword">char</span> <span class="keyword">const</span> * pContent;<span class="comment">// *pContent是const, pContent可变&amp;nbsp;</span>
+
+(<span class="keyword">char</span> *) <span class="keyword">const</span> pContent;<span class="comment">//pContent是const, *pContent可变&amp;nbsp;</span>
+
+<span class="keyword">char</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent是const, *pContent可变&amp;nbsp;</span>
+
+<span class="keyword">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent和*pContent都是const&amp;nbsp;</span>
+</pre></td></tr></table></figure>
+
+
+<p>=================================================================================&nbsp;</p>
+<p>Bjarne在他的The C++ Programming Language里面给出过一个助记的方法： 把一个声明从右向左读。&nbsp;</p>
+<p>char <em> const cp;&nbsp;( </em> 读成 pointer to )&nbsp;</p>
+<p>cp is a const pointer to char ：cp是一个指向字符型的常量指针，指针不能改变；&nbsp;</p>
+<p>const char * p;&nbsp;</p>
+<p>p is a pointer to const char：cp是一个指向字符型常量的指针，指针指向的值不能随便改变；&nbsp;</p>
+<p>char const * p; 同上。&nbsp;</p>
+<p>url:<a href="http://guhanjie.iteye.com/blog/1683154" target="_blank"><a href="http://guhanjie.iteye.com/blog/1683154">http://guhanjie.iteye.com/blog/1683154</a></a></p>
 
     
   </section>
@@ -130,14 +194,17 @@
     
       <div class="widget">
         
-          <time datetime="2014-03-14T13:56:49.000Z"><a href="/2014/03/14/hello-world/">3月 14 2014</a></time>
+          <time datetime="2014-01-05T12:40:06.000Z"><a href="/2014/01/05/c和c中const-修饰指针/">1月 5 2014</a></time>
         
         
   
-  <a href="/categories/public/">@public</a>
+  <a href="/categories/C/C++/">@C/C++</a>
 
 
         
+  
+  <a href="/tags/const/">#const</a>
+
 
         
       </div>
