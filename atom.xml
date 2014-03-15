@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-15T16:21:43.858Z</updated>
+  <updated>2014-03-15T16:23:32.397Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,8 +19,9 @@
     <link href="http://yuhaya.github.io/2014/03/16/%E5%9C%A8hexo%E7%9A%84%E6%96%87%E7%AB%A0%E4%B8%AD%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/"/>
     <id>http://yuhaya.github.io/2014/03/16/在hexo的文章中插入图片/</id>
     <published>2014-03-15T16:05:45.000Z</published>
-    <updated>2014-03-15T16:21:37.000Z</updated>
+    <updated>2014-03-15T16:23:27.000Z</updated>
     <content type="html"><![CDATA[<p><code>![hello](\{\{BASE_PATH\}\}image/hello.jpg)</code></p>
+<p>去掉其中的反斜杠便是</p>
 ]]></content>
     
     
@@ -318,7 +319,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#58;&#51;&#x77;&#x6d;&#97;&#111;&#x63;&#111;&#109;&#112;&#117;&#x74;&#101;&#x72;&#x40;&#103;&#109;&#97;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;">&#51;&#x77;&#x6d;&#97;&#111;&#x63;&#111;&#109;&#112;&#117;&#x74;&#101;&#x72;&#x40;&#103;&#109;&#97;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;</a></p>
+<p><a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#51;&#119;&#109;&#97;&#111;&#99;&#111;&#109;&#112;&#x75;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#109;">&#51;&#119;&#109;&#97;&#111;&#99;&#111;&#109;&#112;&#x75;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#111;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
