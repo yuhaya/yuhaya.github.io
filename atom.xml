@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-15T14:28:02.209Z</updated>
+  <updated>2014-03-15T14:32:18.240Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -304,7 +304,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#51;&#x77;&#109;&#97;&#111;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#x74;&#101;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#x6f;&#109;">&#51;&#x77;&#109;&#97;&#111;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#x74;&#101;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#x6f;&#109;</a></p>
+<p><a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#58;&#x33;&#x77;&#109;&#x61;&#111;&#99;&#x6f;&#109;&#112;&#117;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;">&#x33;&#x77;&#109;&#x61;&#111;&#99;&#x6f;&#109;&#112;&#117;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -334,10 +334,10 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
     <link href="http://yuhaya.github.io/2014/01/05/c%E5%92%8Cc%E4%B8%ADconst-%E4%BF%AE%E9%A5%B0%E6%8C%87%E9%92%88/"/>
     <id>http://yuhaya.github.io/2014/01/05/c和c中const-修饰指针/</id>
     <published>2014-01-05T12:40:06.000Z</published>
-    <updated>2014-03-15T14:27:58.000Z</updated>
+    <updated>2014-03-15T14:32:12.000Z</updated>
     <content type="html"><![CDATA[<p>C、C++中Const修饰指针时总是记不住到底作用的是指针还是指针指向的变量内容：</p>
 <p>最近总结了一个绝招，可以绝对理清楚！那就是<code>就近原则</code></p>
-<p>所谓就近原则，意思就是const靠哪个近，就作用在那个上面！</p>
+<p>所谓就近原则，意思就是const靠哪个近，就作用在那个上面.</p>
 <blockquote>
 <p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
 </blockquote>
