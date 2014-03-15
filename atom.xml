@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-15T14:48:29.232Z</updated>
+  <updated>2014-03-15T16:19:22.546Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -13,6 +13,20 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[在Hexo的文章中插入图片]]></title>
+    <link href="http://yuhaya.github.io/2014/03/16/%E5%9C%A8hexo%E7%9A%84%E6%96%87%E7%AB%A0%E4%B8%AD%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/"/>
+    <id>http://yuhaya.github.io/2014/03/16/在hexo的文章中插入图片/</id>
+    <published>2014-03-15T16:05:45.000Z</published>
+    <updated>2014-03-15T16:17:29.000Z</updated>
+    <content type="html"><![CDATA[<p><code>![hello](image/hello.jpg)</code></p>
+]]></content>
+    
+    
+      <category term="hexo" scheme="http://yuhaya.github.io/categories/hexo/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[合并zf2库文件]]></title>
@@ -304,7 +318,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#x3a;&#51;&#x77;&#109;&#x61;&#x6f;&#x63;&#x6f;&#109;&#112;&#x75;&#116;&#101;&#x72;&#x40;&#103;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;">&#51;&#x77;&#109;&#x61;&#x6f;&#x63;&#x6f;&#109;&#112;&#x75;&#116;&#101;&#x72;&#x40;&#103;&#x6d;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;</a></p>
+<p><a href="&#x6d;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#51;&#119;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#112;&#117;&#116;&#x65;&#114;&#64;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;">&#51;&#119;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#112;&#117;&#116;&#x65;&#114;&#64;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -341,7 +355,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <blockquote>
 <p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
 </blockquote>
-<p>但是有一个问题：既然说到是const修饰指针，那就一定有如 <code>char const * pContent</code>; 那这个const在*和变量名之间，到底靠谁近呢？</p>
+<p>但是有一个问题：既然说到是const修饰指针，那就一定有如 <code>char const * pContent</code>; 那这个const在*和变量名之间，到底靠谁近���？</p>
 <blockquote>
 <p>这里要解释说明的是：const靠谁近指的是类型（如int、char等）和变量名（如这里的pContent），不能算*，因此这里const当然靠char近，所以pContent是一个指向字符常量的指针;</p>
 </blockquote>
