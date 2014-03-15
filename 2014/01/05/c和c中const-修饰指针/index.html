@@ -123,12 +123,13 @@
       <p>C、C++中Const修饰指针时总是记不住到底作用的是指针还是指针指向的变量内容：</p>
 <p>最近总结了一个绝招，可以绝对理清楚！那就是<code>就近原则</code></p>
 <p>所谓就近原则，意思就是const靠哪个近，就作用在那个上面.</p>
-<blockquote><p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
+<blockquote>
+<p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
+</blockquote>
 <p>但是有一个问题：既然说到是const修饰指针，那就一定有如 <code>char const * pContent</code>; 那这个const在*和变量名之间，到底靠谁近呢？</p>
+<blockquote>
 <p>这里要解释说明的是：const靠谁近指的是类型（如int、char等）和变量名（如这里的pContent），不能算*，因此这里const当然靠char近，所以pContent是一个指向字符常量的指针;</p>
 </blockquote>
-
-
 <p>有了这一条就近原则，const问题迎刃而解！;</p>
 <p>1) const在前面;</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre>1
