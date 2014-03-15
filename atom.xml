@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-15T14:32:18.240Z</updated>
+  <updated>2014-03-15T14:39:51.756Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -304,7 +304,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#58;&#x33;&#x77;&#109;&#x61;&#111;&#99;&#x6f;&#109;&#112;&#117;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;">&#x33;&#x77;&#109;&#x61;&#111;&#99;&#x6f;&#109;&#112;&#117;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#105;&#108;&#46;&#x63;&#111;&#109;</a></p>
+<p><a href="&#x6d;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#51;&#119;&#109;&#97;&#111;&#x63;&#x6f;&#x6d;&#x70;&#117;&#116;&#x65;&#x72;&#64;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;">&#51;&#119;&#109;&#97;&#111;&#x63;&#x6f;&#x6d;&#x70;&#117;&#116;&#x65;&#x72;&#64;&#103;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#111;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -334,17 +334,16 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
     <link href="http://yuhaya.github.io/2014/01/05/c%E5%92%8Cc%E4%B8%ADconst-%E4%BF%AE%E9%A5%B0%E6%8C%87%E9%92%88/"/>
     <id>http://yuhaya.github.io/2014/01/05/c和c中const-修饰指针/</id>
     <published>2014-01-05T12:40:06.000Z</published>
-    <updated>2014-03-15T14:32:12.000Z</updated>
+    <updated>2014-03-15T14:39:40.000Z</updated>
     <content type="html"><![CDATA[<p>C、C++中Const修饰指针时总是记不住到底作用的是指针还是指针指向的变量内容：</p>
 <p>最近总结了一个绝招，可以绝对理清楚！那就是<code>就近原则</code></p>
 <p>所谓就近原则，意思就是const靠哪个近，就作用在那个上面.</p>
-<blockquote>
-<p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
-</blockquote>
+<blockquote><p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
 <p>但是有一个问题：既然说到是const修饰指针，那就一定有如 <code>char const * pContent</code>; 那这个const在*和变量名之间，到底靠谁近呢？</p>
-<blockquote>
 <p>这里要解释说明的是：const靠谁近指的是类型（如int、char等）和变量名（如这里的pContent），不能算*，因此这里const当然靠char近，所以pContent是一个指向字符常量的指针;</p>
 </blockquote>
+
+
 <p>有了这一条就近原则，const问题迎刃而解！;</p>
 <p>1) const在前面;</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre>1
@@ -356,21 +355,21 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 7
 8
 9
-</pre></td><td class="code"><pre><span class="keyword">const</span> <span class="keyword">int</span> nValue； <span class="comment">//nValue是const&amp;nbsp;</span>
+</pre></td><td class="code"><pre><span class="keyword">const</span> <span class="keyword">int</span> nValue； <span class="comment">//nValue是const</span>
 
-<span class="keyword">const</span> <span class="keyword">char</span> *pContent; <span class="comment">//*pContent是const, pContent可变&amp;nbsp;</span>
+<span class="keyword">const</span> <span class="keyword">char</span> *pContent; <span class="comment">//*pContent是const, pContent可变</span>
 
-<span class="keyword">const</span> (<span class="keyword">char</span> *) pContent; <span class="comment">//pContent是const,*pContent可变&amp;nbsp;</span>
+<span class="keyword">const</span> (<span class="keyword">char</span> *) pContent; <span class="comment">//pContent是const,*pContent可变</span>
 
-<span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent是const,*pContent可变&amp;nbsp;</span>
+<span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent是const,*pContent可变</span>
 
-<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent和*pContent都是const&amp;nbsp;</span>
+<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent和*pContent都是const</span>
 </pre></td></tr></table></figure>
 
 
 
 
-<p>2) const在后面，与上面的声明对等&nbsp;</p>
+<p>2) const在后面，与上面的声明对等</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -380,25 +379,25 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 7
 8
 9
-</pre></td><td class="code"><pre><span class="keyword">int</span> <span class="keyword">const</span> nValue； <span class="comment">// nValue是const&amp;nbsp;</span>
+</pre></td><td class="code"><pre><span class="keyword">int</span> <span class="keyword">const</span> nValue； <span class="comment">// nValue是const</span>
 
-<span class="keyword">char</span> <span class="keyword">const</span> * pContent;<span class="comment">// *pContent是const, pContent可变&amp;nbsp;</span>
+<span class="keyword">char</span> <span class="keyword">const</span> * pContent;<span class="comment">// *pContent是const, pContent可变</span>
 
-(<span class="keyword">char</span> *) <span class="keyword">const</span> pContent;<span class="comment">//pContent是const, *pContent可变&amp;nbsp;</span>
+(<span class="keyword">char</span> *) <span class="keyword">const</span> pContent;<span class="comment">//pContent是const, *pContent可变</span>
 
-<span class="keyword">char</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent是const, *pContent可变&amp;nbsp;</span>
+<span class="keyword">char</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent是const, *pContent可变</span>
 
-<span class="keyword">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent和*pContent都是const&amp;nbsp;</span>
+<span class="keyword">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent和*pContent都是const;</span>
 </pre></td></tr></table></figure>
 
 
-<p>=================================================================================&nbsp;</p>
-<p>Bjarne在他的The C++ Programming Language里面给出过一个助记的方法： 把一个声明从右向左读。&nbsp;</p>
-<p>char <em> const cp;&nbsp;( </em> 读成 pointer to )&nbsp;</p>
-<p>cp is a const pointer to char ：cp是一个指向字符型的常量指针，指针不能改变；&nbsp;</p>
-<p>const char * p;&nbsp;</p>
-<p>p is a pointer to const char：cp是一个指向字符型常量的指针，指针指向的值不能随便改变；&nbsp;</p>
-<p>char const * p; 同上。&nbsp;</p>
+<p>=================================================================================;</p>
+<p>Bjarne在他的The C++ Programming Language里面给出过一个助记的方法： 把一个声明从右向左读。;</p>
+<p>char <em> const cp;;( </em> 读成 pointer to );</p>
+<p>cp is a const pointer to char ：cp是一个指向字符型的常量指针，指针不能改变；;</p>
+<p>const char * p;;</p>
+<p>p is a pointer to const char：cp是一个指向字符型常量的指针，指针指向的值不能随便改变；;</p>
+<p>char const * p; 同上。;</p>
 <p>url:<a href="http://guhanjie.iteye.com/blog/1683154" target="_blank"><a href="http://guhanjie.iteye.com/blog/1683154">http://guhanjie.iteye.com/blog/1683154</a></a></p>
 ]]></content>
     
