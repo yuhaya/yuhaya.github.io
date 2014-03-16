@@ -312,12 +312,14 @@ print_r(<span class="variable">$loader</span>);
 
 
 <p>如上可以看出若要加载一个类文件，如 <code>Zend\Authentication\Adapter\AbstractAdapter</code></p>
-<p>若使用 StandardAutoloader 方式来加载</p>
-<p>则内部原理为 在 Zend\Loader\StandardAutoloader 对象中获取 注册的namespaces数组
-将<code>[Zend\] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/</code>中的 <code>/Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/</code>替换到 <code>Zend\Authentication\Adapter\AbstractAdapter</code>中
-最后为 /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/AbstractAdapter
-在加上<code>.php</code>的后缀就为类的实际路径</p>
-<p>而ClassMapAutoloader 的加载方式是直接在 <code>Zend\Loader\ClassMapAutoloader</code> 对象的 map数组映射表中寻找，最后获得实际物理路径.</p>
+<p>若使用 <strong>StandardAutoloader</strong> 方式来加载</p>
+<p>则内部原理为 在 Zend\Loader\StandardAutoloader 对象中获取 注册的namespaces数组</p>
+<p>将<code>[Zend\] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/</code></p>
+<p>中的 <code>/Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/</code></p>
+<p>替换到 <code>Zend\Authentication\Adapter\AbstractAdapter</code>中</p>
+<p>最后为 /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/AbstractAdapter</p>
+<p>在加上<code>.php</code>的后缀就为类的实际路径</p>
+<p>而<strong>ClassMapAutoloader</strong> 的加载方式是直接在 <code>Zend\Loader\ClassMapAutoloader</code> 对象的 map数组映射表中寻找，最后获得实际物理路径.</p>
 
     
   </section>
@@ -826,7 +828,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#x33;&#x77;&#x6d;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#x75;&#x74;&#101;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;">&#x33;&#x77;&#x6d;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#x75;&#x74;&#101;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;</a></p>
+<p><a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#58;&#x33;&#119;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#117;&#x74;&#x65;&#114;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;">&#x33;&#119;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#117;&#x74;&#x65;&#114;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
