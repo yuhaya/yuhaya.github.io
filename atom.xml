@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T14:39:13.558Z</updated>
+  <updated>2014-03-16T14:51:22.904Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -246,7 +246,7 @@ print_r(<span class="variable">$loader</span>);
     <link href="http://yuhaya.github.io/2014/03/16/nodejs-mvc%E6%A1%86%E6%9E%B6/"/>
     <id>http://yuhaya.github.io/2014/03/16/nodejs-mvc框架/</id>
     <published>2014-03-16T00:17:21.000Z</published>
-    <updated>2014-03-16T14:35:33.000Z</updated>
+    <updated>2014-03-16T14:51:15.000Z</updated>
     <content type="html"><![CDATA[<p>Node.js是JavaScript中最为流行的框架之一，易于创建可扩展的Web应用。Node.js包含不同类型框架，包括MVC， full-stack，REST API以及Generators。借助这些框架使Node.js更加易于使用，它还支持众多特性功能，您只需几个步骤就可快速搭建强大的Web应用。</p>
 <p>本文分享十款最佳的JavaScript框架。</p>
 <ol>
@@ -257,9 +257,21 @@ print_r(<span class="variable">$loader</span>);
 <li><p><a href="http://www.totaljs.com/" target="_blank">Total.js</a></p>
 <p><img src="/images/Total.js.jpg" alt="Total.js"></p>
 <p>Total.js是另一款伟大的框架，用来帮助创建Web页面及Web应用，支持MVC架构。它是利用HTML、JavaScript及CSS创建网站的一款开源的现代化框架。</p>
-<p>参考:<a href="http://www.csdn.net/article/2014-02-24/2818519-node-js-mvc-frameworks-for-javascript-developers" target="_blank">node js框架</a></p>
+</li>
+<li><p><a href="http://www.partialjs.com/" target="_blank">Partial.js</a></p>
+<p><img src="/images/Partial.js.jpg" alt="Total.js"></p>
+<p>Partial js，利用HTML、CSS和JavaScript开发者可创建大量的Web扩展应用以及网站。</p>
+</li>
+<li><p><a href="http://www.partialjs.com/" target="_blank">Koa. js</a>
+<img src="/images/Koa.js.jpg" alt="Koa.js"></p>
+<p>Kao.js是由Express开发而来，旨在创建更小的、更具表现力Web应用及API。</p>
+</li>
+<li><p><a href="http://locomotivejs.org/" target="_blank">Locomotive. js</a></p>
+<p><img src="/images/Locomotive.js.jpg" alt="Locomotive.js"></p>
+<p> Locomotive支持MVC模式、RESTful。主要功能如下：优先配置，Routing Helpers，MVC架构，连接任意数据等。</p>
 </li>
 </ol>
+<p>   更多参考:<a href="http://www.csdn.net/article/2014-02-24/2818519-node-js-mvc-frameworks-for-javascript-developers" target="_blank">node js框架</a></p>
 ]]></content>
     
     
@@ -585,7 +597,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#51;&#x77;&#x6d;&#x61;&#x6f;&#99;&#111;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#99;&#111;&#x6d;">&#51;&#x77;&#x6d;&#x61;&#x6f;&#99;&#111;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#99;&#111;&#x6d;</a></p>
+<p><a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#58;&#x33;&#x77;&#x6d;&#x61;&#x6f;&#99;&#x6f;&#109;&#x70;&#117;&#116;&#x65;&#114;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#109;">&#x33;&#x77;&#x6d;&#x61;&#x6f;&#99;&#x6f;&#109;&#x70;&#117;&#116;&#x65;&#114;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#x63;&#111;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
