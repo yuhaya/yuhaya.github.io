@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T14:04:21.399Z</updated>
+  <updated>2014-03-16T14:20:49.559Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -246,16 +246,16 @@ print_r(<span class="variable">$loader</span>);
     <link href="http://yuhaya.github.io/2014/03/16/nodejs-mvc%E6%A1%86%E6%9E%B6/"/>
     <id>http://yuhaya.github.io/2014/03/16/nodejs-mvc框架/</id>
     <published>2014-03-16T00:17:21.000Z</published>
-    <updated>2014-03-16T01:35:59.000Z</updated>
+    <updated>2014-03-16T14:20:31.000Z</updated>
     <content type="html"><![CDATA[<p>Node.js是JavaScript中最为流行的框架之一，易于创建可扩展的Web应用。Node.js包含不同类型框架，包括MVC， full-stack，REST API以及Generators。借助这些框架使Node.js更加易于使用，它还支持众多特性功能，您只需几个步骤就可快速搭建强大的Web应用。</p>
 <p>本文分享十款最佳的JavaScript框架。</p>
 <ol>
 <li><p><a href="http://sailsjs.org/" target="_blank">Sails.js</a></p>
-<p> <img src="img/salls.js.jpg" alt="Sall.js">
+<p> <img src="images/salls.js.jpg" alt="Sall.js">
  Sails易于开发定制企业级、现代化的Node.js 应用，同时，它也适用于创建图表、仪表盘及各种游戏应用。</p>
 </li>
 <li><p><a href="http://www.totaljs.com/" target="_blank">Total.js</a></p>
-<p><img src="img/Total.js.jpg" alt="Total.js"></p>
+<p><img src="images/Total.js.jpg" alt="Total.js"></p>
 <p>Total.js是另一款伟大的框架，用来帮助创建Web页面及Web应用，支持MVC架构。它是利用HTML、JavaScript及CSS创建网站的一款开源的现代化框架。</p>
 <p>参考:<a href="http://www.csdn.net/article/2014-02-24/2818519-node-js-mvc-frameworks-for-javascript-developers" target="_blank">node js框架</a></p>
 </li>
@@ -584,7 +584,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x33;&#119;&#109;&#97;&#111;&#x63;&#x6f;&#109;&#x70;&#x75;&#116;&#101;&#114;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;">&#x33;&#119;&#109;&#97;&#111;&#x63;&#x6f;&#109;&#x70;&#x75;&#116;&#101;&#114;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;</a></p>
+<p><a href="&#109;&#x61;&#x69;&#x6c;&#116;&#x6f;&#58;&#51;&#119;&#x6d;&#x61;&#x6f;&#x63;&#x6f;&#109;&#x70;&#x75;&#116;&#x65;&#114;&#64;&#x67;&#x6d;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;">&#51;&#119;&#x6d;&#x61;&#x6f;&#x63;&#x6f;&#109;&#x70;&#x75;&#116;&#x65;&#114;&#64;&#x67;&#x6d;&#97;&#105;&#108;&#x2e;&#99;&#111;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -675,7 +675,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>=================================================================================;</p>
 <p>Bjarne在他的The C++ Programming Language里面给出过一个助记的方法： 把一个声明从右向左读。;</p>
 <p>char <em> const cp;;( </em> 读成 pointer to );</p>
-<p>cp is a const pointer to char ：cp是一个指向字符型的常���指针，指针不能改变；;</p>
+<p>cp is a const pointer to char ：cp是一个指向字符型���常量指针，指针不能改变；;</p>
 <p>const char * p;;</p>
 <p>p is a pointer to const char：cp是一个指向字符型常量的指针，指针指向的值不能随便改变；;</p>
 <p>char const * p; 同上。;</p>
