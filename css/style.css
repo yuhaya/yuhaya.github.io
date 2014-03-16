@@ -445,10 +445,10 @@ article .entry blockquote {
   font-size: 1.2em;
   padding: 0 30px 15px;
 }
-.widget .entry a{
-     display:block;
-     float:left;
-     margin-right:20px;
+.tagcloud  .entry a{
+      display:block;
+      float:left;
+      margin-right:10px;
 }
 article .entry blockquote footer {
   border-top: none;
