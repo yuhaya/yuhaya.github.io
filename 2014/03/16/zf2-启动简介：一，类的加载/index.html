@@ -202,6 +202,15 @@
 <p>ClassMapAutoloader 加载类的方式比 StandardAutoloader中更加的高效
 前者只是在一个大的数组映射表中寻值，而后者则需要拼装截取才能获得最终的路径</p>
 </blockquote>
+<h3 id="-">以下为测试数据：（请求开始时间-请求结束时间）</h3>
+<h1 id="-standardautoloader-">通过 StandardAutoloader 方式</h1>
+<p>start-time = 1394976543.9461</p>
+<p>end-time = 1394976544.2273</p>
+<h4 id="-0-2812-">耗时 0.2812 秒</h4>
+<h1 id="-classmapautoloader-">通过 ClassMapAutoloader 方式</h1>
+<p>start-time = 1394976731.8825</p>
+<p>end-time = 1394976732.2164</p>
+<h4 id="-0-3339-">耗时0.3339 秒</h4>
 <p>以下是以数组的方式打印自动装载器数组</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
 2
