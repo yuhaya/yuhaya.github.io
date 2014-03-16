@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T14:54:06.293Z</updated>
+  <updated>2014-03-16T14:55:19.827Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -246,7 +246,7 @@ print_r(<span class="variable">$loader</span>);
     <link href="http://yuhaya.github.io/2014/03/16/nodejs-mvc%E6%A1%86%E6%9E%B6/"/>
     <id>http://yuhaya.github.io/2014/03/16/nodejs-mvc框架/</id>
     <published>2014-03-16T00:17:21.000Z</published>
-    <updated>2014-03-16T14:53:58.000Z</updated>
+    <updated>2014-03-16T14:55:01.000Z</updated>
     <content type="html"><![CDATA[<p>Node.js是JavaScript中最为流行的框架之一，易于创建可扩展的Web应用。Node.js包含不同类型框架，包括MVC， full-stack，REST API以及Generators。借助这些框架使Node.js更加易于使用，它还支持众多特性功能，您只需几个步骤就可快速搭建强大的Web应用。</p>
 <p>本文分享十款最佳的JavaScript框架。</p>
 <ol>
@@ -262,7 +262,7 @@ print_r(<span class="variable">$loader</span>);
 <p><img src="/images/Partial.js.jpg" alt="Total.js"></p>
 <p>Partial js，利用HTML、CSS和JavaScript开发者可创建大量的Web扩展应用以及网站。</p>
 </li>
-<li><p><a href="http://www.partialjs.com/" target="_blank">Koa. js</a>
+<li><p><a href="http://www.partialjs.com/" target="_blank">Koa. js</a><br/>
  <img src="/images/Koa.js.jpg" alt="Koa.js"></p>
 <p> Kao.js是由Express开发而来，旨在创建更小的、更具表现力Web应用及API。</p>
 </li>
@@ -597,7 +597,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#97;&#x69;&#108;&#x74;&#x6f;&#x3a;&#x33;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#112;&#x75;&#x74;&#101;&#114;&#64;&#x67;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#109;">&#x33;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#112;&#x75;&#x74;&#101;&#114;&#64;&#x67;&#x6d;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a></p>
+<p><a href="&#x6d;&#x61;&#105;&#108;&#x74;&#x6f;&#x3a;&#x33;&#119;&#x6d;&#x61;&#111;&#x63;&#111;&#109;&#x70;&#117;&#x74;&#x65;&#114;&#64;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;">&#x33;&#119;&#x6d;&#x61;&#111;&#x63;&#111;&#109;&#x70;&#117;&#x74;&#x65;&#114;&#64;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
