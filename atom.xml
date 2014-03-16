@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T13:42:33.331Z</updated>
+  <updated>2014-03-16T13:48:38.123Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/03/16/zf2-%E5%90%AF%E5%8A%A8%E7%AE%80%E4%BB%8B%EF%BC%9A%E4%B8%80%EF%BC%8C%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD/"/>
     <id>http://yuhaya.github.io/2014/03/16/zf2-启动简介：一，类的加载/</id>
     <published>2014-03-16T06:08:29.000Z</published>
-    <updated>2014-03-16T13:42:26.000Z</updated>
+    <updated>2014-03-16T13:46:14.000Z</updated>
     <content type="html"><![CDATA[<h3 id="autoloaderfactory">AutoloaderFactory</h3>
 <p>自动加载工厂类</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
@@ -109,6 +109,7 @@
 <p>start-time = 1394976731.8825</p>
 <p>end-time = 1394976732.2164</p>
 <h4 id="-0-3339-">耗时0.3339 秒</h4>
+<h1 id="-16-">速度提升16%</h1>
 <p>以下是以数组的方式打印自动装载器数组</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
 2
@@ -576,7 +577,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#51;&#x77;&#x6d;&#97;&#x6f;&#99;&#111;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#51;&#x77;&#x6d;&#97;&#x6f;&#99;&#111;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a></p>
+<p><a href="&#109;&#97;&#105;&#x6c;&#116;&#111;&#58;&#51;&#119;&#109;&#x61;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#117;&#x74;&#101;&#x72;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;">&#51;&#119;&#109;&#x61;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#117;&#x74;&#101;&#x72;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#99;&#x6f;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
