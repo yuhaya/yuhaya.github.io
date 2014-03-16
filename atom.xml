@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T13:57:12.264Z</updated>
+  <updated>2014-03-16T14:04:21.399Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/03/16/zf2-%E5%90%AF%E5%8A%A8%E7%AE%80%E4%BB%8B%EF%BC%9A%E4%B8%80%EF%BC%8C%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD/"/>
     <id>http://yuhaya.github.io/2014/03/16/zf2-启动简介：一，类的加载/</id>
     <published>2014-03-16T06:08:29.000Z</published>
-    <updated>2014-03-16T13:56:58.000Z</updated>
+    <updated>2014-03-16T14:04:12.000Z</updated>
     <content type="html"><![CDATA[<h1 id="autoloaderfactory">AutoloaderFactory</h1>
 <p>自动加载工厂类</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
@@ -233,6 +233,7 @@ print_r(<span class="variable">$loader</span>);
 <p>最后为 /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/AbstractAdapter</p>
 <p>在加上<code>.php</code>的后缀就为类的实际路径</p>
 <p>而<strong>ClassMapAutoloader</strong> 的加载方式是直接在 <code>Zend\Loader\ClassMapAutoloader</code> 对象的 map数组映射表中寻找，最后获得实际物理路径.</p>
+<p>关于插件的加载日后补充！</p>
 ]]></content>
     
     
@@ -583,7 +584,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#x33;&#119;&#x6d;&#x61;&#x6f;&#99;&#111;&#109;&#x70;&#x75;&#116;&#x65;&#114;&#64;&#103;&#109;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;">&#x33;&#119;&#x6d;&#x61;&#x6f;&#99;&#111;&#109;&#x70;&#x75;&#116;&#x65;&#114;&#64;&#103;&#109;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a></p>
+<p><a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x33;&#119;&#109;&#97;&#111;&#x63;&#x6f;&#109;&#x70;&#x75;&#116;&#101;&#114;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;">&#x33;&#119;&#109;&#97;&#111;&#x63;&#x6f;&#109;&#x70;&#x75;&#116;&#101;&#114;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#x2e;&#99;&#x6f;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -674,7 +675,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>=================================================================================;</p>
 <p>Bjarne在他的The C++ Programming Language里面给出过一个助记的方法： 把一个声明从右向左读。;</p>
 <p>char <em> const cp;;( </em> 读成 pointer to );</p>
-<p>cp is a const pointer to char ：cp是一个指向字符型的常量指针，指针不能改变；;</p>
+<p>cp is a const pointer to char ：cp是一个指向字符型的常���指针，指针不能改变；;</p>
 <p>const char * p;;</p>
 <p>p is a pointer to const char：cp是一个指向字符型常量的指针，指针指向的值不能随便改变；;</p>
 <p>char const * p; 同上。;</p>
