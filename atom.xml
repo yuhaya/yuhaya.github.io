@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T00:53:28.972Z</updated>
+  <updated>2014-03-16T00:57:58.259Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -41,13 +41,15 @@
     <link href="http://yuhaya.github.io/2014/03/16/hexo%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/"/>
     <id>http://yuhaya.github.io/2014/03/16/hexo常用技巧/</id>
     <published>2014-03-15T16:05:45.000Z</published>
-    <updated>2014-03-16T00:53:18.000Z</updated>
+    <updated>2014-03-16T00:55:09.000Z</updated>
     <content type="html"><![CDATA[<ol>
 <li>插入图片</li>
 </ol>
 <figure class="highlight"><table><tr><td class="gutter"><pre>1
 </pre></td><td class="code"><pre>![<span class="link_label">hello</span>](<span class="link_url">\{\{BASE_PATH\}\}img/hello.jpg</span>)
 </pre></td></tr></table></figure>
+
+<p>去掉反斜杠</p>
 ]]></content>
     
     
@@ -60,7 +62,7 @@
     <link href="http://yuhaya.github.io/2014/03/15/%E5%90%88%E5%B9%B6zf2%E5%BA%93%E6%96%87%E4%BB%B6/"/>
     <id>http://yuhaya.github.io/2014/03/15/合并zf2库文件/</id>
     <published>2014-03-14T17:16:36.000Z</published>
-    <updated>2014-03-14T17:29:53.000Z</updated>
+    <updated>2014-03-16T00:57:28.000Z</updated>
     <content type="html"><![CDATA[<figure class="highlight php"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -180,8 +182,6 @@
 117
 118
 119
-120
-121
 </pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
 <span class="comment">/**
  * This makes our life easier when dealing with paths. Everything is relative
@@ -191,8 +191,6 @@ header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);
 date_default_timezone_set(<span class="string">'PRC'</span>);
 chdir(dirname(<span class="keyword">__DIR__</span>));
 define(<span class="string">'__ROOT__'</span>, dirname(<span class="keyword">__DIR__</span>));
-define(<span class="string">'BASE_PATH'</span>, <span class="keyword">__DIR__</span>);
-define(<span class="string">'TEMP_PATH'</span>,dirname(<span class="keyword">__DIR__</span>).<span class="string">'/media/temp/'</span>);
 define(<span class="string">'DEVELOP_ENV'</span>,<span class="number">0</span>);
 <span class="keyword">if</span>(DEVELOP_ENV){
 	error_reporting(E_ALL);
@@ -308,17 +306,25 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 
 <ul>
 <li><h4 id="all_files">all_files</h4>
-<pre><code>  获取所有需要加载的文件
-</code></pre></li>
+<blockquote>
+<p>获取所有需要加载的文件</p>
+</blockquote>
+</li>
 <li><h4 id="strip_whitespace">strip_whitespace</h4>
-<pre><code>  压缩php文件
-</code></pre></li>
+<blockquote>
+<p>压缩php文件</p>
+</blockquote>
+</li>
 <li><h4 id="complie">complie</h4>
-<pre><code>  合并php文件
-</code></pre></li>
+<blockquote>
+<p>合并php文件</p>
+</blockquote>
+</li>
 <li><h4 id="load_complie">load_complie</h4>
-<pre><code>  加载合并文件
-</code></pre></li>
+<blockquote>
+<p>加载合并文件</p>
+</blockquote>
+</li>
 </ul>
 ]]></content>
     
@@ -345,7 +351,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x33;&#119;&#109;&#97;&#111;&#x63;&#111;&#x6d;&#112;&#117;&#116;&#101;&#114;&#64;&#103;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;">&#x33;&#119;&#109;&#97;&#111;&#x63;&#111;&#x6d;&#112;&#117;&#116;&#101;&#114;&#64;&#103;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;</a></p>
+<p><a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#51;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#x65;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#51;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#x65;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>

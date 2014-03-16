@@ -245,8 +245,6 @@
 117
 118
 119
-120
-121
 </pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
 <span class="comment">/**
  * This makes our life easier when dealing with paths. Everything is relative
@@ -256,8 +254,6 @@ header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);
 date_default_timezone_set(<span class="string">'PRC'</span>);
 chdir(dirname(<span class="keyword">__DIR__</span>));
 define(<span class="string">'__ROOT__'</span>, dirname(<span class="keyword">__DIR__</span>));
-define(<span class="string">'BASE_PATH'</span>, <span class="keyword">__DIR__</span>);
-define(<span class="string">'TEMP_PATH'</span>,dirname(<span class="keyword">__DIR__</span>).<span class="string">'/media/temp/'</span>);
 define(<span class="string">'DEVELOP_ENV'</span>,<span class="number">0</span>);
 <span class="keyword">if</span>(DEVELOP_ENV){
 	error_reporting(E_ALL);
@@ -373,17 +369,25 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 
 <ul>
 <li><h4 id="all_files">all_files</h4>
-<pre><code>  获取所有需要加载的文件
-</code></pre></li>
+<blockquote>
+<p>获取所有需要加载的文件</p>
+</blockquote>
+</li>
 <li><h4 id="strip_whitespace">strip_whitespace</h4>
-<pre><code>  压缩php文件
-</code></pre></li>
+<blockquote>
+<p>压缩php文件</p>
+</blockquote>
+</li>
 <li><h4 id="complie">complie</h4>
-<pre><code>  合并php文件
-</code></pre></li>
+<blockquote>
+<p>合并php文件</p>
+</blockquote>
+</li>
 <li><h4 id="load_complie">load_complie</h4>
-<pre><code>  加载合并文件
-</code></pre></li>
+<blockquote>
+<p>加载合并文件</p>
+</blockquote>
+</li>
 </ul>
 
     

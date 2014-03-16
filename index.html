@@ -196,6 +196,8 @@
 </pre></td><td class="code"><pre>![<span class="link_label">hello</span>](<span class="link_url">\{\{BASE_PATH\}\}img/hello.jpg</span>)
 </pre></td></tr></table></figure>
 
+<p>去掉反斜杠</p>
+
     
   </section>
   <footer>
@@ -366,8 +368,6 @@
 117
 118
 119
-120
-121
 </pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
 <span class="comment">/**
  * This makes our life easier when dealing with paths. Everything is relative
@@ -377,8 +377,6 @@ header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);
 date_default_timezone_set(<span class="string">'PRC'</span>);
 chdir(dirname(<span class="keyword">__DIR__</span>));
 define(<span class="string">'__ROOT__'</span>, dirname(<span class="keyword">__DIR__</span>));
-define(<span class="string">'BASE_PATH'</span>, <span class="keyword">__DIR__</span>);
-define(<span class="string">'TEMP_PATH'</span>,dirname(<span class="keyword">__DIR__</span>).<span class="string">'/media/temp/'</span>);
 define(<span class="string">'DEVELOP_ENV'</span>,<span class="number">0</span>);
 <span class="keyword">if</span>(DEVELOP_ENV){
 	error_reporting(E_ALL);
@@ -494,17 +492,25 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 
 <ul>
 <li><h4 id="all_files">all_files</h4>
-<pre><code>  获取所有需要加载的文件
-</code></pre></li>
+<blockquote>
+<p>获取所有需要加载的文件</p>
+</blockquote>
+</li>
 <li><h4 id="strip_whitespace">strip_whitespace</h4>
-<pre><code>  压缩php文件
-</code></pre></li>
+<blockquote>
+<p>压缩php文件</p>
+</blockquote>
+</li>
 <li><h4 id="complie">complie</h4>
-<pre><code>  合并php文件
-</code></pre></li>
+<blockquote>
+<p>合并php文件</p>
+</blockquote>
+</li>
 <li><h4 id="load_complie">load_complie</h4>
-<pre><code>  加载合并文件
-</code></pre></li>
+<blockquote>
+<p>加载合并文件</p>
+</blockquote>
+</li>
 </ul>
 
     
@@ -571,7 +577,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x33;&#119;&#109;&#97;&#111;&#x63;&#111;&#x6d;&#112;&#117;&#116;&#101;&#114;&#64;&#103;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;">&#x33;&#119;&#109;&#97;&#111;&#x63;&#111;&#x6d;&#112;&#117;&#116;&#101;&#114;&#64;&#103;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;</a></p>
+<p><a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#51;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#x65;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#51;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#x65;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -742,7 +748,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>char <em> const cp;;( </em> 读成 pointer to );</p>
 <p>cp is a const pointer to char ：cp是一个指向字符型的常量指针，指针不能改变；;</p>
 <p>const char * p;;</p>
-<p>p is a pointer to const char：cp是一个���向字符型常量的指针，指针指向的值不能随便改变；;</p>
+<p>p is a pointer to const char：cp是一个指向字符型常量的指针，指针指向的值不能随便改变；;</p>
 <p>char const * p; 同上。;</p>
 <p>url:<a href="http://guhanjie.iteye.com/blog/1683154" target="_blank"><a href="http://guhanjie.iteye.com/blog/1683154">http://guhanjie.iteye.com/blog/1683154</a></a></p>
 
