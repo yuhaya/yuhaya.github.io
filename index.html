@@ -67,7 +67,7 @@
   
     <li><a href="/categories/Node.js/">Node.js</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(1)</small></li>
+    <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(2)</small></li>
   
     <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
   
@@ -99,6 +99,244 @@
 </div></header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/03/16/zf2-启动简介：一，类的加载/">zf2 启动简介：一，类的加载</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <h3 id="autoloaderfactory">AutoloaderFactory</h3>
+<p>自动加载工厂类</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre>        Zend\Loader\AutoloaderFactory::factory(<span class="keyword">array</span>(
+            <span class="string">'Zend\Loader\StandardAutoloader'</span> =&gt; <span class="keyword">array</span>(
+                <span class="string">'autoregister_zf'</span> =&gt; <span class="keyword">true</span>,
+                <span class="string">'namespaces'</span>=&gt;<span class="keyword">array</span>(
+        			<span class="string">'Etah'</span>=&gt;<span class="keyword">__DIR__</span> . <span class="string">'/etah'</span>
+        		),
+<span class="comment">//        		'prefixes' =&gt; array(</span>
+<span class="comment">//	       			'Scapi' =&gt; __DIR__ . '/../library/Scapi',</span>
+<span class="comment">//    			),</span>
+        		<span class="string">'fallback_autoloader'</span> =&gt; <span class="keyword">true</span>
+            ),
+            <span class="string">'Zend\Loader\ClassMapAutoloader'</span> =&gt; <span class="keyword">array</span>(
+		        <span class="variable">$zf2Path</span> . <span class="string">'/autoload_classmap.php'</span>
+	      	)
+        ));
+</pre></td></tr></table></figure>
+
+
+<p>后面会介绍这段代码的意思</p>
+<p>既然AutoloaderFactory是工厂类，那么它封装的自动加载类有那些呢？</p>
+<ul>
+<li><p>ClassMapAutoloader</p>
+<p>  类地图自动加载器--类地图映射的方式加载类（zf2类库）</p>
+</li>
+<li><p>ModuleAutoloader</p>
+<p>  模块自动加载器--同ClassMapAutoloader（模块类）</p>
+</li>
+<li><p>StandardAutoloader</p>
+<p>  标准自动加载器--通过注册命名空间加载类 (默认加载方式)</p>
+</li>
+</ul>
+<p>Zend\Loader\AutoloaderFactory::factory()</p>
+<p><code>factory</code>方法参数数组的第一个配置元素必须为 <code>Zend\Loader\StandardAutoloader</code></p>
+<p>或者在 <code>Zend\Loader\AutoloaderFactory::factory</code> 调用之前手动载入 <code>Zend\Loader\ClassMapAutoloader</code></p>
+<ul>
+<li><p>StandardAutoloader</p>
+<ul>
+<li>autoregister_zf  ==  是否自动注册<code>Zend</code>命名空间，若为false，下面需要手动注册</li>
+<li>namespaces  == 注册命名空间</li>
+<li>prefixes 命名空间出现之前的和命名空间作用相似的东西，以<code>_</code>分割（一般用不上）</li>
+<li>fallback_autoloader == 拼装实际类路径时可能会用到(一般情况下用不到，默认配成true)</li>
+</ul>
+</li>
+<li><p>ClassMapAutoloader</p>
+<ul>
+<li>类地图映射php文件</li>
+</ul>
+</li>
+<li><p>ModuleAutoloader</p>
+<ul>
+<li>从各种来源定位和按需加载的模块类(后续介绍)</li>
+</ul>
+</li>
+</ul>
+<p>这三个类都是通过 <strong>spl_autoload_register</strong> 函数注册自动加载函数</p>
+<p>所以建议的<code>Zend\Loader\AutoloaderFactory::factory()</code>参数顺序</p>
+<p>先配置 StandardAutoloader</p>
+<p>然后再配置 ClassMapAutoloader</p>
+<p>原因是：在载入类的时候会先调用 ClassMapAutoloader 中的加载类方法，若未找到则会调用 StandardAutoloader 中的类加载方法</p>
+<blockquote>
+<p>ClassMapAutoloader 加载类的方式比 StandardAutoloader中更加的高效
+前者只是在一个大的数组映射表中寻值，而后者则需要拼装截取才能获得最终的路径</p>
+</blockquote>
+<p>以下是以数组的方式打印自动装载器数组</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="variable">$loader</span> = \Zend\Loader\AutoloaderFactory::getRegisteredAutoloaders();
+        
+<span class="keyword">echo</span> <span class="string">"&lt;pre&gt;"</span>;
+        
+print_r(<span class="variable">$loader</span>);
+</pre></td></tr></table></figure>
+
+
+<p>输出</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+</pre></td><td class="code"><pre><span class="type">Array</span>
+(
+    [<span class="type">Zend</span>\<span class="type">Loader</span>\<span class="type">StandardAutoloader</span>] =&gt; <span class="type">Zend</span>\<span class="type">Loader</span>\<span class="type">StandardAutoloader</span> <span class="type">Object</span>
+        (
+            [namespaces:protected] =&gt; <span class="type">Array</span>
+                (
+                    [<span class="type">Zend</span>\] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/xamppfiles/htdocs/zend/vendor/<span class="type">ZF2</span>/library/<span class="type">Zend</span>/
+                    [<span class="type">Etah</span>\] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/xamppfiles/htdocs/zend/etah/
+                    [<span class="type">Application</span>\] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/xamppfiles/htdocs/zend/<span class="module"><span class="keyword">module</span>/Application/src/Application/
+                )
+
+           [prefixes:protected] =&gt; Array
+                <span class="container">(
+                )</span>
+
+            [fallbackAutoloaderFlag:protected] =&gt; 1
+        )
+
+    [Zend\Loader\ClassMapAutoloader] =&gt; Zend\Loader\ClassMapAutoloader Object
+        <span class="container">(
+            [<span class="title">mapsLoaded</span>:<span class="title">protected</span>] =&gt; <span class="type">Array</span>
+                (
+                    [0] =&gt; <span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="title">autoload_classmap</span>.<span class="title">php</span>
+                )</span>
+
+            [map:protected] =&gt; Array
+                <span class="container">(
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">AbstractAdapter</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">AbstractAdapter</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">AdapterInterface</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">AdapterInterface</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">DbTable</span>\<span class="type">AbstractAdapter</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">DbTable</span>/<span class="type">AbstractAdapter</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">DbTable</span>\<span class="type">CallbackCheckAdapter</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">DbTable</span>/<span class="type">CallbackCheckAdapter</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">DbTable</span>\<span class="type">CredentialTreatmentAdapter</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">DbTable</span>/<span class="type">CredentialTreatmentAdapter</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">DbTable</span>\<span class="type">Exception</span>\<span class="type">ExceptionInterface</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">DbTable</span>/<span class="type">Exception</span>/<span class="type">ExceptionInterface</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">DbTable</span>\<span class="type">Exception</span>\<span class="type">InvalidArgumentException</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">DbTable</span>/<span class="type">Exception</span>/<span class="type">InvalidArgumentException</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">DbTable</span>\<span class="type">Exception</span>\<span class="type">RuntimeException</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">DbTable</span>/<span class="type">Exception</span>/<span class="type">RuntimeException</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">DbTable</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">DbTable</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">Digest</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">Digest</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">Exception</span>\<span class="type">ExceptionInterface</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">Exception</span>/<span class="type">ExceptionInterface</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">Exception</span>\<span class="type">InvalidArgumentException</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">Exception</span>/<span class="type">InvalidArgumentException</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">Exception</span>\<span class="type">RuntimeException</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">Exception</span>/<span class="type">RuntimeException</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">Exception</span>\<span class="type">UnexpectedValueException</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">Exception</span>/<span class="type">UnexpectedValueException</span>.<span class="title">php</span>
+                    [<span class="type">Zend</span>\<span class="type">Authentication</span>\<span class="type">Adapter</span>\<span class="type">Http</span>\<span class="type">ApacheResolver</span>] =&gt; /<span class="type">Applications</span>/<span class="type">XAMPP</span>/<span class="title">xamppfiles</span>/<span class="title">htdocs</span>/<span class="title">zend</span>/<span class="title">vendor</span>/<span class="type">ZF2</span>/<span class="title">library</span>/<span class="type">Zend</span>/<span class="type">Authentication</span>/<span class="type">Adapter</span>/<span class="type">Http</span>/<span class="type">ApacheResolver</span>.<span class="title">php</span>
+                    )</span>
+       )
+)</span>
+</pre></td></tr></table></figure>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-03-16T06:08:29.000Z"><a href="/2014/03/16/zf2-启动简介：一，类的加载/">3月 16 2014</a></time>
+        
+        
+  
+  <a href="/categories/Zend Framework 2/">@Zend Framework 2</a>
+
+
+        
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+
   <article class="post">
   <header>
     
@@ -579,7 +817,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#58;&#51;&#x77;&#109;&#97;&#111;&#x63;&#111;&#109;&#x70;&#x75;&#x74;&#101;&#114;&#x40;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;">&#51;&#x77;&#109;&#97;&#111;&#x63;&#111;&#109;&#x70;&#x75;&#x74;&#101;&#114;&#x40;&#x67;&#x6d;&#97;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p><a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#51;&#119;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#x40;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#99;&#x6f;&#109;">&#51;&#119;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#x40;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#99;&#x6f;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
