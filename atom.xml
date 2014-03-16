@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T00:57:58.259Z</updated>
+  <updated>2014-03-16T01:36:13.772Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,12 +19,18 @@
     <link href="http://yuhaya.github.io/2014/03/16/nodejs-mvc%E6%A1%86%E6%9E%B6/"/>
     <id>http://yuhaya.github.io/2014/03/16/nodejs-mvc框架/</id>
     <published>2014-03-16T00:17:21.000Z</published>
-    <updated>2014-03-16T00:48:38.000Z</updated>
+    <updated>2014-03-16T01:35:59.000Z</updated>
     <content type="html"><![CDATA[<p>Node.js是JavaScript中最为流行的框架之一，易于创建可扩展的Web应用。Node.js包含不同类型框架，包括MVC， full-stack，REST API以及Generators。借助这些框架使Node.js更加易于使用，它还支持众多特性功能，您只需几个步骤就可快速搭建强大的Web应用。</p>
 <p>本文分享十款最佳的JavaScript框架。</p>
 <ol>
 <li><p><a href="http://sailsjs.org/" target="_blank">Sails.js</a></p>
-<p> <img src="img/salls.js.jpg" alt="Sall.js"></p>
+<p> <img src="img/salls.js.jpg" alt="Sall.js">
+ Sails易于开发定制企业级、现代化的Node.js 应用，同时，它也适用于创建图表、仪表盘及各种游戏应用。</p>
+</li>
+<li><p><a href="http://www.totaljs.com/" target="_blank">Total.js</a></p>
+<p><img src="img/Total.js.jpg" alt="Total.js"></p>
+<p>Total.js是另一款伟大的框架，用来帮助创建Web页面及Web应用，支持MVC架构。它是利用HTML、JavaScript及CSS创建网站的一款开源的现代化框架。</p>
+<p>参考:<a href="http://www.csdn.net/article/2014-02-24/2818519-node-js-mvc-frameworks-for-javascript-developers" target="_blank">node js框架</a></p>
 </li>
 </ol>
 ]]></content>
@@ -351,7 +357,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#x61;&#105;&#108;&#116;&#111;&#x3a;&#51;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#x65;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#51;&#x77;&#109;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#x65;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
+<p><a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x33;&#x77;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#x70;&#117;&#116;&#x65;&#114;&#x40;&#103;&#109;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;">&#x33;&#x77;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#x70;&#117;&#116;&#x65;&#114;&#x40;&#103;&#109;&#x61;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
