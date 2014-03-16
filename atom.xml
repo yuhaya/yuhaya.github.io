@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-16T13:40:44.176Z</updated>
+  <updated>2014-03-16T13:42:33.331Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/03/16/zf2-%E5%90%AF%E5%8A%A8%E7%AE%80%E4%BB%8B%EF%BC%9A%E4%B8%80%EF%BC%8C%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD/"/>
     <id>http://yuhaya.github.io/2014/03/16/zf2-启动简介：一，类的加载/</id>
     <published>2014-03-16T06:08:29.000Z</published>
-    <updated>2014-03-16T13:39:42.000Z</updated>
+    <updated>2014-03-16T13:42:26.000Z</updated>
     <content type="html"><![CDATA[<h3 id="autoloaderfactory">AutoloaderFactory</h3>
 <p>自动加载工厂类</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
@@ -100,7 +100,7 @@
 <p>ClassMapAutoloader 加载类的方式比 StandardAutoloader中更加的高效
 前者只是在一个大的数组映射表中寻值，而后者则需要拼装截取才能获得最终的路径</p>
 </blockquote>
-<h3 id="-">以下为测试数据：（请求开始时间-请求结束时间）</h3>
+<h3 id="-i7-">以下为测试数据：（请求开始时间-请求结束时间）//i7 四核条件下（性能低的机器上会更加明显）</h3>
 <h1 id="-standardautoloader-">通过 StandardAutoloader 方式</h1>
 <p>start-time = 1394976543.9461</p>
 <p>end-time = 1394976544.2273</p>
@@ -576,7 +576,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x33;&#x77;&#109;&#97;&#x6f;&#99;&#x6f;&#109;&#x70;&#x75;&#x74;&#x65;&#114;&#64;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#109;">&#x33;&#x77;&#109;&#97;&#x6f;&#99;&#x6f;&#109;&#x70;&#x75;&#x74;&#x65;&#114;&#64;&#x67;&#109;&#97;&#105;&#108;&#x2e;&#x63;&#111;&#109;</a></p>
+<p><a href="&#x6d;&#97;&#x69;&#108;&#116;&#111;&#x3a;&#51;&#x77;&#x6d;&#97;&#x6f;&#99;&#111;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;">&#51;&#x77;&#x6d;&#97;&#x6f;&#99;&#111;&#x6d;&#112;&#117;&#x74;&#101;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#111;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
