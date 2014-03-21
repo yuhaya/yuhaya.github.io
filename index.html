@@ -67,7 +67,7 @@
   
     <li><a href="/categories/Node.js/">Node.js</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(3)</small></li>
+    <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(4)</small></li>
   
     <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
   
@@ -83,7 +83,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/blog/" style="font-size: NaNpx;">blog</a><a href="/tags/const/" style="font-size: NaNpx;">const</a><a href="/tags/mvc/" style="font-size: NaNpx;">mvc</a><a href="/tags/performance/" style="font-size: NaNpx;">performance</a><a href="/tags/zf2/" style="font-size: NaNpx;">zf2</a>
+    <a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a>
   </div>
 </div>
 
@@ -104,6 +104,396 @@
 </div></header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/03/21/zf2-启动简介：二，服务的获取/">zf2 启动简介：二，服务的获取</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>zf2框架在启动的过程中会创建一个<strong>service manager</strong>对象 （仅仅会实例化一次）</p>
+<p>而zf2框架中各种服务的调用都是通过 service manager 对象来实现的 </p>
+<p>最常用的如 get 方法，用来获取某一个服务</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre>
+	<span class="comment">//Zend\Mvc\Application::init(require 'config/application.config.php')</span>
+	
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(<span class="variable">$configuration</span> = array<span class="params">()</span>)</span>
+    {</span>
+        <span class="variable">$smConfig</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'service_manager'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'service_manager'</span>] : <span class="keyword">array</span>();
+        <span class="variable">$listeners</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'listeners'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'listeners'</span>] : <span class="keyword">array</span>();
+        <span class="variable">$serviceManager</span> = <span class="keyword">new</span> ServiceManager(<span class="keyword">new</span> Service\ServiceManagerConfig(<span class="variable">$smConfig</span>));
+        <span class="variable">$serviceManager</span>-&gt;setService(<span class="string">'ApplicationConfig'</span>, <span class="variable">$configuration</span>);
+        <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'ModuleManager'</span>)-&gt;loadModules();
+        <span class="keyword">return</span> <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'Application'</span>)-&gt;bootstrap(<span class="variable">$listeners</span>);
+    }
+</pre></td></tr></table></figure>
+
+<p>在zf2启动过程中一开始便通过    <code>Zend/Mvc/Service/ServiceManagerConfig.php</code> 来初始化的创建一个服务管理器
+提供的默认配置如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+</pre></td><td class="code"><pre><span class="keyword">protected</span> <span class="variable">$invokables</span> = <span class="keyword">array</span>(
+        <span class="string">'SharedEventManager'</span> =&gt; <span class="string">'Zend\EventManager\SharedEventManager'</span>,
+    );
+
+    <span class="comment">/**
+     * Service factories
+     *
+     *<span class="phpdoc"> @var</span> array
+     */</span>
+    <span class="keyword">protected</span> <span class="variable">$factories</span> = <span class="keyword">array</span>(
+        <span class="string">'EventManager'</span>  =&gt; <span class="string">'Zend\Mvc\Service\EventManagerFactory'</span>,
+        <span class="string">'ModuleManager'</span> =&gt; <span class="string">'Zend\Mvc\Service\ModuleManagerFactory'</span>,
+    );
+
+    <span class="comment">/**
+     * Abstract factories
+     *
+     *<span class="phpdoc"> @var</span> array
+     */</span>
+    <span class="keyword">protected</span> <span class="variable">$abstractFactories</span> = <span class="keyword">array</span>();
+
+    <span class="comment">/**
+     * Aliases
+     *
+     *<span class="phpdoc"> @var</span> array
+     */</span>
+    <span class="keyword">protected</span> <span class="variable">$aliases</span> = <span class="keyword">array</span>(
+        <span class="string">'Zend\EventManager\EventManagerInterface'</span> =&gt; <span class="string">'EventManager'</span>,
+    );
+
+    <span class="comment">/**
+     * Shared services
+     *
+     * Services are shared by default; this is primarily to indicate services
+     * that should NOT be shared
+     *
+     *<span class="phpdoc"> @var</span> array
+     */</span>
+    <span class="keyword">protected</span> <span class="variable">$shared</span> = <span class="keyword">array</span>(
+        <span class="string">'EventManager'</span> =&gt; <span class="keyword">false</span>,
+    );
+</pre></td></tr></table></figure>
+
+<p>这些默认初始化配置会合并到 service manager 对象中，在启动过程中除了这些默认配置以外，其实在启动的其他位置也提供了许多 service manager 对象默认的服务配置
+如 <code>Zend/Mvc/Service/ServiceListenerFactory.php</code> 中提供的默认配置</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+</pre></td><td class="code"><pre><span class="keyword">protected</span> <span class="variable">$defaultServiceConfig</span> = <span class="keyword">array</span>(
+        <span class="string">'invokables'</span> =&gt; <span class="keyword">array</span>(
+            <span class="string">'DispatchListener'</span>     =&gt; <span class="string">'Zend\Mvc\DispatchListener'</span>,
+            <span class="string">'RouteListener'</span>        =&gt; <span class="string">'Zend\Mvc\RouteListener'</span>,
+            <span class="string">'SendResponseListener'</span> =&gt; <span class="string">'Zend\Mvc\SendResponseListener'</span>
+        ),
+        <span class="string">'factories'</span> =&gt; <span class="keyword">array</span>(
+            <span class="string">'Application'</span>                    =&gt; <span class="string">'Zend\Mvc\Service\ApplicationFactory'</span>,
+            <span class="string">'Config'</span>                         =&gt; <span class="string">'Zend\Mvc\Service\ConfigFactory'</span>,
+            <span class="string">'ControllerLoader'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ControllerLoaderFactory'</span>,
+            <span class="string">'ControllerPluginManager'</span>        =&gt; <span class="string">'Zend\Mvc\Service\ControllerPluginManagerFactory'</span>,
+            <span class="string">'ConsoleAdapter'</span>                 =&gt; <span class="string">'Zend\Mvc\Service\ConsoleAdapterFactory'</span>,
+            <span class="string">'ConsoleRouter'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
+            <span class="string">'ConsoleViewManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\ConsoleViewManagerFactory'</span>,
+            <span class="string">'DependencyInjector'</span>             =&gt; <span class="string">'Zend\Mvc\Service\DiFactory'</span>,
+            <span class="string">'DiAbstractServiceFactory'</span>       =&gt; <span class="string">'Zend\Mvc\Service\DiAbstractServiceFactoryFactory'</span>,
+            <span class="string">'DiServiceInitializer'</span>           =&gt; <span class="string">'Zend\Mvc\Service\DiServiceInitializerFactory'</span>,
+            <span class="string">'DiStrictAbstractServiceFactory'</span> =&gt; <span class="string">'Zend\Mvc\Service\DiStrictAbstractServiceFactoryFactory'</span>,
+            <span class="string">'FilterManager'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\FilterManagerFactory'</span>,
+            <span class="string">'FormElementManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\FormElementManagerFactory'</span>,
+            <span class="string">'HttpRouter'</span>                     =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
+            <span class="string">'HttpViewManager'</span>                =&gt; <span class="string">'Zend\Mvc\Service\HttpViewManagerFactory'</span>,
+            <span class="string">'HydratorManager'</span>                =&gt; <span class="string">'Zend\Mvc\Service\HydratorManagerFactory'</span>,
+            <span class="string">'InputFilterManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\InputFilterManagerFactory'</span>,
+            <span class="string">'MvcTranslator'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\TranslatorServiceFactory'</span>,
+            <span class="string">'PaginatorPluginManager'</span>         =&gt; <span class="string">'Zend\Mvc\Service\PaginatorPluginManagerFactory'</span>,
+            <span class="string">'Request'</span>                        =&gt; <span class="string">'Zend\Mvc\Service\RequestFactory'</span>,
+            <span class="string">'Response'</span>                       =&gt; <span class="string">'Zend\Mvc\Service\ResponseFactory'</span>,
+            <span class="string">'Router'</span>                         =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
+            <span class="string">'RoutePluginManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\RoutePluginManagerFactory'</span>,
+            <span class="string">'SerializerAdapterManager'</span>       =&gt; <span class="string">'Zend\Mvc\Service\SerializerAdapterPluginManagerFactory'</span>,
+            <span class="string">'ValidatorManager'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ValidatorManagerFactory'</span>,
+            <span class="string">'ViewHelperManager'</span>              =&gt; <span class="string">'Zend\Mvc\Service\ViewHelperManagerFactory'</span>,
+            <span class="string">'ViewFeedRenderer'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewFeedRendererFactory'</span>,
+            <span class="string">'ViewFeedStrategy'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewFeedStrategyFactory'</span>,
+            <span class="string">'ViewJsonRenderer'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewJsonRendererFactory'</span>,
+            <span class="string">'ViewJsonStrategy'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewJsonStrategyFactory'</span>,
+            <span class="string">'ViewManager'</span>                    =&gt; <span class="string">'Zend\Mvc\Service\ViewManagerFactory'</span>,
+            <span class="string">'ViewResolver'</span>                   =&gt; <span class="string">'Zend\Mvc\Service\ViewResolverFactory'</span>,
+            <span class="string">'ViewTemplateMapResolver'</span>        =&gt; <span class="string">'Zend\Mvc\Service\ViewTemplateMapResolverFactory'</span>,
+            <span class="string">'ViewTemplatePathStack'</span>          =&gt; <span class="string">'Zend\Mvc\Service\ViewTemplatePathStackFactory'</span>,
+        ),
+        <span class="string">'aliases'</span> =&gt; <span class="keyword">array</span>(
+            <span class="string">'Configuration'</span>                          =&gt; <span class="string">'Config'</span>,
+            <span class="string">'Console'</span>                                =&gt; <span class="string">'ConsoleAdapter'</span>,
+            <span class="string">'Di'</span>                                     =&gt; <span class="string">'DependencyInjector'</span>,
+            <span class="string">'Zend\Di\LocatorInterface'</span>               =&gt; <span class="string">'DependencyInjector'</span>,
+            <span class="string">'Zend\Mvc\Controller\PluginManager'</span>      =&gt; <span class="string">'ControllerPluginManager'</span>,
+            <span class="string">'Zend\View\Resolver\TemplateMapResolver'</span> =&gt; <span class="string">'ViewTemplateMapResolver'</span>,
+            <span class="string">'Zend\View\Resolver\TemplatePathStack'</span>   =&gt; <span class="string">'ViewTemplatePathStack'</span>,
+            <span class="string">'Zend\View\Resolver\AggregateResolver'</span>   =&gt; <span class="string">'ViewResolver'</span>,
+            <span class="string">'Zend\View\Resolver\ResolverInterface'</span>   =&gt; <span class="string">'ViewResolver'</span>,
+        ),
+        <span class="string">'abstract_factories'</span> =&gt; <span class="keyword">array</span>(
+            <span class="string">'Zend\Form\FormAbstractServiceFactory'</span>,
+        )
+</pre></td></tr></table></figure>
+
+<p>而对于框架的使用者来说我们可以在模块配置文件中自定义服务配置，或者在控制器或者方法中动态注册服务（不太推荐，相对于在配置中注册多走了一道流程）</p>
+<p>如下是用户自定义配置实例</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+<span class="comment">// a module configuration, "module/SomeModule/config/module.config.php"</span>
+<span class="keyword">return</span> <span class="keyword">array</span>(
+    <span class="string">'service_manager'</span> =&gt; <span class="keyword">array</span>(
+        <span class="string">'abstract_factories'</span> =&gt; <span class="keyword">array</span>(
+            <span class="comment">// Valid values include names of classes implementing</span>
+            <span class="comment">// AbstractFactoryInterface, instances of classes implementing</span>
+            <span class="comment">// AbstractFactoryInterface, or any PHP callbacks</span>
+            <span class="string">'SomeModule\Service\FallbackFactory'</span>,
+        ),
+        <span class="string">'aliases'</span> =&gt; <span class="keyword">array</span>(
+            <span class="comment">// Aliasing a FQCN to a service name</span>
+            <span class="string">'SomeModule\Model\User'</span> =&gt; <span class="string">'User'</span>,
+            <span class="comment">// Aliasing a name to a known service name</span>
+            <span class="string">'AdminUser'</span> =&gt; <span class="string">'User'</span>,
+            <span class="comment">// Aliasing to an alias</span>
+            <span class="string">'SuperUser'</span> =&gt; <span class="string">'AdminUser'</span>,
+        ),
+        <span class="string">'factories'</span> =&gt; <span class="keyword">array</span>(
+            <span class="comment">// Keys are the service names.</span>
+            <span class="comment">// Valid values include names of classes implementing</span>
+            <span class="comment">// FactoryInterface, instances of classes implementing</span>
+            <span class="comment">// FactoryInterface, or any PHP callbacks</span>
+            <span class="string">'User'</span>     =&gt; <span class="string">'SomeModule\Service\UserFactory'</span>,
+            <span class="string">'UserForm'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">(<span class="variable">$serviceManager</span>)</span> {</span>
+                <span class="variable">$form</span> = <span class="keyword">new</span> SomeModule\Form\User();
+
+                <span class="comment">// Retrieve a dependency from the service manager and inject it!</span>
+                <span class="variable">$form</span>-&gt;setInputFilter(<span class="variable">$serviceManager</span>-&gt;get(<span class="string">'UserInputFilter'</span>));
+                <span class="keyword">return</span> <span class="variable">$form</span>;
+            },
+        ),
+        <span class="string">'invokables'</span> =&gt; <span class="keyword">array</span>(
+            <span class="comment">// Keys are the service names</span>
+            <span class="comment">// Values are valid class names to instantiate.</span>
+            <span class="string">'UserInputFiler'</span> =&gt; <span class="string">'SomeModule\InputFilter\User'</span>,
+        ),
+        <span class="string">'services'</span> =&gt; <span class="keyword">array</span>(
+            <span class="comment">// Keys are the service names</span>
+            <span class="comment">// Values are objects</span>
+            <span class="string">'Auth'</span> =&gt; <span class="keyword">new</span> SomeModule\Authentication\AuthenticationService(),
+        ),
+        <span class="string">'shared'</span> =&gt; <span class="keyword">array</span>(
+            <span class="comment">// Usually, you'll only indicate services that should _NOT_ be</span>
+            <span class="comment">// shared -- i.e., ones where you want a different instance</span>
+            <span class="comment">// every time.</span>
+            <span class="string">'UserForm'</span> =&gt; <span class="keyword">false</span>,
+        ),
+    ),
+);
+</pre></td></tr></table></figure>
+
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-03-21T13:18:30.000Z"><a href="/2014/03/21/zf2-启动简介：二，服务的获取/">3月 21 2014</a></time>
+        
+        
+  
+  <a href="/categories/Zend Framework 2/">@Zend Framework 2</a>
+
+
+        
+  
+  <a href="/tags/zf2/">#zf2</a>
+
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+
   <article class="post">
   <header>
     
@@ -177,7 +567,7 @@
 </li>
 </ul>
 <h1 id="zend-loader-autoloaderfactory-factory-">Zend\Loader\AutoloaderFactory::factory()</h1>
-<p><code>factory</code>方法参数数组的第一个配置元素必须为 <code>Zend\Loader\StandardAutoloader</code></p>
+<p><code>factory</code>方法参数数组的���一个配置元素必须为 <code>Zend\Loader\StandardAutoloader</code></p>
 <p>或者在 <code>Zend\Loader\AutoloaderFactory::factory</code> 调用之前手动载入 <code>Zend\Loader\ClassMapAutoloader</code></p>
 <ul>
 <li><h2 id="standardautoloader">StandardAutoloader</h2>
@@ -332,7 +722,7 @@ print_r(<span class="variable">$loader</span>);
 </pre></td></tr></table></figure>
 
 
-<p>如上可以看出若要加载一个类文件，如 <code>Zend\Authentication\Adapter\AbstractAdapter</code></p>
+<p>如上可以看出若要加载���个类文件，如 <code>Zend\Authentication\Adapter\AbstractAdapter</code></p>
 <p>若使用 <strong>StandardAutoloader</strong> 方式来加载</p>
 <p>则内部原理为 在 Zend\Loader\StandardAutoloader 对象中获取 注册的namespaces数组</p>
 <p>将<code>[Zend\] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/</code></p>
@@ -863,7 +1253,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#x61;&#x69;&#108;&#x74;&#111;&#58;&#51;&#x77;&#109;&#x61;&#111;&#x63;&#111;&#x6d;&#x70;&#117;&#x74;&#101;&#x72;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;">&#51;&#x77;&#109;&#x61;&#111;&#x63;&#111;&#x6d;&#x70;&#117;&#x74;&#101;&#x72;&#64;&#103;&#109;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a></p>
+<p><a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#58;&#x33;&#x77;&#x6d;&#97;&#111;&#x63;&#x6f;&#x6d;&#112;&#117;&#x74;&#x65;&#x72;&#64;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;">&#x33;&#x77;&#x6d;&#97;&#111;&#x63;&#x6f;&#x6d;&#112;&#117;&#x74;&#x65;&#x72;&#64;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -1064,7 +1454,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 </ul>
 <p>若服务器运行在linux上，可修改session的存储目录</p>
 <pre><code>session.save_path = /dev/shm
-</code></pre><p>/dev/shm是Linux系统独有的TMPFS文件系统，是以内存为主要存储方式的文件系统，比RAMDISK更优秀，因为可以使用DISKSWAP作为补充，而且是系统自带的功能模块，不需要另行配置</p>
+</code></pre><p>/dev/shm是Linux系统独有的TMPFS文件系统，是以内存为主要存储方式的文件系统，比RAMDISK更优秀，因为可以使用DISKSWAP作���补充，而且是系统自带的功能模块，不需要另行配置</p>
 <h1 id="-php-">使用php加速器</h1>
 <ul>
 <li><p>Zend OPcache</p>
@@ -1112,7 +1502,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <h1 id="-">合理运用字符串比较函数</h1>
 <p>strncmp / strncasecmp 要比 substr 快</p>
 <h1 id="-">不要随便就复制变量</h1>
-<p>有时候为了使 PHP 代码更加整洁，一些 PHP 新手（���括我）会把预定义好的变量复制到一个名字更简短的变量中，其实这样做的结果是增加了一倍的内存消耗，只会使程序更加慢。试想一下，在下面的例子中，如果用户恶意插入 512KB 字节的文字到文本输入框中，这样就会导致 1MB 的内存被消耗！</p>
+<p>有时候为了使 PHP 代码更加整洁，一些 PHP 新手（包括我）会把预定义好的变量复制到一个名字更简短的变量中，其实这样做的结果是增加了一倍的内存消耗，只会使程序更加慢。试想一下，在下面的例子中，如果用户恶意插入 512KB 字节的文字到文本输入框中，这样就会导致 1MB 的内存被消耗！</p>
 <p>BAD:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
 2
