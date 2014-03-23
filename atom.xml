@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-23T02:08:40.223Z</updated>
+  <updated>2014-03-23T03:52:02.839Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -13,6 +13,22 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[HHVM 是如何提升 PHP 性能的？]]></title>
+    <link href="http://yuhaya.github.io/2014/03/23/hhvm-%E6%98%AF%E5%A6%82%E4%BD%95%E6%8F%90%E5%8D%87-php-%E6%80%A7%E8%83%BD%E7%9A%84%EF%BC%9F/"/>
+    <id>http://yuhaya.github.io/2014/03/23/hhvm-是如何提升-php-性能的？/</id>
+    <published>2014-03-23T03:50:01.000Z</published>
+    <updated>2014-03-23T03:51:48.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://wuduoyi.com/note/hhvm/" target="_blank"><a href="http://wuduoyi.com/note/hhvm/">http://wuduoyi.com/note/hhvm/</a></a></p>
+]]></content>
+    
+    
+      <category term="hhvm" scheme="http://yuhaya.github.io/tags/hhvm/"/>
+    
+      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[php-fpm cgi php-cgi fastcgi 之间的关系]]></title>
@@ -997,7 +1013,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#97;&#x69;&#108;&#116;&#x6f;&#58;&#51;&#119;&#x6d;&#x61;&#111;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#101;&#x72;&#x40;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;">&#51;&#119;&#x6d;&#x61;&#111;&#x63;&#x6f;&#x6d;&#x70;&#x75;&#116;&#101;&#x72;&#x40;&#x67;&#x6d;&#x61;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p><a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x33;&#119;&#x6d;&#97;&#111;&#99;&#111;&#109;&#x70;&#117;&#x74;&#101;&#114;&#64;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;">&#x33;&#119;&#x6d;&#97;&#111;&#99;&#111;&#109;&#x70;&#117;&#x74;&#101;&#114;&#64;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#99;&#x6f;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -1228,7 +1244,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 Apache1 采用mod_gzip / mod_deflate
 Apache2 采用 mod_deflate
 PHP 通过设置配置文件中 zlib.output_compression=1 或者在代码中使用 ob_start(“ob_gzhandler”) 压缩内容</p>
-<p>压缩一般要额外消耗3~5%的CPU（是否开启压缩，还需要根据情���而定）</p>
+<p>压缩一般要额外消耗3~5%的CPU（是否开启压缩，还需要根据情况而定）</p>
 ]]></content>
     
     
