@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yuhaya.github.io/2014/03/24/web%E6%80%A7%E8%83%BD%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E4%B9%8Bapachebench(ab)/</loc>
+    <lastmod>2014-03-24T13:38:02.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yuhaya.github.io/2014/03/23/hhvm-%E6%98%AF%E5%A6%82%E4%BD%95%E6%8F%90%E5%8D%87-php-%E6%80%A7%E8%83%BD%E7%9A%84%EF%BC%9F/</loc>
     <lastmod>2014-03-23T03:50:01.000Z</lastmod>
   </url>
