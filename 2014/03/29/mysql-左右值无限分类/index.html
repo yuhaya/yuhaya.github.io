@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Node.js MVC框架 | yuhaya</title>
+  <title>MySQL 左右值无限分类 | yuhaya</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Node.js MVC框架"/>
+  <meta property="og:title" content="MySQL 左右值无限分类"/>
   <meta property="og:site_name" content="yuhaya"/>
 
   
@@ -113,7 +113,7 @@
   <header>
     
   
-    <h1 class="title">Node.js MVC框架</h1>
+    <h1 class="title">MySQL 左右值无限分类</h1>
   
 
 
@@ -133,31 +133,62 @@
   </header>
   <section class="entry">
     
-      <p>Node.js是JavaScript中最为流行的框架之一，易于创建可扩展的Web应用。Node.js包含不同类型框架，包括MVC， full-stack，REST API以及Generators。借助这些框架使Node.js更加易于使用，它还支持众多特性功能，您只需几个步骤就可快速搭建强大的Web应用。</p>
-<p>本文分享十款最佳的JavaScript框架。</p>
+      <p>这个算法有如下几个数据结构</p>
+<ul>
+<li><p>lft 代表左 left</p>
+</li>
+<li><p>rgt 代表右 right</p>
+</li>
+<li><p>lvl 代表所在的层次 level</p>
+</li>
+</ul>
+<p>下面这个图是一个典型的结构　</p>
+<p><img src="/images/04174230_jKOK.png" alt=""></p>
+<p>我们先看一些使用方法</p>
 <ol>
-<li><p><a href="http://sailsjs.org/" target="_blank">Sails.js</a></p>
-<p> <img src="/images/salls.js.jpg" alt="Sall.js">
- Sails易于开发定制企业级、现代化的Node.js 应用，同时，它也适用于创建图表、仪表盘及各种游戏应用。</p>
+<li>查看整个树(A)有多少节点(包含自己)</li>
+</ol>
+<p>直接看根节点就行了 (right-left+1)/2 = (20-1+1)/2 = 10</p>
+<p>这个数有10个节点</p>
+<ol>
+<li>查看从节点A到E的路径</li>
+</ol>
+<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft</p>
+<p>得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序</p>
+<p>如果2个节点之间不是上下级的关系，则查询没有结果</p>
+<p>反向也是一样的，可以拿到底部一个节点，到上级节点的路径</p>
+<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc</p>
+<p>唯一的区别就是排序是反向的就行了。</p>
+<ol>
+<li>得到某个节点下面的所有节点，且按照树状结构返回</li>
+</ol>
+<p>我们用B做例子</p>
+<p>select * from tree where lft&gt;2 and right&lt;11 order by lft</p>
+<p>拿到的结果是 C,D,E,F,而且顺序也是正确的。</p>
+<ol>
+<li>拿到所有下2级的子节点</li>
+</ol>
+<p>我们A做例子，这次加上了lvl的参数,因为A的level是1，所以我们查询level不大于3的。</p>
+<p>select * from tree where lft&gt;2 and right&lt;11 and lvl&lt;=3 order by lft</p>
+<p>下面看我们新增加一个节点的方法。</p>
+<p>我们在根节点的下面，G节点的右侧增加一个X节点</p>
+<p><img src="/images/04174230_v8X4.png" alt=""></p>
+<p>我们要做的工作就是</p>
+<ol>
+<li><p>G节点的右参数为13</p>
 </li>
-<li><p><a href="http://www.totaljs.com/" target="_blank">Total.js</a></p>
-<p><img src="/images/Total.js.jpg" alt="Total.js"></p>
-<p>Total.js是另一款伟大的框架，用来帮助创建Web页面及Web应用，支持MVC架构。它是利用HTML、JavaScript及CSS创建网站的一款开源的现代化框架。</p>
-</li>
-<li><p><a href="http://www.partialjs.com/" target="_blank">Partial.js</a></p>
-<p><img src="/images/Partial.js.jpg" alt="Total.js"></p>
-<p>Partial js，利用HTML、CSS和JavaScript开发者可创建大量的Web扩展应用以及网站。</p>
-</li>
-<li><p><a href="http://www.partialjs.com/" target="_blank">Koa. js</a><br/>
- <img src="/images/Koa.js.jpg" alt="Koa.js"></p>
-<p> Kao.js是由Express开发而来，旨在创建更小的、更具表现力Web应用及API。</p>
-</li>
-<li><p><a href="http://locomotivejs.org/" target="_blank">Locomotive. js</a></p>
-<p> <img src="/images/Locomotive.js.jpg" alt="Locomotive.js"></p>
-<p>  Locomotive支持MVC模式、RESTful。主要功能如下：优先配置，Routing Helpers，MVC架构，连接任意数据等。</p>
+<li><p>变更所有的受影响的节点,给新节点腾出空位子,</p>
 </li>
 </ol>
-<p>   更多参考:<a href="http://www.csdn.net/article/2014-02-24/2818519-node-js-mvc-frameworks-for-javascript-developers" target="_blank">node js框架</a></p>
+<p>所有左节点比G节点大的，都增加2</p>
+<p>update tree set lft=lft+2 where lft&gt;12</p>
+<p>所有右节点比G节点大的，都增加2</p>
+<p>update tree set rgt=rgt+2 where rgt&gt;13</p>
+<ol>
+<li>新节点放在空位子上,lft=14,rgt=15</li>
+</ol>
+<p>这样就完成了一个新节点的增加操作。</p>
+<p>参考：<a href="http://my.oschina.net/bootstrap/blog/166805" target="_blank">http://my.oschina.net/bootstrap/blog/166805</a></p>
 
     
   </section>
@@ -167,17 +198,14 @@
     
       <div class="widget">
         
-          <time datetime="2014-03-16T00:17:21.000Z"><a href="/2014/03/16/nodejs-mvc框架/">3月 16 2014</a></time>
+          <time datetime="2014-03-29T09:17:58.000Z"><a href="/2014/03/29/mysql-左右值无限分类/">3月 29 2014</a></time>
         
         
   
-  <a href="/categories/Node.js/">@Node.js</a>
+  <a href="/categories/Mysql/">@Mysql</a>
 
 
         
-  
-  <a href="/tags/mvc/">#mvc</a>
-
 
         
       </div>
