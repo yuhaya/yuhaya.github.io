@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Node.js | /sbin</title>
+  <title>jquery 实现iframe 自适应高度 | /sbin</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="jquery 实现iframe 自适应高度"/>
   <meta property="og:site_name" content="/sbin"/>
 
   
@@ -107,26 +107,81 @@
 
 </div></header>
     <section id="content" class="blog">
-      
-<h2 class="archive-title">分类: Node.js</h2>
-
-
-  <div class="archive">
-    
       <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2014-03-16T00:17:21.000Z"><a href="/2014/03/16/nodejs-mvc框架/">3月 16 2014</a></time>
-            
-              <h1 class="title"><a href="/2014/03/16/nodejs-mvc框架/">Node.js MVC框架</a></h1>
-            
-          </header>
-        </div>
-      </article>
+  <header>
+    
+  
+    <h1 class="title">jquery 实现iframe 自适应高度</h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
     
   </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <figure class="highlight html"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="tag">&lt;<span class="title">iframe</span> <span class="attribute">src</span>=<span class="value">"test.html"</span> <span class="attribute">id</span>=<span class="value">"main"</span> <span class="attribute">width</span>=<span class="value">"700"</span> <span class="attribute">height</span>=<span class="value">"300"</span> <span class="attribute">frameborder</span>=<span class="value">"0"</span> <span class="attribute">scrolling</span>=<span class="value">"auto"</span>&gt;</span><span class="tag">&lt;/<span class="title">iframe</span>&gt;</span>
+</pre></td></tr></table></figure>
 
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="comment">//注意：下面的代码是放在和iframe同一个页面调用</span>
+$(<span class="string">"#main"</span>).load(<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+  <span class="keyword">var</span> mainheight = $(<span class="keyword">this</span>).contents().find(<span class="string">"body"</span>).height()+<span class="number">30</span>;
+  $(<span class="keyword">this</span>).height(mainheight);
+});
+</pre></td></tr></table></figure>
+
+<p>url:<a href="http://www.cnblogs.com/luluping/archive/2009/04/17/1437843.html" target="_blank">http://www.cnblogs.com/luluping/archive/2009/04/17/1437843.html</a></p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2014-03-29T03:03:12.000Z"><a href="/2014/03/29/jquery-实现iframe-自适应高度/">3月 29 2014</a></time>
+        
+        
+  
+  <a href="/categories/iquery/">@iquery</a>
+
+
+        
+  
+  <a href="/tags/iframe/">#iframe</a>
+
+
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
 
     </section>
     <footer id="footer" class="clearfix footer"><div class="alignleft">
@@ -148,7 +203,7 @@ var disqus_shortname = 'yuhaya';
   var dsq = document.createElement('script');
   dsq.type = 'text/javascript';
   dsq.async = true;
-  dsq.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+  dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 }());
 </script>
