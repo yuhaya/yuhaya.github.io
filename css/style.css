@@ -1213,7 +1213,7 @@ pre .xml .cdata {
 .gallery .next {
   right: 0;
 }
-.entry a{
+.widget .entry a{
  padding:4px 10px 4px 0px;
  float:left;
 }
