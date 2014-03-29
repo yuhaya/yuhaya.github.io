@@ -146,48 +146,67 @@
 <p>下面这个图是一个典型的结构　</p>
 <p><img src="/images/04174230_jKOK.png" alt="yuhaya"></p>
 <p>我们先看一些使用方法</p>
-<ol>
+<ul>
 <li>查看整个树(A)有多少节点(包含自己)</li>
-</ol>
+</ul>
 <p>直接看根节点就行了 (right-left+1)/2 = (20-1+1)/2 = 10</p>
 <p>这个数有10个节点</p>
-<ol>
+<ul>
 <li>查看从节点A到E的路径</li>
-</ol>
-<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft</p>
-<p>得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序</p>
-<p>如果2个节点之间不是上下级的关系，则查询没有结果</p>
-<p>反向也是一样的，可以拿到底部一个节点，到上级节点的路径</p>
-<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc</p>
-<p>唯一的区别就是排序是反向的就行了。</p>
-<ol>
+</ul>
+<pre><code>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft
+
+
+得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序
+
+
+如果2个节点之间不是上下级的关系，则查询没有结果
+
+
+反向也是一样的，可以拿到底部一个节点，到上级节点的路径
+
+
+select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc
+
+
+唯一的区别就是排序是反向的就行了。
+</code></pre><ul>
 <li>得到某个节点下面的所有节点，且按照树状结构返回</li>
-</ol>
-<p>我们用B做例子</p>
-<p>select * from tree where lft&gt;2 and right&lt;11 order by lft</p>
-<p>拿到的结果是 C,D,E,F,而且顺序也是正确的。</p>
-<ol>
+</ul>
+<pre><code>我们用B做例子
+
+
+select * from tree where lft&gt;2 and right&lt;11 order by lft
+
+
+拿到的结果是 C,D,E,F,而且顺序也是正确的。
+</code></pre><ul>
 <li>拿到所有下2级的子节点</li>
-</ol>
-<p>我们A做例子，这次加上了lvl的参数,因为A的level是1，所以我们查询level不大于3的。</p>
-<p>select * from tree where lft&gt;2 and right&lt;11 and lvl&lt;=3 order by lft</p>
-<p>下面看我们新增加一个节点的方法。</p>
-<p>我们在根节点的下面，G节点的右侧增加一个X节点</p>
-<p><img src="/images/04174230_v8X4.png" alt="yuhaya"></p>
+</ul>
+<pre><code>我们A做例子，这次加上了lvl的参数,因为A的level是1，所以我们查询level不大于3的。
+
+
+select * from tree where lft&gt;2 and right&lt;11 and lvl&lt;=3 order by lft
+
+
+下面看我们新增加一个节点的方法。
+
+
+我们在根节点的下面，G节点的右侧增加一个X节点
+</code></pre><p><img src="/images/04174230_v8X4.png" alt="yuhaya"></p>
 <p>我们要做的工作就是</p>
-<ol>
+<ul>
 <li><p>G节点的右参数为13</p>
 </li>
 <li><p>变更所有的受影响的节点,给新节点腾出空位子,</p>
+<p>  所有左节点比G节点大的，都增加2</p>
+<p>  update tree set lft=lft+2 where lft&gt;12</p>
+<p>  所有右节点比G节点大的，都增加2</p>
+<p>  update tree set rgt=rgt+2 where rgt&gt;13</p>
 </li>
-</ol>
-<p>所有左节点比G节点大的，都增加2</p>
-<p>update tree set lft=lft+2 where lft&gt;12</p>
-<p>所有右节点比G节点大的，都增加2</p>
-<p>update tree set rgt=rgt+2 where rgt&gt;13</p>
-<ol>
-<li>新节点放在空位子上,lft=14,rgt=15</li>
-</ol>
+<li><p>新节点放在空位子上,lft=14,rgt=15</p>
+</li>
+</ul>
 <p>这样就完成了一个新节点的增加操作。</p>
 <p><a href="http://my.oschina.net/bootstrap/blog/166805" target="_blank">http://my.oschina.net/bootstrap/blog/166805</a></p>
 
@@ -397,7 +416,7 @@ $(<span class="string">"#main"</span>).load(<span class="function"><span class="
 <p>are a colon separated username and password.</p>
 <p>-P attribute Add Basic Proxy Authentication, the attributes</p>
 <p>are a colon separated username and password.</p>
-<p>//-P proxy-auth-username:password 对一个中转代理提供BASIC认证信任。用户名和密码由一个:隔开，并以base64编码形式发送。无论服务器是否需要(即, 是否发送了401认证需求代码)，此字符串都会被发送。</p>
+<p>//-P proxy-auth-username:password 对一个中转代理提���BASIC认证信任。用户名和密码由一个:隔开，并以base64编码形式发送。无论服务器是否需要(即, 是否发送了401认证需求代码)，此字符串都会被发送。</p>
 <p>-X proxy:port Proxyserver and port number to use</p>
 <p>-V Print version number and exit</p>
 <p>-k Use HTTP KeepAlive feature</p>
