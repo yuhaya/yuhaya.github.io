@@ -96,12 +96,6 @@
   <nav class="other">
   <ul>
     <li>
-        &nbsp;&nbsp;
-    </li>
-    <li>
-        &nbsp;&nbsp;
-    </li>
-    <li>
         Email : 3wmaocomputer@gmail.com
     </li>
     <li>
@@ -349,7 +343,7 @@ $(<span class="string">"#main"</span>).load(<span class="function"><span class="
 <p>98% 9267</p>
 <p>99% 11713</p>
 <p>100% 11843 (longest request)</p>
-<p>整个场景中所有请求的响应情况。在场景中每个请求都有一个响应时间，其中50％的用户响应时间小于275毫秒，66％的用户响应时间小于298毫秒，最大的响应时间小于11843毫秒。对于并发请求，cpu实际上并不是同时处理的，而是按照每个���求获得的时间片逐个轮转处理的，所以基本上第一个Time per request时间约等于第二个Time per request时间乘以并发请求数。</p>
+<p>整个场景中所有请求的响应情况。在场景中每个请求都有一个响应时间，其中50％的用户响应时间小于275毫秒，66％的用户响应时间小于298毫秒，最大的响应时间小于11843毫秒。对于并发请求，cpu实际上并不是同时处理的，而是按照每个请求获得的时间片逐个轮转处理的，所以基本上第一个Time per request时间约等于第二个Time per request时间乘以并发请求数。</p>
 <h4 id="-web-">总结：在远程对web服务器进行压力测试，往往效果不理想（因为网络延时过大），建议使用内网的另一台或者多台服务器通过内网进行测试，这样得出的数据，准确度会高很多。如果只有单独的一台服务器，可以直接本地测试，比远程测试效果要准确。</h4>
 <p>url:<a href="http://www.ha97.com/4617.html" target="_blank">http://www.ha97.com/4617.html</a></p>
 
@@ -524,7 +518,7 @@ $(<span class="string">"#main"</span>).load(<span class="function"><span class="
     快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。
 FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。</p>
 <h3 id="fastcgi-cgi-cgi-">Fastcgi是用来提高CGI解释器程序性能的一种协议,属于cgi协议的一种</h3>
-<p>提高性能，那么CGI解释器程序的性能问题在哪呢？&quot;PHP解析器会解析php.ini文件，初始化执行环境&quot;，就是这里了。标准的CGI解释器程序对每个请求都会执行这些步骤（不闲累啊！启动进程很累的说！），所以处理每个时间的时间会比较长。这明显不合理嘛！那么Fastcgi是怎么做的呢？首先，Fastcgi会先启一个master，解析配置文件，初始化执行环境，然后再���动多个CGI解释器进程。当请求过来时，master会传递给一个CGI解释器进程，然后立即可以接受下一个请求。这样就避免了重复的劳动，效率自然是高。而且当worker不够用时，master可以根据配置预先启动几个CGI解释器进程等着；当然空闲CGI解释器进程太多时，也会停掉一些，这样就提高了性能，也节约了资源。这就是fastcgi的对进程的管理。</p>
+<p>提高性能，那么CGI解释器程序的性能问题在哪呢？&quot;PHP解析器会解析php.ini文件，初始化执行环境&quot;，就是这里了。标准的CGI解释器程序对每个请求都会执行这些步骤（不闲累啊！启动进程很累的说！），所以处理每个时间的时间会比较长。这明显不合理嘛！那么Fastcgi是怎么做的呢？首先，Fastcgi会先启一个master，解析配置文件，初始化执行环境，然后再启动多个CGI解释器进程。当请求过来时，master会传递给一个CGI解释���进程，然后立即可以接受下一个请求。这样就避免了重复的劳动，效率自然是高。而且当worker不够用时，master可以根据配置预先启动几个CGI解释器进程等着；当然空闲CGI解释器进程太多时，也会停掉一些，这样就提高了性能，也节约了资源。这就是fastcgi的对进程的管理。</p>
 <h1 id="php-fpm">php-fpm</h1>
 <p>大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，他自己本身只能解析请求，返回结果，不会进程管理（皇上，臣妾真的做不到啊！）所以就出现了一些能够调度php-cgi进程的程序，比如说由lighthttpd分离出来的spawn-fcgi。好了PHP-FPM也是这么个东东，在长时间的发展后，逐渐得到了大家的认可（要知道，前几年大家可是抱怨PHP-FPM稳定性太差的），也越来越流行。</p>
 <h3 id="php-fpm-fastcgi-php-cgi-">php-fpm是一个实现了Fastcgi的程序。用来管理 php-cgi 程序的</h3>
@@ -1869,7 +1863,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#51;&#x77;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#112;&#x75;&#116;&#x65;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;">&#51;&#x77;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#x6d;&#112;&#x75;&#116;&#x65;&#114;&#64;&#103;&#109;&#x61;&#105;&#x6c;&#46;&#x63;&#x6f;&#x6d;</a></p>
+<p><a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#51;&#119;&#109;&#x61;&#x6f;&#x63;&#111;&#x6d;&#112;&#x75;&#116;&#x65;&#x72;&#64;&#x67;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#111;&#109;">&#51;&#119;&#109;&#x61;&#x6f;&#x63;&#111;&#x6d;&#112;&#x75;&#116;&#x65;&#x72;&#64;&#x67;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#111;&#109;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
