@@ -153,23 +153,13 @@
 <ul>
 <li>查看从节点A到E的路径</li>
 </ul>
-<pre><code>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft
-
-
-得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序
-
-
-如果2个节点之间不是上下级的关系，则查询没有结果
-
-
-反向也是一样的，可以拿到底部一个节点，到上级节点的路径
-
-
-select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc
-
-
-唯一的区别就是排序是反向的就行了。
-</code></pre><ul>
+<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft</p>
+<p>得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序</p>
+<p>如果2个节点之间不是上下级的关系，则查询没有结果</p>
+<p>反向也是一样的，可以拿到底部一个节点，到上级节点的路径</p>
+<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc</p>
+<p>唯一的区别就是排序是反向的就行了。</p>
+<ul>
 <li>得到某个节点下面的所有节点，且按照树状结构返回</li>
 </ul>
 <pre><code>我们用B做例子
