@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-03-30T08:22:21.823Z</updated>
+  <updated>2014-03-30T08:23:43.165Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/03/30/objective-c%E5%AF%B9%E8%B1%A1%E4%B9%8B%E7%B1%BB%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%85%83%E7%B1%BB%E5%AF%B9%E8%B1%A1/"/>
     <id>http://yuhaya.github.io/2014/03/30/objective-c对象之类对象和元类对象/</id>
     <published>2014-03-30T08:08:15.000Z</published>
-    <updated>2014-03-30T08:22:14.000Z</updated>
+    <updated>2014-03-30T08:23:37.000Z</updated>
     <content type="html"><![CDATA[<p>作为C语言的超集，面向对象成为Objective-C与C语言的最大区别，因此，对象是Objective-C中最重要的部分之一。目前面向对象的语言有很多，</p>
 <p>Objective-C中的对象又和其他语言中的对象有什么区别呢？下面来简单介绍Objective-C中对象的实现。</p>
 <h2 id="objective-c-">Objective-C中的类</h2>
@@ -52,7 +52,7 @@ Class isa;
 <h2 id="-class-object-">类对象（class object）</h2>
 <h3 id="-">①类对象的实质</h3>
 <p>我们知道了：类对象是由编译器创建的，即在编译时所谓的类，就是指类对象（官方文档中是这样说的： The class object is the compiled version of the class）。任何直接或间接继承了NSObject的类，它的实例对象(instance objec)中都有一个isa指针，指向它的类对象(class object)。这个类对象(class object)中存储了关于这个实例对象(instace object)所属的类的定义的一切：包括变量，方法，遵守的协议等等。因此，类对象能访问所有关于这个类的信息，利用这些信息可以产生一个新的实例，但是类对象不能访问任何实例对象的内容。
-当你调用一个 “类方法” 例如 [NSObject alloc],你事实上是发送了一个消息给他的类对象。</p>
+当你调用一个 “类方法” 例如 [NSObject alloc],你事实上是发送了一个消息给他的类对象.</p>
 <h3 id="-">②类对象和实例对象的区别</h3>
 <p>当然有区别了,尽管类对象保留了一个类实例的原型，但它并不是实例本身。它没有自己的实例变量，也不能执行那些类的实例的方法（只有实例对象才可以执行实例方法）。然而，类的定义能包含那些特意为类对象准备的方法–类方法（ 而不是的实例方法）。类对象从父类那里继承类方法，就像实例从父类那里继承实例方法一样。</p>
 <h3 id="-">③类对象与类名</h3>
@@ -308,7 +308,7 @@ $(<span class="string">"#main"</span>).load(<span class="function"><span class="
 <p>98% 9267</p>
 <p>99% 11713</p>
 <p>100% 11843 (longest request)</p>
-<p>整个场景中所有请求的响应情况。在场景中每个请求都有一个响应时间，其中50％的用户响应时间小于275毫秒，66％的用户响应时间小于298毫秒，最大的响应时间小于11843毫秒。对于并发请求，cpu实际上并不是同时处理的，而是按照每个请求获得的时间片逐个轮转处理的，所以基本上第一个Time per request时间约等于第二个Time per request时间乘以并发请求数。</p>
+<p>整个场景中所有请求的响应情况。在场景中每个请求都有一个响应时间，其中50％的用户响应时间小于275毫秒，66％的用户响应时间小于298毫秒，最大的响应时间小于11843毫���。对于并发请求，cpu实际上并不是同时处理的，而是按照每个请求获得的时间片逐个轮转处理的，所以基本上第一个Time per request时间约等于第二个Time per request时间乘以并发请求数。</p>
 <h4 id="-web-">总结：在远程对web服务器进行压力测试，往往效果不理想（因为网络延时过大），建议使用内网的另一台或者多台服务器通过内网进行测试，这样得出的数据，准确度会高很多。如果只有单独的一台服务器，可以直接本地测试，比远程测试效果要准确。</h4>
 <p>url:<a href="http://www.ha97.com/4617.html" target="_blank">http://www.ha97.com/4617.html</a></p>
 ]]></content>
@@ -1319,7 +1319,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <p>object-c</p>
 </blockquote>
 <h4 id="email">EMAIL</h4>
-<p><a href="&#109;&#x61;&#105;&#x6c;&#x74;&#111;&#58;&#51;&#119;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#x70;&#117;&#116;&#101;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#108;&#x2e;&#99;&#x6f;&#x6d;">&#51;&#119;&#109;&#97;&#111;&#99;&#x6f;&#x6d;&#x70;&#117;&#116;&#101;&#114;&#x40;&#x67;&#x6d;&#x61;&#105;&#108;&#x2e;&#99;&#x6f;&#x6d;</a></p>
+<p><a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#58;&#51;&#x77;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#x70;&#x75;&#x74;&#101;&#114;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#51;&#x77;&#x6d;&#97;&#x6f;&#x63;&#x6f;&#109;&#x70;&#x75;&#x74;&#101;&#114;&#64;&#103;&#x6d;&#x61;&#105;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a></p>
 <h4 id="blog">BLOG</h4>
 <p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
 <p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
@@ -1398,7 +1398,7 @@ all_files(__ROOT__.<span class="string">'/cache/all_file.php'</span>);
 <h1 id="-">分析瓶颈</h1>
 <p><a href="http://xdebug.org/" title="xdebug" target="_blank">xdebug</a> 配合 qcachegrind 分析瓶颈</p>
 <h1 id="-">减少路由查找</h1>
-<p>尽量使用绝对路径</p>
+<p>尽量使用绝对���径</p>
 <p>尽可能的用绝对路径，相对路径虽然简短但会产生额外的寻径开销。而且使用绝对路径也很保险
 少用require＿once</p>
 <p>减少查找开销
