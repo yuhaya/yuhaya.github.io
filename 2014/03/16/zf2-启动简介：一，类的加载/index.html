@@ -42,6 +42,7 @@
 </div>
 <nav class="menu-navigation-container">
   <ul>
+    <li> <a href="/atom.xml">RSS</a> </li>
     
       <li><a href="/">Home</a></li>
     
@@ -107,7 +108,8 @@
 </nav>
 
 
-</div></header>
+</div>
+</header>
     <section id="content" class="blog">
       <article class="post">
   <header>
@@ -217,7 +219,7 @@
 <p>原因是：在载入类的时候会先调用 ClassMapAutoloader 中的加载类方法，若未找到则会调用 StandardAutoloader 中的类加载方法</p>
 <blockquote>
 <p>ClassMapAutoloader 加载类的方式比 StandardAutoloader中更加的高效
-前者只是在一个大的数组映射表中寻值，而后者则需要拼装截取才能获得最终的路径</p>
+前者只是在一个大的数组映射表中寻值，而后者则需要拼���截取才能获得最终的路径</p>
 </blockquote>
 <h3 id="-i7-">以下为测试数据：（请求开始时间-请求结束时间）//i7 四核条件下（性能低的机器上会更加明显）</h3>
 <h1 id="-standardautoloader-">通过 StandardAutoloader 方式</h1>
