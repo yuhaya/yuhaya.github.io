@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yuhaya.github.io/2014/04/04/zf2%E4%BA%8B%E4%BB%B6%E7%9B%B8%E5%85%B3%E5%9B%BE%E8%A7%A3/</loc>
+    <lastmod>2014-04-04T00:17:06.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yuhaya.github.io/2014/04/01/understanding-zf2-configuration/</loc>
     <lastmod>2014-04-01T13:43:15.000Z</lastmod>
   </url>
