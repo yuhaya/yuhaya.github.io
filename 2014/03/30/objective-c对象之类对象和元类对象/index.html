@@ -82,7 +82,7 @@
   
     <li><a href="/categories/php/">php</a>&nbsp;<small>(3)</small></li>
   
-    <li><a href="/categories/public/">public</a>&nbsp;<small>(2)</small></li>
+    <li><a href="/categories/public/">public</a>&nbsp;<small>(3)</small></li>
   
   </ul>
 </nav>
@@ -92,7 +92,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a>
+    <a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a>
   </div>
 </div>
 
@@ -168,7 +168,7 @@ Class isa;
 <p>这个类对象(class objec)的isa指向的依然是一个objc-class，它就是“元类对象”(<code>metaclass object</code>)，它和类对象(<code>class object</code>)的关系是这样的:</p>
 <h2 id="-class-object-">类对象（class object）</h2>
 <h3 id="-">①类对象的实质</h3>
-<p>我们知道了：类对象是由编译器创建的，即在编译时所谓的类，就是指类对象（官方文档中是这样说的： The class object is the compiled version of the class）。任何直接或间接继承了NSObject的类，它的实例对象(instance objec)中都有一个isa指针，指向它的类对象(class object)。这个类对象(class object)中存储了关于这个实例对象(instace object)所属的类的定义的一切：包括变量，方法，遵守的协议等等。因此，类对象能访问所有关于这个类的信息，利用这些信息可以产生一个新的实例，但是类对象不能访问任何实例对象���内容。
+<p>我们知道了：类对象是由编译器创建的，即在编译时所谓的类，就是指类对象（官方文档中是这样说的： The class object is the compiled version of the class）。任何直接或间接继承了NSObject的类，它的实例对象(instance objec)中都有一个isa指针，指向它的类对象(class object)。这个类对象(class object)中存储了关于这个实例对象(instace object)所属的类的定义的一切：包括变量，方法，遵守的协议等等。因此，类对象能访问所有关于这个类的信息，利用这些信息可以产生一个新的实例，但是类对象不能访问任何实例对象的内容。
 当你调用一个 “类方法” 例如 [NSObject alloc],你事实上是发送了一个消息给他的类对象.</p>
 <h3 id="-">②类对象和实例对象的区别</h3>
 <p>当然有区别了,尽管类对象保留了一个类实例的原型，但它并不是实例本身。它没有自己的实例变量，也不能执行那些类的实例的方法（只有实例对象才可以执行实例方法）。然而，类的定义能包含那些特意为类对象准备的方法–类方法（ 而不是的实例方法）。类对象从父类那里继承类方法，就像实例从父类那里继承实例方法一样。</p>
