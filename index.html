@@ -218,10 +218,6 @@
 58
 59
 60
-61
-62
-63
-64
 </pre></td><td class="code"><pre><span class="preprocessor">#include &lt;stdio.h&gt;</span>
 <span class="preprocessor">#include &lt;stdlib.h&gt;</span>
 
@@ -234,10 +230,6 @@
 } Object;
 
 <span class="preprocessor">#define ObjectCreate(TYPE) malloc(sizeof(TYPE))</span>
-<span class="preprocessor">#define ObjectDelete(obj) {\</span>
-    obj-&gt;onDelete(obj);\
-    <span class="built_in">free</span>(obj);\
-}
 
 <span class="keyword">void</span> ObjectOnDelete(<span class="keyword">void</span> *obj){
     <span class="built_in">printf</span>(<span class="string">"Object on delete\n"</span>);
@@ -812,7 +804,7 @@ foo=bar&baz[]=<span class="number">1</span>&baz[]=<span class="number">2</span>&
 </pre></td></tr></table></figure>
 
 <h3 id="-url-http-">与基本URL的HTTP经理</h3>
-<p>当baseURL提供，网络可���性的作用范围是该基地URL的主机。</p>
+<p>当baseURL提供，网络可达性的作用范围是该基地URL的主机。</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3

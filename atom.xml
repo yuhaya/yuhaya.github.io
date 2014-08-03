@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-08-03T09:08:58.965Z</updated>
+  <updated>2014-08-03T09:19:00.020Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/08/03/c%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"/>
     <id>http://yuhaya.github.io/2014/08/03/c实现简单的面向对象/</id>
     <published>2014-08-03T09:07:19.000Z</published>
-    <updated>2014-08-03T09:08:27.000Z</updated>
+    <updated>2014-08-03T09:18:44.000Z</updated>
     <content type="html"><![CDATA[<figure class="highlight c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -80,10 +80,6 @@
 58
 59
 60
-61
-62
-63
-64
 </pre></td><td class="code"><pre><span class="preprocessor">#include &lt;stdio.h&gt;</span>
 <span class="preprocessor">#include &lt;stdlib.h&gt;</span>
 
@@ -96,10 +92,6 @@
 } Object;
 
 <span class="preprocessor">#define ObjectCreate(TYPE) malloc(sizeof(TYPE))</span>
-<span class="preprocessor">#define ObjectDelete(obj) {\</span>
-    obj-&gt;onDelete(obj);\
-    <span class="built_in">free</span>(obj);\
-}
 
 <span class="keyword">void</span> ObjectOnDelete(<span class="keyword">void</span> *obj){
     <span class="built_in">printf</span>(<span class="string">"Object on delete\n"</span>);
@@ -1854,7 +1846,7 @@ dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">
 <h4 id="assign">assign</h4>
 <p>用于值类型，如int、float、double和NSInteger，CGFloat等表示单纯的复制。还包括不存在所有权关系的对象，比如常见的delegate。</p>
 <h4 id="strong">strong</h4>
-<p>是在ARC伴随IOS引入的时候引入的关键字是retain的一个可选的替代。表示实例变量对传入的参数要有所有权关系即强引用。strong跟retain的意思相同并产生相同的代码，但是语意上更好更能体现对象的关系。</p>
+<p>是���ARC伴随IOS引入的时候引入的关键字是retain的一个可选的替代。表示实例变量对传入的参数要有所有权关系即强引用。strong跟retain的意思相同并产生相同的代码，但是语意上更好更能体现对象的关系。</p>
 <h4 id="weak">weak</h4>
 <p>weak跟assign的效果相似，不同的是weak在对象被回收之后自动设置为nil。而且weak智能用在iOS 5或以后的版本，对于之前的版本，使用unsafe_unretained。</p>
 <h4 id="unsafe_unretained">unsafe_unretained</h4>
@@ -2136,7 +2128,7 @@ NSMutableString  <span class="variable">*strCopy2</span>=<span class="variable">
         NSMutableString *strCpy3=[str2 mutableCopy];
         <span class="built_in">printf</span>(<span class="string">"\n继续mutableCopy后引用计数为::::%lu\n"</span>,str2.retainCount);
         
-        <span class="built_in">printf</span>(<span class="string">"\n���容器类可变对象\n原始地址::::::::::%p"</span>,str2);
+        <span class="built_in">printf</span>(<span class="string">"\n非容器类可变对象\n原始地址::::::::::%p"</span>,str2);
         <span class="built_in">printf</span>(<span class="string">"\nretin复制::::::::%p"</span>,strCpy1);
         <span class="built_in">printf</span>(<span class="string">"\ncopy复制::::::::::%p"</span>,strCpy2);
         <span class="built_in">printf</span>(<span class="string">"\nmutableCopy复制:::%p"</span>,strCpy3);
@@ -2847,7 +2839,7 @@ Zend\Mvc\Application::init(<span class="keyword">require</span> <span class="str
     <id>http://yuhaya.github.io/2014/03/30/objective-c对象之类对象和元类对象/</id>
     <published>2014-03-30T08:08:15.000Z</published>
     <updated>2014-03-30T08:23:37.000Z</updated>
-    <content type="html"><![CDATA[<p>作为C语言的超集，���向对象成为Objective-C与C语言的最大区别，因此，对象是Objective-C中最重要的部分之一。目前面向对象的语言有很多，</p>
+    <content type="html"><![CDATA[<p>作为C语言的超集，面向对象成为Objective-C与C语言的最大区别，因此，对象是Objective-C中最重要的部分之一。目前面向对象的语言有很多，</p>
 <p>Objective-C中的对象又和其他语言中的对象有什么区别呢？下面来简单介绍Objective-C中对象的实现。</p>
 <h2 id="objective-c-">Objective-C中的类</h2>
 <p>谁都知道，所有的对象都是由其对应的类实例化而来，殊不知<strong>类本身也是一种对象</strong>，先不要对这句话感到惊讶。</p>
@@ -2901,7 +2893,7 @@ id rectClass = [Rectangle class];
 <p><img src="/images/1361289384_8487.PNG" alt=""></p>
 <p>上所述，类对象(class object)中包含了类的实例变量，实例方法的定义，而元类对象(metaclass object)中包括了类的类方法(也就是C++中的静态方法)的定义。类对象和元类对象中当然还会包含一些其它的东西，苹果以后也可能添加其它的内容，但对于我们只需要记住：类对象存的是关于实例对象的信息(变量，实例方法等)，而元类对象(metaclass object)中存储的是关于类的信息(类的版本，名字，类方法等)。要注意的是，类对象(class object)和元类对象(metaclass object)的定义都是objc_class结构，其不同仅仅是在用途上，比如其中的方法列表在类对象(instance object)中保存的是实例方法(instance method)，而在元类对象(metaclass object)中则保存的是类方法(class method)。关于元类对象可以参考苹果官方文档&quot; The Objective-‐C Programming Language &quot;</p>
 <h2 id="-">类对象和元类对象的相关方法</h2>
-<p>①object_getClass跟随实例的isa指针，返回此实例所属的类，对于实例对象(instance)返回的是类(class),对于类(class)则返回的是元类(metaclass),</p>
+<p>①object_getClass跟随实例的isa指针，返回此实例所属的类，对���实例对象(instance)返回的是类(class),对于类(class)则返回的是元类(metaclass),</p>
 <p>②-class方法对于实例对象(instance)会返回类(class),但对于类(class)则不会返回元类(metaclass),而只会返回类本身，即[@&quot;instance&quot; class]返回的是__NSCFConstantString,而[NSString class]返回的是NSString。</p>
 <p>③class_isMetaClass可判断某类是否为元类.                                     </p>
 <p>④使用objc_allocateClassPair可在运行时创建新的类与元类对，使用class_addMethod和class_addIvar可向类中增加方法和实例变量，最后使用objc_registerClassPair注册后，就可以使用此类了。看到动态语言牛逼的地方了吗，可以在需要时更改已经定义好的类！Objective-C的类别方法估计底层就是这么实现的，只是不知道为什么类别不能增加实例变量，有高手请留言。</p>

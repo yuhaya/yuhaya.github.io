@@ -217,10 +217,6 @@
 58
 59
 60
-61
-62
-63
-64
 </pre></td><td class="code"><pre><span class="preprocessor">#include &lt;stdio.h&gt;</span>
 <span class="preprocessor">#include &lt;stdlib.h&gt;</span>
 
@@ -233,10 +229,6 @@
 } Object;
 
 <span class="preprocessor">#define ObjectCreate(TYPE) malloc(sizeof(TYPE))</span>
-<span class="preprocessor">#define ObjectDelete(obj) {\</span>
-    obj-&gt;onDelete(obj);\
-    <span class="built_in">free</span>(obj);\
-}
 
 <span class="keyword">void</span> ObjectOnDelete(<span class="keyword">void</span> *obj){
     <span class="built_in">printf</span>(<span class="string">"Object on delete\n"</span>);
