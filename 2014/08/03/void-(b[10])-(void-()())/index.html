@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>void (*b[10]) (void (*)()) | yuhaya</title>
+  <title>void (\*b[10]) (void (\*)()) | yuhaya</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="void (*b[10]) (void (*)())"/>
+  <meta property="og:title" content="void (\*b[10]) (void (\*)())"/>
   <meta property="og:site_name" content="yuhaya"/>
 
   
@@ -80,7 +80,7 @@
   
     <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(2)</small></li>
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(4)</small></li>
   
     <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
   
@@ -93,8 +93,6 @@
     <li><a href="/categories/Yii/">Yii</a>&nbsp;<small>(1)</small></li>
   
     <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(6)</small></li>
-  
-    <li><a href="/categories/c/c++/">c/c++</a>&nbsp;<small>(2)</small></li>
   
     <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
   
@@ -139,7 +137,7 @@
   <header>
     
   
-    <h1 class="title">void (*b[10]) (void (*)())</h1>
+    <h1 class="title">void (\*b[10]) (void (\*)())</h1>
   
 
 
@@ -159,7 +157,7 @@
   </header>
   <section class="entry">
     
-      <p>void (<em>b[10]) (void (\</em>)());</p>
+      <p>void (*b[10]) (void (*)());</p>
 <p>看到这行代码，相信程序员们都会倒吸一口冷气吧。如果非常不幸的在维护的代码中看到类似的表述，除了想办法找出写出这种天书的猛人来，只能自己硬着头皮搞清楚了。</p>
 <p>在C和C++中，构造这类声明表达式只有一条简单的规则：按照使用的方式来声明。</p>
 <p>C变量的声明都是由两部分组成的：类型，以及一组类似表达式的声明符（declarator）。声明符类似于表达式，对它求值应该返回一个声明中给定类型的结果。例如，我们来看一个简单的声明：</p>
@@ -181,7 +179,7 @@
 <p>float (*f)();</p>
 <p>这个表示f是一个指向返回值为浮点型的函数指针。而我们把f这个变量名，和最后的；号去掉，就得到：</p>
 <p>( float (*)() )</p>
-<p>这个就表示，这个表达式是一个类型，即“指向返回值为浮点型的函数的指针”。如果用这个类型去修饰一个变量名，我们就叫它类型转换符。</p>
+<p>这���就表示，这个表达式是一个类型，即“指向返回值为浮点型的函数的指针”。如果用这个类型去修饰一个变量名，我们就叫它类型转换符。</p>
 <p>现在有了这些预备知识，我们可以回头看标题的声明到底是什么意思了：</p>
 <p>void (*b[10]) (void (*)());</p>
 <p>首先，表达式的后半部分被两个（）分隔开了，我们分别分析它们。( *b[10] )，其中出现了变量名b，很容易就知道，b是一个有10个元素的数组，每个元素都是一个指针。</p>
@@ -214,7 +212,7 @@
         
         
   
-  <a href="/categories/c/c++/">@c/c++</a>
+  <a href="/categories/C/C++/">@C/C++</a>
 
 
         

@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-08-03T12:58:08.071Z</updated>
+  <updated>2014-08-03T13:00:44.203Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/08/03/typedef%E7%9A%84%E7%94%A8%E6%B3%95%E6%80%BB%E7%BB%93/"/>
     <id>http://yuhaya.github.io/2014/08/03/typedef的用法总结/</id>
     <published>2014-08-03T12:50:04.000Z</published>
-    <updated>2014-08-03T12:58:00.000Z</updated>
+    <updated>2014-08-03T12:59:50.000Z</updated>
     <content type="html"><![CDATA[<p>不管实在C还是C++代码中，typedef这个词都不少见，当然出现频率较高的还是在C代码中。typedef与#define有些相似，但更多的是不同，特别是在一些复杂的用法上，就完全不同了，看了网上一些C/C++的学习者的博客，其中有一篇关于typedef的总结还是很不错，由于总结的很好，我就不加修改的引用过来了，以下是引用的内容(红色部分是我自己写的内容)。</p>
 <h2 id="-">用途一：</h2>
 <p>定义一种类型的别名，而不只是简单的宏替换。可以用作同时声明指针型的多个对象。比如：</p>
@@ -314,17 +314,17 @@ p2++;
     
       <category term="typedef" scheme="http://yuhaya.github.io/tags/typedef/"/>
     
-      <category term="c/c++" scheme="http://yuhaya.github.io/categories/c/c++/"/>
+      <category term="C/C++" scheme="http://yuhaya.github.io/categories/C/C++/"/>
     
   </entry>
   
   <entry>
-    <title><![CDATA[void (*b[10]) (void (*)())]]></title>
+    <title><![CDATA[void (\*b[10]) (void (\*)())]]></title>
     <link href="http://yuhaya.github.io/2014/08/03/void-(b%5B10%5D)-(void-()())/"/>
     <id>http://yuhaya.github.io/2014/08/03/void-(b[10])-(void-()())/</id>
     <published>2014-08-03T12:37:30.000Z</published>
-    <updated>2014-08-03T12:40:47.000Z</updated>
-    <content type="html"><![CDATA[<p>void (<em>b[10]) (void (\</em>)());</p>
+    <updated>2014-08-03T13:00:37.000Z</updated>
+    <content type="html"><![CDATA[<p>void (*b[10]) (void (*)());</p>
 <p>看到这行代码，相信程序员们都会倒吸一口冷气吧。如果非常不幸的在维护的代码中看到类似的表述，除了想办法找出写出这种天书的猛人来，只能自己硬着头皮搞清楚了。</p>
 <p>在C和C++中，构造这类声明表达式只有一条简单的规则：按照使用的方式来声明。</p>
 <p>C变量的声明都是由两部分组成的：类型，以及一组类似表达式的声明符（declarator）。声明符类似于表达式，对它求值应该返回一个声明中给定类型的结果。例如，我们来看一个简单的声明：</p>
@@ -352,7 +352,7 @@ p2++;
 <p>首先，表达式的后半部分被两个（）分隔开了，我们分别分析它们。( *b[10] )，其中出现了变量名b，很容易就知道，b是一个有10个元素的数组，每个元素都是一个指针。</p>
 <p>然后，看(void(*)())，其中没有出现变量名，所以它代表了一个类型，即“指向返回值为void型的函数的指针“，而我们知道，C语法中，类型修饰符是必须出现在变量名的左边的，而在整个表达式中这个类型符是在变量名b的右边，所以， (void(*)())最外层的这个()，表示了定义了一个函数，这个函数有一个参数，就是一个指针，具体来说，就是“指向返回值为void型的函数的指针“。</p>
 <p>这样就很清楚了，b数组里，每一个指针元素，都是一个函数指针，这个函数有一个参数，这个参数是一个函数指针。整个表达式最左边的void，则定义了b数组中函数指针所指向函数的返回值类型。</p>
-<p>在一串绕口令式的解说后，我们终于看到了事实的真相：这行代码就是逗你玩...</p>
+<p>在一串绕口令式的解说后，我们终于看���了事实的真相：这行代码就是逗你玩...</p>
 <p>如果不是故意偷懒，这样代码的作者真是在玩弄阅读者的感情，如果非要实现这样一个复杂的定义的话，我们也是有更好的方法的，就是使用typedef来进行类型声明。</p>
 <p>在面对void (*b[10]) (void (*)());时，我们可以先声明后半部分的类型：</p>
 <p>typdef void (*pFunParam)();</p>
@@ -369,7 +369,7 @@ p2++;
 ]]></content>
     
     
-      <category term="c/c++" scheme="http://yuhaya.github.io/categories/c/c++/"/>
+      <category term="C/C++" scheme="http://yuhaya.github.io/categories/C/C++/"/>
     
   </entry>
   
@@ -568,7 +568,7 @@ defined(<span class="string">'YII_TRACE_LEVEL'</span>) <span class="keyword">or<
     <span class="keyword">array</span>( 
       <span class="string">'class'</span>=&gt;<span class="string">'CWebLogRoute'</span>, 
       <span class="string">'levels'</span>=&gt;<span class="string">'trace'</span>,   <span class="comment">//级别为trace </span>
-      <span class="string">'categories'</span>=&gt;<span class="string">'system.db.*'</span> <span class="comment">//只显示关于数据库信息,包括数据库连接,数据库执行语句 </span>
+      <span class="string">'categories'</span>=&gt;<span class="string">'system.db.*'</span> <span class="comment">//只显示关于数据库信息,包括���据库连接,数据库执行语句 </span>
     ),    
   ), 
 ),
@@ -1030,7 +1030,7 @@ op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer 
     <id>http://yuhaya.github.io/2014/07/28/-ios多线程的初步研究--dispatch队列/</id>
     <published>2014-07-27T23:16:13.000Z</published>
     <updated>2014-07-27T23:22:35.000Z</updated>
-    <content type="html"><![CDATA[<p>GCD编程的核心就是dispatch队列，dispatch block的执行最终都会放进某个队列中去进行，它类似NSOperationQueue但更复杂也更强大，并且可以嵌套使用。所以说，结合block实现的GCD，把函数闭包（Closure）的特性发挥得淋漓尽致。</p>
+    <content type="html"><![CDATA[<p>GCD编程的核心就是dispatch队列，dispatch block的执行最终都会放进某个队列���去进行，它类似NSOperationQueue但更复杂也更强大，并且可以嵌套使用。所以说，结合block实现的GCD，把函数闭包（Closure）的特性发挥得淋漓尽致。</p>
 <h3 id="dispatch-">dispatch队列的生成可以有这几种方式：</h3>
 <ol>
 <li><h5 id="dispatch_queue_t-queue-dispatch_queue_create-com-dispatch-serial-dispatch_queue_serial-">dispatch_queue_t queue = dispatch_queue_create(&quot;com.dispatch.serial&quot;, DISPATCH_QUEUE_SERIAL);</h5>
@@ -1195,7 +1195,7 @@ op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer 
 <p>dispatch_suspend(dispatchA);</p>
 <p>则只会暂停dispatchA上原来的block的执行，dispatchB的block则不受影响。而如果暂停dispatchB的运行，则会暂停dispatchA的运行。</p>
 <p>这里只简单举个例子，说明dispatch队列运行的灵活性，在实际应用中你会逐步发掘出它的潜力。</p>
-<p>dispatch队列不支持cancel（取消），没有实现dispatch_cancel()函数，不像NSOperationQueue，不得不说这是个小小的缺���。 </p>
+<p>dispatch队列不支持cancel（取消），没有实现dispatch_cancel()函数，不像NSOperationQueue，不得不说这是个小小的缺憾。 </p>
 ]]></content>
     
     
@@ -2177,7 +2177,7 @@ dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">
 <h4 id="atomic-">atomic(默认)：</h4>
 <p>atomic意为操作是原子的，意味着只有一个线程访问实例变量。atomic是线程安全的至少在当前的访器上我是安全的。它是一个默认的，但是很少使用。它的比较慢，这跟ARM平台和内部锁机制有关。</p>
 <h4 id="nonatomic-">nonatomic：</h4>
-<p>nonatomic跟atomic刚好相反。表示非原子的，可以被多个线程访问。它的速度比atomic快。但不能保证在多线程环境下的安全性，在单线程和明确只有一个线程访问的情况下广泛使用。</p>
+<p>nonatomic跟atomic刚好相反。表示非原子的，可以被多个线程访问���它的速度比atomic快。但不能保证在多线程环境下的安全性，在单线程和明确只有一个线程访问的情况下广泛使用。</p>
 <h3 id="-">访问器控制</h3>
 <h4 id="readwrite">readwrite</h4>
 <h4 id="readonly">readonly</h4>

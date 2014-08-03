@@ -80,7 +80,7 @@
   
     <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(2)</small></li>
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(4)</small></li>
   
     <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
   
@@ -93,8 +93,6 @@
     <li><a href="/categories/Yii/">Yii</a>&nbsp;<small>(1)</small></li>
   
     <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(6)</small></li>
-  
-    <li><a href="/categories/c/c++/">c/c++</a>&nbsp;<small>(2)</small></li>
   
     <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
   
@@ -388,7 +386,7 @@ id rectClass = [Rectangle class];
 记住，当一个消息发送给任何一个对象， 方法的检查 从对象的 isa 指针开始，然后是父类。实例方法在类中定义， 类方法 在元类和根类中定义。（根类的元类就是根类自己）。在一些计算机语言的原理中，一个类和元类层次结构可以更自由的组成，更深元类链和从单一的元类继承的更多的实例化的类。Objective-C 的类方法 是使用元类的根本原因，在其他方面试图在隐藏元类。例如 [NSObject class] 完全相等于 [NSObject self]，所以，在形式上他还是返回的 NSObject-&gt;isa 指向的元类。 Objective-C语言是一组实用的折中方案。</p>
 <p>还有些不明白？ 下面这个图标可能会有些帮助：</p>
 <p><img src="/images/1361289384_8487.PNG" alt=""></p>
-<p>上所述，类对象(class object)中包含了类的实例变量，实例方法的定义，而元类对象(metaclass object)中包括了类���类方法(也就是C++中的静态方法)的定义。类对象和元类对象中当然还会包含一些其它的东西，苹果以后也可能添加其它的内容，但对于我们只需要记住：类对象存的是关于实例对象的信息(变量，实例方法等)，而元类对象(metaclass object)中存储的是关于类的信息(类的版本，名字，类方法等)。要注意的是，类对象(class object)和元类对象(metaclass object)的定义都是objc_class结构，其不同仅仅是在用途上，比如其中的方法列表在类对象(instance object)中保存的是实例方法(instance method)，而在元类对象(metaclass object)中则保存的是类方法(class method)。关于元类对象可以参考苹果官方文档&quot; The Objective-‐C Programming Language &quot;</p>
+<p>上所述，类对象(class object)中包含了类的实例变量，实例方法的定义，而元类对象(metaclass object)中包括了类的类方法(也就是C++中的静态方法)的定义。类对象和元类对象中���然还会包含一些其它的东西，苹果以后也可能添加其它的内容，但对于我们只需要记住：类对象存的是关于实例对象的信息(变量，实例方法等)，而元类对象(metaclass object)中存储的是关于类的信息(类的版本，名字，类方法等)。要注意的是，类对象(class object)和元类对象(metaclass object)的定义都是objc_class结构，其不同仅仅是在用途上，比如其中的方法列表在类对象(instance object)中保存的是实例方法(instance method)，而在元类对象(metaclass object)中则保存的是类方法(class method)。关于元类对象可以参考苹果官方文档&quot; The Objective-‐C Programming Language &quot;</p>
 <h2 id="-">类对象和元类对象的相关方法</h2>
 <p>①object_getClass跟随实例的isa指针，返回此实例所属的类，对于实例对象(instance)返回的是类(class),对于类(class)则返回的是元类(metaclass),</p>
 <p>②-class方法对于实例对象(instance)会返回类(class),但对于类(class)则不会返回元类(metaclass),而只会返回类本身，即[@&quot;instance&quot; class]返回的是__NSCFConstantString,而[NSString class]返回的是NSString。</p>
