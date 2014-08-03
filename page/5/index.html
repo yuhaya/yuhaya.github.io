@@ -94,6 +94,8 @@
   
     <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(6)</small></li>
   
+    <li><a href="/categories/c/c++/">c/c++</a>&nbsp;<small>(2)</small></li>
+  
     <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
   
     <li><a href="/categories/iquery/">iquery</a>&nbsp;<small>(1)</small></li>
@@ -112,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a>
   </div>
 </div>
 
@@ -134,6 +136,317 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/04/01/understanding-zf2-configuration/">Understanding ZF2 Configuration</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>In Zend Framework 2 we no longer have the commanding <code>application.ini</code>, instead we got the option to configure our website or rather the modules on a per-module-basis. Furthermore, the modules are able to overwrite each others configuration. With this in mind, it makes it even more important to understand how ZF2 manages the configuration files of several modules internally. In this blog i will guide you guys through the internal process of the framework.</p>
+<h1 id="where-does-configuration-come-from-">Where does configuration come from?</h1>
+<p>Before we go into the internals, let’s get a quick overview of where configuration usually comes from. Ultimately there’s only three places, that deliver configuration:</p>
+<ol>
+<li><code>./config/application.config.php</code></li>
+<li><code>each Modules class Module</code></li>
+<li><code>./config/autoload/(.*?).php</code></li>
+</ol>
+<p>But wait, what about <code>./modules/(ModuleName)/config/module.config.php</code>? Well, this file only exists for separation concerns. This config file will be called by the <code>Module-&gt;getConfig()</code>, so ultimately the config provider is the Module class itself. Knowing that let’s go through the configuration process.</p>
+<h1 id="zend-mvc-application-init-">Zend\Mvc\Application::init()</h1>
+<p>The very first configuration file that will be loaded is the <code>/config/application.config.php</code>. When we take a quick look at the ZendSkeletonApplications index.php you’ll see that the application-config will be pulled into the <code>Zend\Mvc\Application</code>.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+chdir(dirname(<span class="keyword">__DIR__</span>));
+
+<span class="comment">// Setup autoloading</span>
+<span class="keyword">require</span> <span class="string">'init_autoloader.php'</span>;
+
+<span class="comment">// Run the application!</span>
+Zend\Mvc\Application::init(<span class="keyword">require</span> <span class="string">'config/application.config.php'</span>)-&gt;run();
+</pre></td></tr></table></figure>
+
+<p>Taking a look into <code>Application::init()</code> you’ll notice that not much is happening. Basically the application.config.php will be set as an internal Service called <code>ApplicationConfig</code> and then the most interesting thing that happens is the following highlighted line. The Modules are going to be loaded. And this is where all the magic is happening, so let’s dive into that.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(<span class="variable">$configuration</span> = array<span class="params">()</span>)</span>
+{</span>
+    <span class="variable">$smConfig</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'service_manager'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'service_manager'</span>] : <span class="keyword">array</span>();
+    <span class="variable">$serviceManager</span> = <span class="keyword">new</span> ServiceManager(<span class="keyword">new</span> Service\ServiceManagerConfig(<span class="variable">$smConfig</span>));
+    <span class="variable">$serviceManager</span>-&gt;setService(<span class="string">'ApplicationConfig'</span>, <span class="variable">$configuration</span>);
+    <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'ModuleManager'</span>)-&gt;loadModules();
+    <span class="keyword">return</span> <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'Application'</span>)-&gt;bootstrap();
+}
+</pre></td></tr></table></figure>
+
+<h1 id="modulemanager-loadmodules-">ModuleManager-&gt;loadModules()</h1>
+<p>Now we get into the core of configuration, the <code>ModuleManager</code>. The ModuleManager itself actually does pretty much nothing, when it comes to configuration. What it does however is to trigger a couple of Events. The important Events triggered for us are:</p>
+<ul>
+<li><code>ModuleEvent::EVENT_LOAD_MODULES</code></li>
+<li><code>ModuleEvent::EVENT_LOAD_MODULES_POST</code></li>
+<li><code>ModuleEvent::EVENT_LOAD_MODULE_RESOLVE</code></li>
+<li><code>ModuleEvent::EVENT_LOAD_MODULE</code></li>
+</ul>
+<p>Out of those, the most important one currently is <code>ModuleEvent::EVENT_LOAD_MODULE</code>. Now we need to find out what get’s triggered by this event. The targets of events are called “listeners”, so what’s more natural then to take a look at all the classes under <code>Zend\ModuleManager\Listener\{name}Listener.php</code>.</p>
+<p>When it comes to the configuration of ZF2 the classes / listeners of relevance would be the <code>Zend\ModuleManager\Listener\ConfigListener</code> and <code>Zend\ModuleManager\Listener\ServiceListener</code>, let’s dive into them!</p>
+<h1 id="configlistener-vs-servicelistener">ConfigListener vs. ServiceListener</h1>
+<p>The big “duel” we’re interested in is the one about the ConfigListener vs. the ServiceListener. Let’s first go through the roles of each of them.</p>
+<h3 id="the-configlistener">The ConfigListener</h3>
+<p>Ultimately what the ConfigListener does is to call the function <code>getConfig()</code> of the Module-Classes. This happens for every single Module. And all <code>Module-&gt;getConfig()</code> will be merged into one internal configuration.</p>
+<h3 id="the-servicelistener">The ServiceListener</h3>
+<p>The Role of the ServiceListener is similar. The ServiceListener ultimately calls all the other config functions of the Module classes. The exact functions that will be called are:</p>
+<ul>
+<li><p><code>getServiceConfig()</code> translates to <code>$config[&#39;service_manager&#39;]</code></p>
+</li>
+<li><p><code>getControllerConfig()</code> translates to <code>$config[&#39;controllers&#39;]</code></p>
+</li>
+<li><p><code>getControllerPluginConfig()</code> translates to <code>$config[&#39;controller_plugins&#39;]</code></p>
+</li>
+<li><p><code>getViewHelperConfig()</code> translates to <code>$config[&#39;view_helpers&#39;]</code></p>
+</li>
+<li><p><code>getValidatorConfig()</code> translates to <code>$config[&#39;validators&#39;]</code></p>
+</li>
+<li><p><code>getFilterConfig()</code> translates to <code>$config[&#39;filters&#39;]</code></p>
+</li>
+<li><p><code>getFormElementConfig()</code> translates to <code>$config[&#39;form_elements&#39;]</code></p>
+</li>
+<li><p><code>getRouteConfig()</code> translates to <code>$config[&#39;route_manager&#39;]</code></p>
+</li>
+</ul>
+<h1 id="the-load-order">The Load-Order</h1>
+<p>The very interesting question is now: Who’s last?</p>
+<p>To make the long story short, the first function to be called is <code>getConfig()</code> and after that all functions provided by the several <code>ServiceListener</code> are called in the above listed order. So ultimately the specific functions like <code>getServiceConfig()</code> or <code>getViewHelperConfig()</code> will take priority over the configuration served by <code>getConfig()</code>.</p>
+<h1 id="the-autoload-configuration">The /autoload/ configuration</h1>
+<p>The last things to load would be the configuration files served under <code>config/autoload/{,*.}{global,local}.php</code>. Those files could practically overwrite everything, again ;)</p>
+<p>The load order here is alphabetically. The whole directory will be fetched and all matching PHP files will be merged into the existing configuration.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Internally a lot of stuff happens, when setting up the modules. And it is important to know about the load-order of the configuration steps. Finding out about this sure will leave me away from needless debugging time in the future. So whenever you encounter some problems with your configuration, now you know where to look for errors.</p>
+<ol>
+<li>application.config.php</li>
+<li>$module-&gt;getConfig()</li>
+<li>$module-&gt;get{,*}Config() (or ServiceListeners)</li>
+<li>/config/autoload/{,.*}{global,local}.php</li>
+</ol>
+<p>url:<a href="http://samminds.com/2013/04/understanding-zf2-configuration/" target="_blank">http://samminds.com/2013/04/understanding-zf2-configuration/</a></p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-04-01T13:43:15.000Z"><a href="/2014/04/01/understanding-zf2-configuration/">4月 1 2014</a></time>
+        
+        
+  
+  <a href="/categories/Zend Framework 2/">@Zend Framework 2</a>
+
+
+        
+  
+  <a href="/tags/zf2/">#zf2</a>
+
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/03/30/objective-c对象之类对象和元类对象/">Objective-C对象之类对象和元类对象</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>作为C语言的超集，面向对象成为Objective-C与C语言的最大区别，因此，对象是Objective-C中最重要的部分之一。目前面向对象的语言有很多，</p>
+<p>Objective-C中的对象又和其他语言中的对象有什么区别呢？下面来简单介绍Objective-C中对象的实现。</p>
+<h2 id="objective-c-">Objective-C中的类</h2>
+<p>谁都知道，所有的对象都是由其对应的类实例化而来，殊不知<strong>类本身也是一种对象</strong>，先不要对这句话感到惊讶。</p>
+<p>首先我们来关注Objective-C中的类。在Objective-C中，我们用到的几乎所有类都是NSObject类的子类，</p>
+<p>NSObject类定义格式如下（忽略其方法声明）：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>@<span class="class"><span class="keyword">interface</span> <span class="title">NSObject</span> &lt;<span class="title">NSObject</span>&gt; {</span>
+<span class="class"><span class="keyword">Class</span> <span class="title">isa</span>;
+}</span>
+</pre></td></tr></table></figure>
+
+<p>这个Class为何物？在objc.h中我们发现其仅仅是一个结构(struct)指针的typedef定义:</p>
+<p>typedef struct objc_class *Class;</p>
+<p>同样的，objc_class又是什么呢？在Objective-C2.0中，objc_class的定义如下：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>struct objc_<span class="class"><span class="keyword">class</span> {</span>
+Class isa;
+}
+</pre></td></tr></table></figure>
+
+<p>写到这里大家可能就晕了，怎么又有一个<code>isa</code>？？这些<code>isa</code>到底是什么？之间有什么区别和联系？接下来解答这一连串的疑问。</p>
+<p>其实在Objective-C中任何的类定义都是对象。即在程序启动的时候任何类定义都对应于一块内存。在编译的时候，编译器会给每一个类生成一个且只生成一个”描述其定义的对象”,也就是苹果公司说的类对象(<code>class object</code>),他是一个单例(singleton), 而我们在C++等语言中所谓的对象，叫做实例对象(instance object)。对于实例对象我们不难理解，但类对象(<code>class object</code>)是干什么吃的呢？我们知道Objective-C是门很动态的语言，因此程序里的所有实例对象(instace object)都是在运行时由Objective-C的运行时库生成的，而这个类对象(<code>class object</code>)就是运行时库用来创建实例对象(instance object)的依据。</p>
+<p>再回到之前的问题，肿么这个实例对象(instance object)的isa指针指向的类对象(<code>class object</code>)里面还有一个isa呢？</p>
+<p>这个类对象(class objec)的isa指向的依然是一个objc-class，它就是“元类对象”(<code>metaclass object</code>)，它和类对象(<code>class object</code>)的关系是这样的:</p>
+<h2 id="-class-object-">类对象（class object）</h2>
+<h3 id="-">①类对象的实质</h3>
+<p>我们知道了：类对象是由编译器创建的，即在编译时所谓的类，就是指类对象（官方文档中是这样说的： The class object is the compiled version of the class）。任何直接或间接继承了NSObject的类，它的实例对象(instance objec)中都有一个isa指针，指向它的类对象(class object)。这个类对象(class object)中存储了关于这个实例对象(instace object)所属的类的定义的一切：包括变量，方法，遵守的协议等等。因此，类对象能访问所有关于这个类的信息，利用这些信息可以产生一个新的实例，但是类对象不能访问任何实例对象的内容。
+当你调用一个 “类方法” 例如 [NSObject alloc],你事实上是发送了一个消息给他的类对象.</p>
+<h3 id="-">②类对象和实例对象的区别</h3>
+<p>当然有区别了,尽管类对象保留了一个类实例的原型，但它并不是实例本身。它没有自己的实例变量，也不能执行那些类的实例的方法（只有实例对象才可以执行实例方法）。然而，类的定义能包含那些特意为类对象准备的方法–类方法（ 而不是的实例方法）。类对象从父类那里继承类方法，就像实例从父类那里继承实例方法一样。</p>
+<h3 id="-">③类对象与类名</h3>
+<p>在源代码中，类对象由类名表示。
+在下面的例子中，Retangle类 用从NSObject那里继承来的方法来返回类的版本号：
+int versionNumber = [Rectangle version];
+只有在消息表达式中作为接收者，类名才代表类对象。其他地方，你需要要求一个实例或者类返回class id。 响应class消息：
+id aClass = [anObject class];
+id rectClass = [Rectangle class];
+如同上面的例子显示的那样，类对象像其他对象一样，也是id类型。</p>
+<p>总之，类对象是一个功能完整的对象，所以也能被动态识别（dynamically typed），接收消息，从其他类继承方法。特殊之处在于它们是由编译器创建的，缺少它们自己的数据结构(实例变量），只是在运行时产生实例的代理。</p>
+<h2 id="-metaclass-object-">元类对象(metaclass object)</h2>
+<h3 id="-">元类对象的实质</h3>
+<p>实际上，类对象是元类对象的一个实例！！元类描述了 一个类对象，就像类对象描述了普通对象一样。不同的是元类的方法列表是类方法的集合，由类对象的选择器来响应。当向一个类发送消息时，objc_msgSend会通过类对象的isa指针定位到元类，并检查元类的方法列表（包括父类）来决定调用哪个方法。元类代替了类对象描述了类方法，就像类对象代替了实例对象描述了实例化方法。
+很显然，元类也是对象，也应该是其他类的实例，实际上元类是根元类(root class’s metaclass)的实例,而根元类是其自身的实例，即根元类的isa指针指向自身。</p>
+<p>类的super_class指向其父类，而元类的super_class则指向父类的元类。元类的super class链与类的super class链平行，所以类方法的继承与实例方法的继承也是并行的。而根元类(root class’s metaclass)的super_class指向根类(root class)，这样，整个指针链就链接起来了！！
+记住，当一个消息发送给任何一个对象， 方法的检查 从对象的 isa 指针开始，然后是父类。实例方法在类中定义， 类方法 在元类和根类中定义。（根类的元类就是根类自己）。在一些计算机语言的原理中，一个类和元类层次结构可以更自由的组成，更深元类链和从单一的元类继承的更多的实例化的类。Objective-C 的类方法 是使用元类的根本原因，在其他方面试图在隐藏元类。例如 [NSObject class] 完全相等于 [NSObject self]，所以，在形式上他还是返回的 NSObject-&gt;isa 指向的元类。 Objective-C语言是一组实用的折中方案。</p>
+<p>还有些不明白？ 下面这个图标可能会有些帮助：</p>
+<p><img src="/images/1361289384_8487.PNG" alt=""></p>
+<p>上所述，类对象(class object)中包含了类的实例变量，实例方法的定义，而元类对象(metaclass object)中包括了类���类方法(也就是C++中的静态方法)的定义。类对象和元类对象中当然还会包含一些其它的东西，苹果以后也可能添加其它的内容，但对于我们只需要记住：类对象存的是关于实例对象的信息(变量，实例方法等)，而元类对象(metaclass object)中存储的是关于类的信息(类的版本，名字，类方法等)。要注意的是，类对象(class object)和元类对象(metaclass object)的定义都是objc_class结构，其不同仅仅是在用途上，比如其中的方法列表在类对象(instance object)中保存的是实例方法(instance method)，而在元类对象(metaclass object)中则保存的是类方法(class method)。关于元类对象可以参考苹果官方文档&quot; The Objective-‐C Programming Language &quot;</p>
+<h2 id="-">类对象和元类对象的相关方法</h2>
+<p>①object_getClass跟随实例的isa指针，返回此实例所属的类，对于实例对象(instance)返回的是类(class),对于类(class)则返回的是元类(metaclass),</p>
+<p>②-class方法对于实例对象(instance)会返回类(class),但对于类(class)则不会返回元类(metaclass),而只会返回类本身，即[@&quot;instance&quot; class]返回的是__NSCFConstantString,而[NSString class]返回的是NSString。</p>
+<p>③class_isMetaClass可判断某类是否为元类.                                     </p>
+<p>④使用objc_allocateClassPair可在运行时创建新的类与元类对，使用class_addMethod和class_addIvar可向类中增加方法和实例变量，最后使用objc_registerClassPair注册后，就可以使用此类了。看到动态语言牛逼的地方了吗，可以在需要时更改已经定义好的类！Objective-C的类别方法估计底层就是这么实现的，只是不知道为什么类别不能增加实例变量，有高手请留言。</p>
+<p>转载自:<a href="http://blog.csdn.net/wzzvictory/article/details/8592492" target="_blank">http://blog.csdn.net/wzzvictory/article/details/8592492</a></p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-03-30T08:08:15.000Z"><a href="/2014/03/30/objective-c对象之类对象和元类对象/">3月 30 2014</a></time>
+        
+        
+  
+  <a href="/categories/Object-c/">@Object-c</a>
+
+
+        
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -525,199 +838,6 @@ $(<span class="string">"#main"</span>).load(<span class="function"><span class="
   
   <a href="/tags/ab/">#ab</a>
 
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/03/23/hhvm-是如何提升-php-性能的？/">HHVM 是如何提升 PHP 性能的？</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <p><a href="http://wuduoyi.com/note/hhvm/" target="_blank"><a href="http://wuduoyi.com/note/hhvm/">http://wuduoyi.com/note/hhvm/</a></a></p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-03-23T03:50:01.000Z"><a href="/2014/03/23/hhvm-是如何提升-php-性能的？/">3月 23 2014</a></time>
-        
-        
-  
-  <a href="/categories/php/">@php</a>
-
-
-        
-  
-  <a href="/tags/hhvm/">#hhvm</a>
-
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/03/23/php-fpm-cgi-php-cgi-fastcgi-之间的关系/">php-fpm cgi php-cgi fastcgi 之间的关系</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <h1 id="cgi">cgi</h1>
-<p>CGI是为了保证web server传递过来的数据是标准格式的，方便CGI程序的编写者。</p>
-<p>web server（比如说nginx）只是内容的分发者。比如，如果请求/index.html，那么web server会去文件系统中找到这个文件，发送给浏览器，这里分发的是静态数据。好了，如果现在请求的是<code>/index.php</code>，根据配置文件，nginx知道这个不是静态文件，需要去找PHP解析器来处理，那么他会把这个请求简单处理后交给PHP解析器。Nginx会传哪些数据给PHP解析器呢？url要有吧，查询字符串也得有吧，POST数据也要有，HTTP header不能少吧，好的，CGI就是规定要传哪些数据、以什么样的格式传递给后方处理这个请求的协议。仔细想想，你在PHP代码中使用的用户从哪里来的。</p>
-<p>当web server收到<code>/index.php</code>这个请求后，会启动对应的CGI程序，这里就是PHP的解析器。接下来PHP解析器会解析php.ini文件，初始化执行环境，然后处理请求，再以规定CGI规定的格式返回处理后的结果，退出进程。web server再把结果返回给浏览器。</p>
-<h3 id="cgi-">CGI是个协议，跟进程什么的没关系。</h3>
-<h1 id="php-cgi">php-cgi</h1>
-<p>php-cgi是解释PHP脚本的程序</p>
-<h3 id="php-cgi-cgi-">php-cgi 是一个实现了CGI协议的程序</h3>
-<h1 id="fastcgi">fastcgi</h1>
-<p>维基上的解释：
-    快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。
-FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。</p>
-<h3 id="fastcgi-cgi-cgi-">Fastcgi是用来提高CGI解释器程序性能的一种协议,属于cgi协议的一种</h3>
-<p>提高性能，那么CGI解释器程序的性能问题在哪呢？&quot;PHP解析器会解析php.ini文件，初始化执行环境&quot;，就是这里了。标准的CGI解释器程序对每个请求都会执行这些步骤（不闲累啊！启动进程很累的说！），所以处理每个时间的时间会比较长。这明显不合理嘛！那么Fastcgi是怎么做的呢？首先，Fastcgi会先启一个master，解析配置文件，初始化执行环境，然后再启动多个CGI解释器进程。当请求过来时，master会传递给一个CGI解释器进程，然后立即可以接受下一个请求。这样就避免了重复的劳动，效率自然是高。而且当worker不够用时，master可以根据配置预先启动几个CGI解释器进程等着；当然空闲CGI解释器进程太多时，也会停掉一些，这样就提高了性能，也节约了资源。这就是fastcgi的对进程的管理。</p>
-<h1 id="php-fpm">php-fpm</h1>
-<p>大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，他自己本身只能解析请求，返回结果，不会进程管理（皇上，臣妾真的做不到啊！）所以就出现了一些能够调度php-cgi进程的程序，比如说由lighthttpd分离出来的spawn-fcgi。好了PHP-FPM也是这么个东东，在长时间的发展后，逐渐得到了大家的认可（要知道，前几年大家可是抱怨PHP-FPM稳定性太差的），也越来越流行。</p>
-<h3 id="php-fpm-fastcgi-php-cgi-">php-fpm是一个实现了Fastcgi的程序。用来管理 php-cgi 程序的</h3>
-<p><strong>FastCGI程序的工作原理</strong></p>
-<p>　　</p>
-<ul>
-<li>Web Server启动时载入FastCGI进程管理器（IIS ISAPI或Apache Module)</li>
-</ul>
-<p>　　</p>
-<ul>
-<li>FastCGI进程管理器自身初始化，启动多个CGI解释器进程(可见多个php-cgi)并等待来自Web Server的连接。</li>
-</ul>
-<p>　
-　</p>
-<ul>
-<li>当客户端请求到达Web Server时，FastCGI进程管理器选择并连接到一个CGI解释器。Web server将CGI环境变量和标准输入发送到FastCGI子进程php-cgi。</li>
-</ul>
-<p>　　</p>
-<ul>
-<li>FastCGI子进程完成处理后将标准输出和错误信息从同一连接返回Web Server。当FastCGI子进程关闭连接时，请求便告处理完成。FastCGI子进程接着等待并处理来自FastCGI进程管理器(运行在Web Server中)的下一个连接。 在CGI模式中，php-cgi在此便退出了。</li>
-</ul>
-<p>　　
-在上述情况中，你可以想象CGI通常有多慢。每一个Web请求PHP都必须重新解析<code>php.ini</code>,重新载入全部扩展并重初始化全部数据结构。使用FastCGI，所有这些都只在进程启动时发生一次。一个额外的好处是，持续数据库连接(Persistent database connection)可以工作。</p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-03-23T01:26:57.000Z"><a href="/2014/03/23/php-fpm-cgi-php-cgi-fastcgi-之间的关系/">3月 23 2014</a></time>
-        
-        
-  
-  <a href="/categories/php/">@php</a>
-
-
-        
 
       </div>
       
