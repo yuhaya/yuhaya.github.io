@@ -167,7 +167,7 @@
 <p>以下则可行：</p>
 <p>typedef char* PCHAR;</p>
 <p>PCHAR pa, pb;  </p>
-<p>这种用法很有用，特别是char<em> pa, pb的定义，初学者往往认为是定义了两个字符型指针，其实不是，而用typedef char</em> PCHAR就不会出现这样的问题，减少了错误的发生。</p>
+<p>这种用法很有用，特别是char<em> pa, pb的定义，初学者往往认为是定义了两个字符型指针，其实不是，而用typedef char\</em> PCHAR就不会出现这样的问题，减少了错误的发生。</p>
 <h2 id="-">用途二:</h2>
 <p>用在旧的C代码中，帮助struct。以前的代码中，声明struct新对象时，必须要带上struct，即形式为： struct 结构名对象名，如：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre>1
@@ -212,7 +212,7 @@ POINT p1;
 </pre></td></tr></table></figure>
 
 <p>这样就比原来的方式少写了一个struct，比较省事，尤其在大量使用的时</p>
-<p>候,���许，在C++中，typedef的这种用途二不是很大，但是理解了它，对掌握以前的旧代</p>
+<p>候,或许，在C++中，typedef的这种用途二不是很大，但是理解了它，对掌握以前的旧代</p>
 <p>码还是有帮助的，毕竟我们在项目中有可能会遇到较早些年代遗留下来的代码。</p>
 <h2 id="-">用途三：</h2>
 <p>用typedef来定义与平台无关的类型。</p>
@@ -229,14 +229,14 @@ POINT p1;
 <p>为复杂的声明定义一个新的简单的别名。方法是：在原来的声明里逐步用别名替换一部</p>
 <p>分复杂声明，如此循环，把带变量名的部分留到最后替换，得到的就是原声明的最简化</p>
 <p>版。举例： </p>
-<p> 原声明：void (<em>b[10]) (void (</em>)());</p>
+<p> 原声明：void (*b[10]) (void (*)());</p>
 <p>变量名为b，先替换右边部分括号里的，pFunParam为别名一：</p>
 <p>typedef void (*pFunParam)();</p>
 <p>再替换左边的变量b，pFunx为别名二：</p>
 <p>typedef void (*pFunx)(pFunParam);</p>
 <p>原声明的最简化版：</p>
 <p>pFunx b[10];</p>
-<p>原声明：doube(<em>)() (</em>e)[9];</p>
+<p>原声明：doube(*)() (*e)[9];</p>
 <p>变量名为e，先替换左边部分，pFuny为别名一：</p>
 <p>typedef double(*pFuny)();</p>
 <p>再替换右边的变量e，pFunParamy为别名二</p>
@@ -246,12 +246,12 @@ POINT p1;
 <p>理解复杂声明可用的“右左法则”：从变量名看起，先往右，再往左，碰到一个圆括号</p>
 <p>就调转阅读的方向；括号内分析完就跳出括号，还是按先右后左的顺序，如此循环，直</p>
 <p>到整个声明分析完。举例：</p>
-<p>int (<em>func)(int </em>p);</p>
+<p>int (<em>func)(int \</em>p);</p>
 <p>首先找到变量名func，外面有一对圆括号，而且左边是一个*号，这说明func是一个指针</p>
 <p>；然后跳出这个圆括号，先看右边，又遇到圆括号，这说明(*func)是一个函数，所以</p>
 <p>func是一个指向这类函数的指针，即函数指针，这类函数具有int*类型的形参，返回值</p>
 <p>类型是int。</p>
-<p>int (<em>func[5])(int </em>);</p>
+<p>int (*func[5])(int *);</p>
 <p>func右边是一个[]运算符，说明func是具有5个元素的数组；func的左边有一个*，说明</p>
 <p>func的元素是指针（注意这里的*不是修饰func，而是修饰func[5]的，原因是[]运算符</p>
 <p>优先级比*高，func先跟[]结合）。跳出这个括号，看右边，又遇到圆括号，说明func数</p>
@@ -445,7 +445,7 @@ p2++;
 <p>　　是p2++出错了。这个问题再一次提醒我们：typedef和#define不同，它不是简单的</p>
 <p>文本替换。上述代码中const pStr p2并不等于const char * p2。const pStr p2和</p>
 <p>const long x本质上没有区别，都是对变量进行只读限制，只不过此处变量p2的数据类</p>
-<p>型是我们自己定义的而不是系统固有类型而已。因此，const pStr p2的含义是：限定数</p>
+<p>型是我们自己定义的而不是系统固有类型而已。因���，const pStr p2的含义是：限定数</p>
 <p>据类型为char *的变量p2为只读，因此p2++错误。虽然作者在这里已经解释得很清楚了，可我在这个地方仍然还是糊涂的，真的希望哪位高手能帮忙指点一下，特别是这一句“只不过此处变量p2的数据类型是我们自己定义的而不是系统固有类型而已”，难道自己定义的类型前面用const修饰后，就不能执行更改运算，而系统定义的类型却可以？</p>
 <p>原文:<a href="http://www.cnblogs.com/csyisong/archive/2009/01/09/1372363.html" target="_blank">http://www.cnblogs.com/csyisong/archive/2009/01/09/1372363.html</a></p>
 
