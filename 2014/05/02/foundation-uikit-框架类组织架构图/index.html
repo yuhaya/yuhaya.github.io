@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Foundation UIKit 框架类组织架构图 | yuhaya</title>
+  <meta name="author" content="3wmao">
+  
+  <meta name="description" content="Simple code farming life">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Foundation UIKit 框架类组织架构图"/>
+  <meta property="og:site_name" content="yuhaya"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="yuhaya" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//upcdn.b0.upaiyun.com/libs/modernizr/modernizr-2.6.2.min.js"></script>
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-50598159-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <a href="/">
+    <img class="circle" src="/img/koala.jpg" alt="Anthem">
+  </a>
+  <h1 id="site-title" class="title">
+    <a href="/">yuhaya</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Simple code farming life</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+    <li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:yuhaya.github.io">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/AFNetworking/">AFNetworking</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Mysql/">Mysql</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Node.js/">Node.js</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Object-c/">Object-c</a>&nbsp;<small>(11)</small></li>
+  
+    <li><a href="/categories/Yii/">Yii</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(6)</small></li>
+  
+    <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/iquery/">iquery</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/php/">php</a>&nbsp;<small>(3)</small></li>
+  
+    <li><a href="/categories/public/">public</a>&nbsp;<small>(3)</small></li>
+  
+    <li><a href="/categories/wireshark/">wireshark</a>&nbsp;<small>(1)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a>
+  </div>
+</div>
+
+
+
+  <nav class="other">
+  <ul>
+    <li>
+        Email : 3wmaocomputer@gmail.com
+    </li>
+    <li>
+      <a href="https://github.com/yuhaya" target="_blank">Github</a>
+    </li>
+  </ul>
+</nav>
+
+
+</div>
+</header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">Foundation UIKit 框架类组织架构图</h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <h2 id="foundation-">Foundation框架</h2>
+<p>图中灰色部分是OS X系统的,iOS不支持的。</p>
+<p><img src="/images/Foundation1.jpg" alt="">
+<img src="/images/Foundation2.jpg" alt="">
+<img src="/images/Foundation3.jpg" alt=""></p>
+<h2 id="uikit-">UIKit框架</h2>
+<p><img src="/images/UIKit.jpg" alt=""></p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2014-05-02T12:03:18.000Z"><a href="/2014/05/02/foundation-uikit-框架类组织架构图/">5月 2 2014</a></time>
+        
+        
+  
+  <a href="/categories/Object-c/">@Object-c</a>
+
+
+        
+
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<section id="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2014 3wmao
+  
+</div>
+<div class="clearfix"></div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-50598159-1', 'yuhaya.github.io');
+                ga('send', 'pageview');
+</script>
+</footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'yuhaya';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+  <a href="https://github.com/yuhaya"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
+</body>
+</html>

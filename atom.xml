@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-04-28T23:59:50.520Z</updated>
+  <updated>2014-08-03T09:08:58.965Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -13,6 +13,2268 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[C实现简单的面向对象]]></title>
+    <link href="http://yuhaya.github.io/2014/08/03/c%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"/>
+    <id>http://yuhaya.github.io/2014/08/03/c实现简单的面向对象/</id>
+    <published>2014-08-03T09:07:19.000Z</published>
+    <updated>2014-08-03T09:08:27.000Z</updated>
+    <content type="html"><![CDATA[<figure class="highlight c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+</pre></td><td class="code"><pre><span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<span class="preprocessor">#include &lt;stdlib.h&gt;</span>
+
+<span class="comment">//Object begin&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+<span class="preprocessor">#define ObjectField \</span>
+    <span class="keyword">void</span>(*onDelete)(<span class="keyword">void</span>*);
+
+<span class="keyword">typedef</span> <span class="keyword">struct</span> Object{
+    ObjectField
+} Object;
+
+<span class="preprocessor">#define ObjectCreate(TYPE) malloc(sizeof(TYPE))</span>
+<span class="preprocessor">#define ObjectDelete(obj) {\</span>
+    obj-&gt;onDelete(obj);\
+    <span class="built_in">free</span>(obj);\
+}
+
+<span class="keyword">void</span> ObjectOnDelete(<span class="keyword">void</span> *obj){
+    <span class="built_in">printf</span>(<span class="string">"Object on delete\n"</span>);
+}
+
+Object* ObjectInit(Object *obj){
+    obj-&gt;onDelete = ObjectOnDelete;
+    <span class="keyword">return</span> obj;
+}
+
+<span class="comment">//Object end&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+
+
+<span class="keyword">typedef</span> <span class="keyword">struct</span>{
+    ObjectField
+    <span class="keyword">int</span> age;
+    <span class="keyword">void</span>(*sayHello)();
+} People;
+
+<span class="keyword">void</span> PeopleSayHello(){
+    <span class="built_in">printf</span>(<span class="string">"Hello\n"</span>);
+}
+
+<span class="keyword">void</span> PeopleOnDelete(<span class="keyword">void</span> *p){
+    ObjectOnDelete(p);
+    
+    <span class="built_in">printf</span>(<span class="string">"People on delete\n"</span>);
+}
+
+People* PeopleInit(People *p,<span class="keyword">int</span> age){
+    ObjectInit((Object*)p);
+    
+    p-&gt;age = age;
+    p-&gt;sayHello = PeopleSayHello;
+    p-&gt;onDelete = PeopleOnDelete;
+    <span class="keyword">return</span> p;
+}
+
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])
+{
+    People *p = PeopleInit(ObjectCreate(People), <span class="number">20</span>);
+    p-&gt;sayHello();
+    ObjectDelete(p);
+    
+<span class="comment">//    printf("Hello, %d!\n",p-&gt;age);</span>
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</pre></td></tr></table></figure>
+
+]]></content>
+    
+    
+      <category term="c" scheme="http://yuhaya.github.io/tags/c/"/>
+    
+      <category term="C/C++" scheme="http://yuhaya.github.io/categories/C/C++/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[yii调试信息开启]]></title>
+    <link href="http://yuhaya.github.io/2014/07/28/yii%E8%B0%83%E8%AF%95%E4%BF%A1%E6%81%AF%E5%BC%80%E5%90%AF/"/>
+    <id>http://yuhaya.github.io/2014/07/28/yii调试信息开启/</id>
+    <published>2014-07-28T05:41:20.000Z</published>
+    <updated>2014-07-28T05:47:14.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="yii-sql-">Yii调试SQL主要有以下方法：</h1>
+<h2 id="-">一、系统自带调试：</h2>
+<p>首先index.php开启调试模式</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="comment">// remove the following lines when in production mode </span>
+defined(<span class="string">'YII_DEBUG'</span>) <span class="keyword">or</span> define(<span class="string">'YII_DEBUG'</span>,<span class="keyword">true</span>); 
+<span class="comment">// specify how many levels of call stack should be shown in each log message </span>
+defined(<span class="string">'YII_TRACE_LEVEL'</span>) <span class="keyword">or</span> define(<span class="string">'YII_TRACE_LEVEL'</span>,<span class="number">3</span>); 
+<span class="comment">//app use time </span>
+<span class="comment">//defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME',microtime(true));</span>
+</pre></td></tr></table></figure>
+
+<p>main.php页面：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="code"><pre><span class="string">'errorHandler'</span>=&gt;<span class="keyword">array</span>( 
+  <span class="comment">// use 'site/error' action to display errors </span>
+  <span class="string">'errorAction'</span>=&gt;<span class="string">'site/error'</span>, 
+), 
+<span class="string">'log'</span>=&gt;<span class="keyword">array</span>( 
+  <span class="string">'class'</span>=&gt;<span class="string">'CLogRouter'</span>, 
+  <span class="string">'routes'</span>=&gt;<span class="keyword">array</span>( 
+    <span class="keyword">array</span>( 
+      <span class="string">'class'</span>=&gt;<span class="string">'CFileLogRoute'</span>, 
+      <span class="string">'levels'</span>=&gt;<span class="string">'error, warning'</span>, 
+    ), 
+    <span class="comment">// 下面显示页面日志 </span>
+    <span class="keyword">array</span>( 
+      <span class="string">'class'</span>=&gt;<span class="string">'CWebLogRoute'</span>, 
+      <span class="string">'levels'</span>=&gt;<span class="string">'trace'</span>,   <span class="comment">//级别为trace </span>
+      <span class="string">'categories'</span>=&gt;<span class="string">'system.db.*'</span> <span class="comment">//只显示关于数据库信息,包括数据库连接,数据库执行语句 </span>
+    ),    
+  ), 
+),
+</pre></td></tr></table></figure>
+
+<p>YII_TRACE_LEVEL的数字越大，信息越清楚</p>
+<h2 id="-">二、使用调试工具调试：</h2>
+<p><a href="https://github.com/malyshev/yii-debug-toolbar" target="_blank">yii-debug-toolbar</a>把包解压后 放到extensions里边 然后在配置文件main.php中最后加上</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="string">'log'</span>=&gt;<span class="keyword">array</span>( 
+   <span class="string">'class'</span>=&gt;<span class="string">'CLogRouter'</span>, 
+   <span class="string">'routes'</span>=&gt;<span class="keyword">array</span>( 
+     <span class="keyword">array</span>( 
+       <span class="string">'class'</span>=&gt;<span class="string">'ext.yii-debug-toolbar.YiiDebugToolbarRoute'</span>, 
+       <span class="string">'ipFilters'</span>=&gt;<span class="keyword">array</span>(<span class="string">'127.0.0.1'</span>,<span class="string">'192.168.1.215'</span>), 
+     ), 
+   ), 
+ ),
+</pre></td></tr></table></figure>
+
+<p>没有出现的话加上在&#39;components&#39;下的db里加上两个属性，</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="string">'enableProfiling'</span>=&gt;<span class="keyword">true</span>, 
+<span class="string">'enableParamLogging'</span>=&gt;<span class="keyword">true</span>,
+</pre></td></tr></table></figure>
+
+<p>然后如果有其他调试工具的插件的话，可能会出现冲突导致sql语句不出来，把那段代码注掉即可。</p>
+]]></content>
+    
+    
+      <category term="Yii debug" scheme="http://yuhaya.github.io/tags/Yii%20debug/"/>
+    
+      <category term="Yii" scheme="http://yuhaya.github.io/categories/Yii/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[AFNetworking官方例子]]></title>
+    <link href="http://yuhaya.github.io/2014/07/28/afnetworking%E5%AE%98%E6%96%B9%E4%BE%8B%E5%AD%90/"/>
+    <id>http://yuhaya.github.io/2014/07/28/afnetworking官方例子/</id>
+    <published>2014-07-27T23:53:38.000Z</published>
+    <updated>2014-07-28T00:06:43.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="-">建筑</h2>
+<h3 id="nsurlconnection-">NSURLConnection的</h3>
+<ul>
+<li>AFURLConnectionOperation</li>
+<li>AFHTTPRequestOperation</li>
+<li>AFHTTPRequestOperationManager</li>
+</ul>
+<h3 id="nsurlsession-ios-7-mac-os-x-10-9-">NSURLSession（iOS的7 / Mac OS X的10.9）</h3>
+<ul>
+<li>AFURLSessionManager</li>
+<li>AFHTTPSessionManager</li>
+</ul>
+<h3 id="-">序列化</h3>
+<h4 id="afurlrequestserialization">AFURLRequestSerialization</h4>
+<ul>
+<li>AFHTTPRequestSerializer</li>
+<li>AFJSONRequestSerializer</li>
+<li>AFPropertyListRequestSerializer</li>
+</ul>
+<h4 id="afurlresponseserialization">AFURLResponseSerialization</h4>
+<ul>
+<li>AFHTTPResponseSerializer</li>
+<li>AFJSONResponseSerializer</li>
+<li>AFXMLParserResponseSerializer</li>
+<li>AFXMLDocumentResponseSerializer （Mac OS X中）</li>
+<li>AFPropertyListResponseSerializer</li>
+<li>AFImageResponseSerializer</li>
+<li>AFCompoundResponseSerializer</li>
+</ul>
+<h3 id="-">附加功能</h3>
+<ul>
+<li>AFSecurityPolicy</li>
+<li>AFNetworkReachabilityManager</li>
+</ul>
+<h2 id="-">用法</h2>
+<h3 id="http-">HTTP请求营运经理</h3>
+<p>AFHTTPRequestOperationManager封装与Web应用程序进行通信通过HTTP，包括要求制作，响应序列化，网络可达性监控和安全性，以及要求经营管理的常见模式。</p>
+<h3 id="get-">GET请求</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+[manager GET:@<span class="string">"http://example.com/resources.json"</span> parameters:<span class="literal">nil</span> success:^(AFHTTPRequestOperation*operation, <span class="keyword">id</span> responseObject) {
+    <span class="built_in">NSLog</span>(@<span class="string">"JSON: %@"</span>, responseObject);
+} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
+    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
+}];
+</pre></td></tr></table></figure>
+
+<h3 id="post-url-">POST的URL格式编码的请求</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+<span class="built_in">NSDictionary</span> *parameters = @{@<span class="string">"foo"</span>:@<span class="string">"bar"</span>};
+[manager POST:@<span class="string">"http://example.com/resources.json"</span> parameters:parameters success:^(AFHTTPRequestOperation*operation, <span class="keyword">id</span> responseObject) {
+    <span class="built_in">NSLog</span>(@<span class="string">"JSON: %@"</span>, responseObject);
+} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
+    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
+}];
+</pre></td></tr></table></figure>
+
+<h3 id="post-">POST多部分请求</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="code"><pre>AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+<span class="built_in">NSDictionary</span> *parameters = @{@<span class="string">"foo"</span>:@<span class="string">"bar"</span>};
+<span class="built_in">NSURL</span> *filePath = [<span class="built_in">NSURL</span> fileURLWithPath:@<span class="string">"file://path/to/image.png"</span>];
+[manager POST:@<span class="string">"http://example.com/resources.json"</span> parameters:parameters constructingBodyWithBlock:^(<span class="keyword">id</span>&lt;AFMultipartFormData&gt; formData) {
+    [formData appendPartWithFileURL:filePath name:@<span class="string">"image"</span> error:<span class="literal">nil</span>];
+} success:^(AFHTTPRequestOperation *operation,<span class="keyword">id</span> responseObject) {
+    <span class="built_in">NSLog</span>(@<span class="string">"Success: %@"</span>, responseObject);
+} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
+    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
+}];
+</pre></td></tr></table></figure>
+
+<h3 id="afurlsessionmanager">AFURLSessionManager</h3>
+<p>AFURLSessionManager创建和管理一个NSURLSession根据指定的对象NSURLSessionConfiguration对象，这符合<NSURLSessionTaskDelegate> ， <NSURLSessionDataDelegate> ， <NSURLSessionDownloadDelegate>和<NSURLSessionDelegate> 。</p>
+<h3 id="-">创建下载任务</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre> NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+<span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/download.zip"</span>];
+<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
+
+NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:<span class="literal">nil</span> destination:^<span class="built_in">NSURL</span>*(<span class="built_in">NSURL</span> *targetPath, NSURLResponse *response) {
+    <span class="built_in">NSURL</span> *documentsDirectoryPath = [<span class="built_in">NSURL</span> fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,<span class="literal">YES</span>) firstObject]];
+    <span class="keyword">return</span> [documentsDirectoryPath URLByAppendingPathComponent:[response suggestedFilename]];
+} completionHandler:^(NSURLResponse *response, <span class="built_in">NSURL</span>*filePath, <span class="built_in">NSError</span> *error) {
+    <span class="built_in">NSLog</span>(@<span class="string">"File downloaded to: %@"</span>, filePath);
+}];
+[downloadTask resume];
+</pre></td></tr></table></figure>
+
+<h3 id="-">创建上传任务</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre>  NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+<span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/upload"</span>];
+<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
+
+<span class="built_in">NSURL</span> *filePath = [<span class="built_in">NSURL</span> fileURLWithPath:@<span class="string">"file://path/to/image.png"</span>];
+NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithRequest:request fromFile:filePath progress:<span class="literal">nil</span> completionHandler:^(NSURLResponse*response, <span class="keyword">id</span> responseObject, <span class="built_in">NSError</span>*error) {
+    <span class="keyword">if</span> (error) {
+        <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
+    } <span class="keyword">else</span> {
+        <span class="built_in">NSLog</span>(@<span class="string">"Success: %@ %@"</span>, response, responseObject);
+    }
+}];
+[uploadTask resume];
+</pre></td></tr></table></figure>
+
+<h3 id="-">创建上传任务的多部分请求，与进展</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre>NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@<span class="string">"POST"</span> URLString:@<span class="string">"http://example.com/upload"</span> parameters:<span class="literal">nil</span> constructingBodyWithBlock:^(<span class="keyword">id</span>&lt;AFMultipartFormData&gt; formData) {
+        [formData appendPartWithFileURL:[<span class="built_in">NSURL</span> fileURLWithPath:@<span class="string">"file://path/to/image.jpg"</span>] name:@<span class="string">"file"</span> fileName:@<span class="string">"filename.jpg"</span> mimeType:@<span class="string">"image/jpeg"</span> error:<span class="literal">nil</span>];
+    } error:<span class="literal">nil</span>];
+
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSProgress *progress = <span class="literal">nil</span>;
+
+    NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithStreamedRequest:request progress:&progress completionHandler:^(NSURLResponse*response, <span class="keyword">id</span> responseObject, <span class="built_in">NSError</span>*error) {
+        <span class="keyword">if</span> (error) {
+            <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
+        } <span class="keyword">else</span> {
+            <span class="built_in">NSLog</span>(@<span class="string">"%@ %@"</span>, response, responseObject);
+        }
+    }];
+
+    [uploadTask resume];
+</pre></td></tr></table></figure>
+
+<h3 id="-">创建数据任务</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre>NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
+
+<span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/upload"</span>];
+<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
+
+NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse*response, <span class="keyword">id</span> responseObject, <span class="built_in">NSError</span>*error) {
+    <span class="keyword">if</span> (error) {
+        <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
+    } <span class="keyword">else</span> {
+        <span class="built_in">NSLog</span>(@<span class="string">"%@ %@"</span>, response, responseObject);
+    }
+}];
+[dataTask resume];
+</pre></td></tr></table></figure>
+
+<h3 id="-">请求序列化</h3>
+<p>请求序列化创建URL字符串，编码参数作为一个查询字符串或HTTP主体请求。</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="constant">NSString</span> *<span class="constant">URLString</span> = @<span class="string">"http://example.com"</span>;
+<span class="constant">NSDictionary</span> *parameters = @{@<span class="string">"foo"</span><span class="symbol">:</span>@<span class="string">"bar"</span>, @<span class="string">"baz"</span><span class="symbol">:</span> @[<span class="variable">@1</span>,<span class="variable">@2</span>, <span class="variable">@3</span>]};
+</pre></td></tr></table></figure>
+
+<h3 id="-">查询字符串参数编码</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="code"> [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:URLString parameters:parameters];</span>
+GET <span class="link_url">http://example.com?foo=bar&baz</span>[<span class="link_label"></span>]=1&baz[]=2&baz[]=3
+</pre></td></tr></table></figure>
+
+<h3 id="url-">URL，表单参数编码</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>[[<span class="constant">AFHTTPRequestSerializer</span> serializer] <span class="symbol">requestWithMethod:</span>@<span class="string">"POST"</span> <span class="constant">URLString</span><span class="symbol">:URLString</span> <span class="symbol">parameters:</span>parameters];
+
+<span class="constant">POST</span> <span class="symbol">http:</span>/<span class="regexp">/example.com/</span>
+<span class="constant">Content</span>-<span class="constant">Type</span><span class="symbol">:</span> application/x-www-form-urlencoded
+
+foo=bar&baz[]=<span class="number">1</span>&baz[]=<span class="number">2</span>&baz[]=<span class="number">3</span>
+</pre></td></tr></table></figure>
+
+<h3 id="json-">JSON编码参数</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>[[<span class="constant">AFJSONRequestSerializer</span> serializer] <span class="symbol">requestWithMethod:</span>@<span class="string">"POST"</span> <span class="constant">URLString</span><span class="symbol">:URLString</span> <span class="symbol">parameters:</span>parameters];
+<span class="constant">POST</span> <span class="symbol">http:</span>/<span class="regexp">/example.com/</span>
+<span class="constant">Content</span>-<span class="constant">Type</span><span class="symbol">:</span> application/json
+
+{<span class="string">"foo"</span><span class="symbol">:</span> <span class="string">"bar"</span>, <span class="string">"baz"</span><span class="symbol">:</span> [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]}
+</pre></td></tr></table></figure>
+
+<h3 id="-">网络可达性管理</h3>
+<p>AFNetworkReachabilityManager监控领域的可达性，并为WWAN和WiFi网络接口的地址。</p>
+<p>共享网络可达性</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre> <span class="attr_selector">[[AFNetworkReachabilityManager sharedManager]</span> setReachabilityStatusChangeBlock<span class="value">:^(AFNetworkReachabilityStatus status) {
+    NSLog(@<span class="string">"Reachability: %@"</span>, AFStringFromNetworkReachabilityStatus(status));</span>
+}];
+</pre></td></tr></table></figure>
+
+<h3 id="-url-http-">与基本URL的HTTP经理</h3>
+<p>当baseURL提供，网络可达性的作用范围是该基地URL的主机。</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre><span class="built_in">NSURL</span> *baseURL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/"</span>];
+AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
+
+NSOperationQueue *operationQueue = manager<span class="variable">.operationQueue</span>;
+[manager<span class="variable">.reachabilityManager</span> setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+    <span class="keyword">switch</span> (status) {
+        <span class="keyword">case</span> AFNetworkReachabilityStatusReachableViaWWAN:
+        <span class="keyword">case</span> AFNetworkReachabilityStatusReachableViaWiFi:
+            [operationQueue setSuspended:<span class="literal">NO</span>];
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> AFNetworkReachabilityStatusNotReachable:
+        <span class="keyword">default</span>:
+            [operationQueue setSuspended:<span class="literal">YES</span>];
+            <span class="keyword">break</span>;
+    }
+}];
+</pre></td></tr></table></figure>
+
+<h3 id="-">安全策略</h3>
+<p>AFSecurityPolicy评估对固定X.509证书和通过安全连接的公共密钥服务器信任。
+新增固定SSL证书到你的应用有助于防止人在这方面的中间人攻击和其他安全漏洞。 应用程序处理敏感的客户数据或财务信息我们强烈建议路线在使用SSL钉扎配置和启用HTTPS连接的所有通信。
+使无效的SSL证书</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+manager<span class="variable">.securityPolicy</span><span class="variable">.allowInvalidCertificates</span> =<span class="literal">YES</span>; <span class="comment">// 不建议在生产</span>
+</pre></td></tr></table></figure>
+
+<h3 id="afhttprequestoperation">AFHTTPRequestOperation</h3>
+<p>AFHTTPRequestOperation是的一个子类AFURLConnectionOperation使用HTTP或HTTPS协议请求。 它封装的接受状态代码和内容类型，这决定了请求的成功或失败的概念。</p>
+<p>虽然AFHTTPRequestOperationManager通常是去提出要求的最佳途径， AFHTTPRequestOperation可以单独使用。</p>
+<h3 id="get-with-afhttprequestoperation">GET with AFHTTPRequestOperation</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="code"><pre> <span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/resources/123.json"</span>];
+<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
+AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer serializer];
+[op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation*operation, <span class="keyword">id</span> responseObject) {
+    <span class="built_in">NSLog</span>(@<span class="string">"JSON: %@"</span>, responseObject);
+} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
+    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
+}];
+[[NSOperationQueue mainQueue] addOperation:op];
+</pre></td></tr></table></figure>
+
+<h3 id="-">操作的批处理</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="code"><pre><span class="built_in">NSMutableArray</span> *mutableOperations = [<span class="built_in">NSMutableArray</span> array];
+<span class="keyword">for</span> (<span class="built_in">NSURL</span> *fileURL in filesToUpload) {
+    <span class="built_in">NSURLRequest</span> *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@<span class="string">"POST"</span> URLString:@<span class="string">"http://example.com/upload"</span> parameters:<span class="literal">nil</span> constructingBodyWithBlock:^(<span class="keyword">id</span>&lt;AFMultipartFormData&gt; formData) {
+        [formData appendPartWithFileURL:fileURL name:@<span class="string">"images[]"</span> error:<span class="literal">nil</span>];
+    }];
+
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+
+    [mutableOperations addObject:operation];
+}
+
+<span class="built_in">NSArray</span> *operations = [AFURLConnectionOperation batchOfRequestOperations:@[...] progressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
+    <span class="built_in">NSLog</span>(@<span class="string">"%lu of %lu complete"</span>, numberOfFinishedOperations, totalNumberOfOperations);
+} completionBlock:^(<span class="built_in">NSArray</span> *operations) {
+    <span class="built_in">NSLog</span>(@<span class="string">"All operations in batch complete"</span>);
+}];
+[[NSOperationQueue mainQueue] addOperations:operations waitUntilFinished:<span class="literal">NO</span>];
+</pre></td></tr></table></figure>
+
+<h3 id="-">单元测试</h3>
+<p>AFNetworking包括一套内部的测试子目录中的单元测试。 为了运行单元测试，你必须通过CocoaPods安装测试的依赖关系：</p>
+<p> $ cd Tests</p>
+<p> $ pod install </p>
+<p>一旦测试的依赖安装，你可以通过在Xcode的&#39;的iOS测试“和”OS X的测试“计划，执行测试套件。</p>
+<h3 id="-xctool">使用xctool</h3>
+<p>测试也可以通过命令行或在一个持续集成环境中运行xctool ，它可以安装自制软件 ：</p>
+<p> $ brew update </p>
+<p> $ brew install xctool --HEAD </p>
+<p>一旦xctool安装，你可以通过执行该套件rake test 。</p>
+]]></content>
+    
+    
+      <category term="AFNetworking" scheme="http://yuhaya.github.io/tags/AFNetworking/"/>
+    
+      <category term="AFNetworking" scheme="http://yuhaya.github.io/categories/AFNetworking/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[iOS多线程的初步研究--dispatch队列]]></title>
+    <link href="http://yuhaya.github.io/2014/07/28/-ios%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%88%9D%E6%AD%A5%E7%A0%94%E7%A9%B6--dispatch%E9%98%9F%E5%88%97/"/>
+    <id>http://yuhaya.github.io/2014/07/28/-ios多线程的初步研究--dispatch队列/</id>
+    <published>2014-07-27T23:16:13.000Z</published>
+    <updated>2014-07-27T23:22:35.000Z</updated>
+    <content type="html"><![CDATA[<p>GCD编程的核心就是dispatch队列，dispatch block的执行最终都会放进某个队列中去进行，它类似NSOperationQueue但更复杂也更强大，并且可以嵌套使用。所以说，结合block实现的GCD，把函数闭包（Closure）的特性发挥得淋漓尽致。</p>
+<h3 id="dispatch-">dispatch队列的生成可以有这几种方式：</h3>
+<ol>
+<li><h5 id="dispatch_queue_t-queue-dispatch_queue_create-com-dispatch-serial-dispatch_queue_serial-">dispatch_queue_t queue = dispatch_queue_create(&quot;com.dispatch.serial&quot;, DISPATCH_QUEUE_SERIAL);</h5>
+<p>  //生成一个串行队列，队列中的block按照先进先出（FIFO）的顺序去执行，实际上为单线程执行。第一个参数是队列的名称，在调试程序时会非常有用，所有尽量不要重名了。</p>
+</li>
+<li><h5 id="dispatch_queue_t-queue-dispatch_queue_create-com-dispatch-concurrent-dispatch_queue_concurrent-block-">dispatch_queue_t queue = dispatch_queue_create(&quot;com.dispatch.concurrent&quot;, DISPATCH_QUEUE_CONCURRENT); //生成一个并发执行队列，block被分发到多个线程去执行</h5>
+</li>
+</ol>
+<ol>
+<li><h5 id="dispatch_queue_t-queue-dispatch_get_global_queue-dispatch_queue_priority_default-0-">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</h5>
+ //获得程序进程缺省产生的并发队列，可设定优先级来选择高、中、低三个优先级队列。由于是系统默认生成的，所以无法调用dispatch_resume()和dispatch_suspend()来控制执行继续或中断。需要注意的是，三个队列不代表三个线程，可能会有更多的线程。并发队列可以根据实际情况来自动产生合理的线程数，也可理解为dispatch队列实现了一个线程池的管理，对于程序逻辑是透明的。</li>
+</ol>
+<p>官网文档解释说共有三个并发队列，但实际还有一个更低优先级的队列，设置优先级为DISPATCH_QUEUE_PRIORITY_BACKGROUND。Xcode调试时可以观察到正在使用的各个dispatch队列。</p>
+<ol>
+<li><h5 id="dispatch_queue_t-queue-dispatch_get_main_queue-">dispatch_queue_t queue = dispatch_get_main_queue();</h5>
+ //获得主线程的dispatch队列，实际是一个串行队列。同样无法控制主线程dispatch队列的执行继续或中断。</li>
+</ol>
+<p>接下来我们可以使用dispatch_async或dispatch_sync函数来加载需要运行的block。</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="built_in">dispatch_async</span>(queue, ^{
+
+　　<span class="comment">//block具体代码</span>
+
+}); 
+<span class="comment">//异步执行block，函数立即返回</span>
+
+<span class="built_in">dispatch_sync</span>(queue, ^{
+
+　　<span class="comment">//block具体代码</span>
+
+}); 
+<span class="comment">//同步执行block，函数不返回，一直等到block执行完毕。编译器会根据实际情况优化代码，所以有时候你会发现block其实还在当前线程上执行，并没用产生新线程。</span>
+</pre></td></tr></table></figure>
+
+<h4 id="-dispatch_sync-">实际编程经验告诉我们，尽可能避免使用dispatch_sync，嵌套使用时还容易引起程序死锁。</h4>
+<p>如果queue1是一个串行队列的话，这段代码立即产生死锁：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="code"><pre>   dispatch_sync(queue1, ^{
+
+      dispatch_sync(queue1, ^{
+
+　　　　<span class="attribute">...</span><span class="attribute">...</span>
+
+　　});
+
+　　<span class="attribute">...</span><span class="attribute">...</span>
+
+　});
+</pre></td></tr></table></figure>
+
+<p>不妨思考下，为什么下面代码也肯定死锁：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="function">dispatch_sync(<span class="function">dispatch_get_main_queue()</span>, ^{
+
+　　......
+
+})</span>;
+</pre></td></tr></table></figure>
+
+
+
+<p>那实际运用中，一般可以用dispatch这样来写，常见的网络请求数据多线程执行模型：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+
+　　<span class="comment">//子线程中开始网络请求数据</span>
+
+　　<span class="comment">//更新数据模型</span>
+
+　　<span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^{
+
+　　　　<span class="comment">//在主线程中更新UI代码</span>
+
+　　});
+
+});
+</pre></td></tr></table></figure>
+
+<p>程序的后台运行和UI更新代码紧凑，代码逻辑一目了然。</p>
+<h4 id="dispatch-">dispatch队列是线程安全的，可以利用串行队列实现锁的功能。比如多线程写同一数据库，需要保持写入的顺序和每次写入的完整性，简单地利用串行队列即可实现：</h4>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="built_in">dispatch_queue_t</span> queue1 = dispatch_queue_create(<span class="string">"com.dispatch.writedb"</span>, DISPATCH_QUEUE_SERIAL);
+
+- (<span class="keyword">void</span>)writeDB:(NSData *)data
+
+{
+
+　　<span class="built_in">dispatch_async</span>(queue1, ^{
+
+　　　　<span class="comment">//write database</span>
+
+　　});
+
+}
+</pre></td></tr></table></figure>
+
+<p>下一次调用writeDB:必须等到上次调用完成后才能进行，保证writeDB:方法是线程安全的。 </p>
+<h4 id="dispatch-">dispatch队列还实现其它一些常用函数，包括：</h4>
+<p>void dispatch_apply(size_t iterations, dispatch_queue_t queue, void (^block)(size_t)); </p>
+<p>//重复执行block，需要注意的是这个方法是同步返回，也就是说等到所有block执行完毕才返回，如需异步返回则嵌套在dispatch_async中来使用。多个block的运行是否并发或串行执行也依赖queue的是否并发或串行。</p>
+<p>void dispatch_barrier_async(dispatch_queue_t queue, dispatch_block_t block); </p>
+<p>//这个函数可以设置同步执行的block，它会等到在它加入队列之前的block执行完毕后，才开始执行。在它之后加入队列的block，则等到这个block执行完毕后才开始执行。</p>
+<p>void dispatch_barrier_sync(dispatch_queue_t queue, dispatch_block_t block); </p>
+<p>//同上，除了它是同步返回函数</p>
+<p>void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block); </p>
+<p>//延迟执行block</p>
+<h4 id="-dispatch-">最后再来看看dispatch队列的一个很有特色的函数：</h4>
+<p>void dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);</p>
+<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且这个过程可以是动态的，可以实现队列的动态调度管理等等。比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
+<p>dispatch_set_target_queue(dispatchA, dispatchB);</p>
+<p>那么dispatchA上还未运行的block会在dispatchB上运行。这时如果暂停dispatchA运行：</p>
+<p>dispatch_suspend(dispatchA);</p>
+<p>则只会暂停dispatchA上原来的block的执行，dispatchB的block则不受影响。而如果暂停dispatchB的运行，则会暂停dispatchA的运行。</p>
+<p>这里只简单举个例子，说明dispatch队列运行的灵活性，在实际应用中你会逐步发掘出它的潜力。</p>
+<p>dispatch队列不支持cancel（取消），没有实现dispatch_cancel()函数，不像NSOperationQueue，不得不说这是个小小的缺憾。 </p>
+]]></content>
+    
+    
+      <category term="dispatch" scheme="http://yuhaya.github.io/tags/dispatch/"/>
+    
+      <category term="GCD" scheme="http://yuhaya.github.io/categories/GCD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[wireshark 常用过滤表达式]]></title>
+    <link href="http://yuhaya.github.io/2014/07/27/wireshark-%E5%B8%B8%E7%94%A8%E8%BF%87%E6%BB%A4%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+    <id>http://yuhaya.github.io/2014/07/27/wireshark-常用过滤表达式/</id>
+    <published>2014-07-27T08:48:06.000Z</published>
+    <updated>2014-07-27T09:22:19.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="-wireshark-ip-">针对wireshark最常用的自然是针对IP地址的过滤。其中有几种情况：</h2>
+<ol>
+<li>对源地址为192.168.0.1的包的过滤，即抓取源地址满足要求的包。<ul>
+<li>表达式为：ip.src == 192.168.0.1</li>
+</ul>
+</li>
+<li>对目的地址为192.168.0.1的包的过滤，即抓取目的地址满足要求的包。<ul>
+<li>表达式为：ip.dst == 192.168.0.1</li>
+</ul>
+</li>
+<li>对源或者目的地址为192.168.0.1的包的过滤，即抓取满足源或者目的地址的ip地址是192.168.0.1的包。<ul>
+<li>表达式为：ip.addr == 192.168.0.1,或者 ip.src == 192.168.0.1 or ip.dst == 192.168.0.1</li>
+</ul>
+</li>
+<li>要排除以上的数据包，我们只需要将其用括号囊括，然后使用 &quot;!&quot; 即可。<ul>
+<li>表达式为：!(表达式)    </li>
+</ul>
+</li>
+</ol>
+<h2 id="-">针对协议的过滤</h2>
+<ol>
+<li>仅仅需要捕获某种协议的数据包，表达式很简单仅仅需要把协议的名字输入即可。<ul>
+<li>表达式为：http</li>
+</ul>
+</li>
+<li>需要捕获多种协议的数据包，也只需对协议进行逻辑组合即可.<ul>
+<li>表达式为：http or telnet （多种协议加上逻辑符号的组合即可）</li>
+</ul>
+</li>
+<li>排除某种协议的数据包<ul>
+<li>表达式为：not arp      !tcp</li>
+</ul>
+</li>
+</ol>
+<h2 id="-">针对端口的过滤（视协议而定）</h2>
+<ol>
+<li>捕获某一端口的数据包<ul>
+<li>表达式为：tcp.port == 80</li>
+</ul>
+</li>
+<li>捕获多端口的数据包，可以使用and来连接，下面是捕获高端口的表达式<ul>
+<li>表达式为：udp.port &gt;= 2048</li>
+</ul>
+</li>
+</ol>
+<h2 id="-">针对长度和内容的过滤</h2>
+<ol>
+<li>针对长度的过虑（这里的长度指定的是数据段的长度）<ul>
+<li>表达式为：udp.length &lt; 30   http.content_length &lt;=20
+　　         </li>
+</ul>
+</li>
+<li>针对数据包内容的过滤<ul>
+<li>表达式为：http.request.uri matches &quot;vipscu&quot;  （匹配http请求中含有vipscu字段的请求信息）
+　　　　  </li>
+</ul>
+</li>
+</ol>
+<h4 id="-wireshark-">通过以上的最基本的功能的学习，如果随意发挥，可以灵活应用，就基本上算是入门了。以下是比较复杂的实例（来自wireshark图解教程）：</h4>
+<p>tcp dst port 3128</p>
+<p>ip src host 10.1.1.1</p>
+<p>显示来源IP地址为10.1.1.1的封包。</p>
+<p>host 10.1.2.3</p>
+<p>显示目的或来源IP地址为10.1.2.3的封包。</p>
+<p>src portrange 2000-2500</p>
+<p>显示来源为UDP或TCP，并且端口号在2000至2500范围内的封包。</p>
+<p>not imcp</p>
+<p>显示除了icmp以外的所有封包。（icmp通常被ping工具使用）</p>
+<p>src host 10.7.2.12 and not dst net 10.200.0.0/16</p>
+<p>显示来源IP地址为10.7.2.12，但目的地不是10.200.0.0/16的封包。</p>
+<p>(src host 10.4.1.12 or src net 10.6.0.0/16) and tcp dst portrange 200-10000 and dst net 10.0.0.0/8</p>
+<p>显示来源IP为10.4.1.12或者来源网络为10.6.0.0/16，目的地TCP端口号在200至10000之间，并且目的位于网络10.0.0.0/8内的所有封包。</p>
+]]></content>
+    
+    
+      <category term="wireshark" scheme="http://yuhaya.github.io/tags/wireshark/"/>
+    
+      <category term="wireshark" scheme="http://yuhaya.github.io/categories/wireshark/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[block的使用]]></title>
+    <link href="http://yuhaya.github.io/2014/06/11/block%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yuhaya.github.io/2014/06/11/block的使用/</id>
+    <published>2014-06-10T23:41:41.000Z</published>
+    <updated>2014-06-10T23:53:38.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="-">语法介绍</h2>
+<p>代码块本质上是和其他变量类似。不同的是，代码块存储的数据是一个函数体。使用代码块是，你可以像调用其他标准函数一样，传入参数数，并得到返回值。
+脱字符（^）是块的语法标记。按照我们熟悉的参数语法规约所定义的返回值以及块的主体（也就是可以执行的代码）。下图是如何把块变量赋值给一个变量的语法讲解：
+<img src="/images/1344323584_7609.png" alt="">
+按照调用函数的方式调用块对象变量就可以了：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">int</span> result = myBlock(<span class="number">4</span>); <span class="comment">// result是 28</span>
+</pre></td></tr></table></figure>
+
+<h2 id="1-nsstring-">1、参数是NSString*的代码块</h2>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="keyword">void</span> (^printBlock)(<span class="built_in">NSString</span> *x);
+printBlock = ^(<span class="built_in">NSString</span>* str)
+{
+    <span class="built_in">NSLog</span>(@<span class="string">"print:%@"</span>, str);
+};
+printBlock(@<span class="string">"hello world!"</span>);
+</pre></td></tr></table></figure>
+
+<p>运行结果是：print:hello world!</p>
+<h2 id="2-">2、代码用在字符串数组排序</h2>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="built_in">NSArray</span> *stringArray = [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"abc 1"</span>, @<span class="string">"abc 21"</span>, @<span class="string">"abc 12"</span>,@<span class="string">"abc 13"</span>,@<span class="string">"abc 05"</span>,<span class="literal">nil</span>];
+NSComparator sortBlock = ^(<span class="keyword">id</span> string1, <span class="keyword">id</span> string2)
+{
+     <span class="keyword">return</span> [string1 compare:string2];
+};
+<span class="built_in">NSArray</span> *sortArray = [stringArray sortedArrayUsingComparator:sortBlock];
+<span class="built_in">NSLog</span>(@<span class="string">"sortArray:%@"</span>, sortArray);
+</pre></td></tr></table></figure>
+
+<p>运行结果：
+sortArray:(
+    &quot;abc 05&quot;,
+    &quot;abc 1&quot;,
+    &quot;abc 12&quot;,
+    &quot;abc 13&quot;,
+    &quot;abc 21&quot;
+)</p>
+<h2 id="3-">3、代码块的递归调用</h2>
+<p>代码块想要递归调用，代码块变量必须是全局变量或者是静态变量，这样在程序启动的时候代码块变量就初始化了，可以递归调用</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">static</span> <span class="keyword">void</span> (^ <span class="keyword">const</span> blocks)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> i)
+{
+    <span class="keyword">if</span> (i &gt; <span class="number">0</span>) {
+        <span class="built_in">NSLog</span>(@<span class="string">"num:%d"</span>, i);
+        blocks(i - <span class="number">1</span>);
+     }
+};
+blocks(<span class="number">3</span>);
+</pre></td></tr></table></figure>
+
+<p>运行打印结果：</p>
+<p>num:3</p>
+<p>num:2</p>
+<p>num:1</p>
+<h2 id="4-">4、在代码块中使用局部变量和全局变量</h2>
+<p>在代码块中可以使用和改变全局变量</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre><span class="keyword">int</span> global = <span class="number">1000</span>;
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])
+{
+    @autoreleasepool {
+        <span class="keyword">void</span>(^block)(<span class="keyword">void</span>) = ^(<span class="keyword">void</span>)
+        {
+            global++;
+            <span class="built_in">NSLog</span>(@<span class="string">"global:%d"</span>, global);
+        };
+        block();
+        <span class="built_in">NSLog</span>(@<span class="string">"global:%d"</span>, global);
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</pre></td></tr></table></figure>
+
+<p>运行打印结果：</p>
+<p>global:1001</p>
+<p>global:1001</p>
+<p>而局部变量可以使用，但是不能改变。</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">int</span> local = <span class="number">500</span>;
+<span class="keyword">void</span>(^block)(<span class="keyword">void</span>) = ^(<span class="keyword">void</span>)
+    {
+<span class="comment">//      local++;</span>
+         <span class="built_in">NSLog</span>(@<span class="string">"local:%d"</span>, local);
+    };
+block();
+<span class="built_in">NSLog</span>(@<span class="string">"local:%d"</span>, local);
+</pre></td></tr></table></figure>
+
+<p>在代码块中改变局部变量编译不通过。怎么在代码块中改变局部变量呢？在局部变量前面加上关键字：__block</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>__block int <span class="built_in">local</span> <span class="subst">=</span> <span class="number">500</span>;
+<span class="literal">void</span>(^block)(<span class="literal">void</span>) <span class="subst">=</span> ^(<span class="literal">void</span>)
+   {
+     <span class="built_in">local</span><span class="subst">++</span>;
+      NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</span>);
+    };
+block();
+NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</span>);
+</pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p>local:501</p>
+<p>local:501</p>
+<p>转载自：<a href="http://blog.csdn.net/totogo2010/article/details/7839061" target="_blank">http://blog.csdn.net/totogo2010/article/details/7839061</a></p>
+]]></content>
+    
+    
+      <category term="block" scheme="http://yuhaya.github.io/tags/block/"/>
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[KVC结合NSCoding实例代码]]></title>
+    <link href="http://yuhaya.github.io/2014/06/09/kvc%E7%BB%93%E5%90%88nscoding%E5%AE%9E%E4%BE%8B%E4%BB%A3%E7%A0%81/"/>
+    <id>http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/</id>
+    <published>2014-06-09T00:03:51.000Z</published>
+    <updated>2014-06-09T00:12:19.000Z</updated>
+    <content type="html"><![CDATA[<h4 id="item-h">item.h</h4>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="code"><pre><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
+
+<span class="class"><span class="keyword">@interface</span> <span class="title">Item</span> : <span class="title">NSObject</span></span>
+
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *identifier;
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *title;
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *notes;
+
+- (<span class="keyword">id</span>)initWithTitle:(<span class="built_in">NSString</span> *)title notes:(<span class="built_in">NSString</span> *)notes;
+
+<span class="keyword">@end</span>
+</pre></td></tr></table></figure>
+
+<h4 id="item-m">item.m</h4>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+</pre></td><td class="code"><pre><span class="preprocessor">#import <span class="title">"Item.h"</span></span>
+
+<span class="class"><span class="keyword">@implementation</span> <span class="title">Item</span></span>
+
+- (<span class="built_in">NSArray</span> *)keysForEncoding;
+{
+    <span class="keyword">return</span> [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"title"</span>, @<span class="string">"notes"</span>, @<span class="string">"identifier"</span>, <span class="literal">nil</span>];
+}
+
+- (<span class="keyword">id</span>)initWithTitle:(<span class="built_in">NSString</span> *)title notes:(<span class="built_in">NSString</span> *)notes
+{
+    <span class="keyword">self</span> = [<span class="keyword">super</span> init];
+    <span class="keyword">if</span> (<span class="keyword">self</span>)
+    {
+        <span class="keyword">self</span><span class="variable">.title</span> = title;
+        <span class="keyword">self</span><span class="variable">.notes</span> = notes;
+        
+        <span class="comment">// create a unique identifier for this object, helps with state restoration</span>
+        NSUUID *uuid = [[NSUUID alloc] init];
+        <span class="keyword">self</span><span class="variable">.identifier</span> = [uuid UUIDString];
+    }
+    <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+
+<span class="comment">// we are being created based on what was archived earlier</span>
+- (<span class="keyword">id</span>)initWithCoder:(NSCoder *)aDecoder
+{
+    <span class="keyword">self</span> = [<span class="keyword">super</span> init];
+    <span class="keyword">if</span> (<span class="keyword">self</span>)
+    {
+        <span class="keyword">for</span> (<span class="built_in">NSString</span> *key in <span class="keyword">self</span><span class="variable">.keysForEncoding</span>)
+        {
+            [<span class="keyword">self</span> setValue:[aDecoder decodeObjectForKey:key] forKey:key];
+        }
+    }
+    <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+
+<span class="comment">// we are asked to be archived, encode all our data</span>
+- (<span class="keyword">void</span>)encodeWithCoder:(NSCoder *)aCoder
+{
+	<span class="keyword">for</span> (<span class="built_in">NSString</span> *key in <span class="keyword">self</span><span class="variable">.keysForEncoding</span>)
+    {
+        [aCoder encodeObject:[<span class="keyword">self</span> valueForKey:key] forKey:key];
+    }
+}
+
+<span class="keyword">@end</span>
+</pre></td></tr></table></figure>
+
+<h3 id="-kvc-">巧妙的利用KVC辅助实现对象的序列化</h3>
+]]></content>
+    
+    
+      <category term="KVC" scheme="http://yuhaya.github.io/tags/KVC/"/>
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[zf2框架初始化高速插件]]></title>
+    <link href="http://yuhaya.github.io/2014/06/08/zf2%E6%A1%86%E6%9E%B6%E5%88%9D%E5%A7%8B%E5%8C%96%E9%80%9F%E5%BA%A6%E5%A4%A7%E6%8F%90%E5%8D%87/"/>
+    <id>http://yuhaya.github.io/2014/06/08/zf2框架初始化速度大提升/</id>
+    <published>2014-06-08T05:13:11.000Z</published>
+    <updated>2014-06-08T06:02:37.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="-fastzf2-https-github-com-yuhaya-fastzf2-"><a href="https://github.com/yuhaya/FastZF2" target="_blank">FastZF2</a></h1>
+<p>推荐基于zf2的前后台整套的开发骨架，其中已经整合zf2启动高速插件，详情点击<a href="https://github.com/yuhaya/FastZF2" target="_blank">FastZF2</a></p>
+]]></content>
+    
+    
+      <category term="zf2框架初始化高速插件" scheme="http://yuhaya.github.io/tags/zf2%E6%A1%86%E6%9E%B6%E5%88%9D%E5%A7%8B%E5%8C%96%E9%AB%98%E9%80%9F%E6%8F%92%E4%BB%B6/"/>
+    
+      <category term="Zend Framework 2" scheme="http://yuhaya.github.io/categories/Zend%20Framework%202/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Singletons in Objective-C]]></title>
+    <link href="http://yuhaya.github.io/2014/05/12/singletons-in-objective-c/"/>
+    <id>http://yuhaya.github.io/2014/05/12/singletons-in-objective-c/</id>
+    <published>2014-05-11T23:39:42.000Z</published>
+    <updated>2014-05-12T00:21:35.000Z</updated>
+    <content type="html"><![CDATA[<p>One of my most used design patterns when developing for iOS is the singleton pattern. It’s an extremely powerful way to share data between different parts of code without having to pass the data around manually. More about the singleton pattern and other patterns can be found in this excellent book:</p>
+<h1 id="background">Background</h1>
+<p>Singleton classes are an important concept to understand because they exhibit an extremely useful design pattern. This idea is used throughout the iPhone SDK, for example, UIApplication has a method called sharedApplication which when called from anywhere will return the UIApplication instance which relates to the currently running application.</p>
+<h1 id="how-to-implement">How to implement</h1>
+<p>You can implement a singleton class in Objective-C using the following code:</p>
+<p>MyManager.h</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="code"><pre><span class="preprocessor">#import <span class="title">&lt;foundation/Foundation.h&gt;</span></span>
+
+<span class="class"><span class="keyword">@interface</span> <span class="title">MyManager</span> : <span class="title">NSObject</span> {</span>
+    <span class="built_in">NSString</span> *someProperty;
+}
+
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, retain) <span class="built_in">NSString</span> *someProperty;
+
++ (<span class="keyword">id</span>)sharedManager;
+
+<span class="keyword">@end</span>
+</pre></td></tr></table></figure>
+
+<p>MyManager.m</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td><td class="code"><pre><span class="preprocessor">#import <span class="title">"MyManager.h"</span></span>
+
+<span class="class"><span class="keyword">@implementation</span> <span class="title">MyManager</span></span>
+
+<span class="keyword">@synthesize</span> someProperty;
+
+<span class="preprocessor">#pragma mark Singleton Methods</span>
+
++ (<span class="keyword">id</span>)sharedManager {
+    <span class="keyword">static</span> MyManager *sharedMyManager = <span class="literal">nil</span>;
+    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;
+    <span class="built_in">dispatch_once</span>(&onceToken, ^{
+        sharedMyManager = [[<span class="keyword">self</span> alloc] init];
+    });
+    <span class="keyword">return</span> sharedMyManager;
+}
+
+- (<span class="keyword">id</span>)init {
+  <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) {
+      someProperty = [[<span class="built_in">NSString</span> alloc] initWithString:@<span class="string">"Default Property Value"</span>];
+  }
+  <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+
+- (<span class="keyword">void</span>)dealloc {
+  <span class="comment">// Should never be called, but just here for clarity really.</span>
+}
+
+<span class="keyword">@end</span>
+</pre></td></tr></table></figure>
+
+<p>What this does is it defines a static variable (but only global to this translation unit)) called <code>sharedMyManager</code> which is then initialised once and only once in <code>sharedManager</code>. The way we ensure that it’s only created once is by using the <code>dispatch_once</code> method from <code>Grand Central Dispatch (GCD)</code>. This is thread safe and handled entirely by the OS for you so that you don’t have to worry about it at all.</p>
+<p>However, if you would rather not use GCD then you should use the following code for <code>sharedManager</code>:</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>+ (<span class="keyword">id</span>)sharedManager {
+    <span class="keyword">static</span> MyManager *sharedMyManager = <span class="literal">nil</span>;
+    @synchronized(<span class="keyword">self</span>) {
+        <span class="keyword">if</span> (sharedMyManager == <span class="literal">nil</span>)
+            sharedMyManager = [[<span class="keyword">self</span> alloc] init];
+    }
+    <span class="keyword">return</span> sharedMyManager;
+}
+</pre></td></tr></table></figure>
+
+<p>Then you can reference the singleton from anywhere by calling the following function:</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="attribute">MyManager *sharedManager </span>=<span class="string"> [MyManager sharedManager];</span>
+</pre></td></tr></table></figure>
+
+<p>I’ve used this extensively throughout my code for things such as creating a singleton to handle CoreLocation or CoreData functions.</p>
+<h1 id="non-arc-code">Non-ARC code</h1>
+<p>Not that I recommend it, but if you are not using Automatic Reference Counting (ARC), then you should use the following code:</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+</pre></td><td class="code"><pre>import <span class="string">"MyManager.h"</span>
+
+<span class="keyword">static</span> MyManager *sharedMyManager = <span class="literal">nil</span>;
+
+<span class="class"><span class="keyword">@implementation</span> <span class="title">MyManager</span></span>
+
+<span class="keyword">@synthesize</span> someProperty;
+
+<span class="preprocessor">#pragma mark Singleton Methods</span>
++ (<span class="keyword">id</span>)sharedManager {
+  @synchronized(<span class="keyword">self</span>) {
+      <span class="keyword">if</span>(sharedMyManager == <span class="literal">nil</span>)
+          sharedMyManager = [[<span class="keyword">self</span> alloc] init];
+  }
+  <span class="keyword">return</span> sharedMyManager;
+}
++ (<span class="keyword">id</span>)allocWithZone:(NSZone *)zone {
+  @synchronized(<span class="keyword">self</span>){
+        <span class="keyword">if</span>(sharedMyManager == <span class="literal">nil</span>){
+            sharedMyManager = [<span class="keyword">super</span> allocWithZone:zone];
+        }
+  }
+  <span class="keyword">return</span> sharedMyManager;
+}
+- (<span class="keyword">id</span>)copyWithZone:(NSZone *)zone {
+  <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+- (<span class="keyword">id</span>)retain {
+  <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+- (<span class="keyword">unsigned</span>)retainCount {
+  <span class="keyword">return</span> UINT_MAX; <span class="comment">//denotes an object that cannot be released</span>
+}
+- (oneway <span class="keyword">void</span>)release {
+  <span class="comment">// never release</span>
+}
+- (<span class="keyword">id</span>)autorelease {
+  <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+- (<span class="keyword">id</span>)init {
+  <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) {
+      someProperty = [[<span class="built_in">NSString</span> alloc] initWithString:@<span class="string">"Default Property Value"</span>];
+  }
+  <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+- (<span class="keyword">void</span>)dealloc {
+  <span class="comment">// Should never be called, but just here for clarity really.</span>
+  [someProperty release];
+  [<span class="keyword">super</span> dealloc];
+}
+
+<span class="keyword">@end</span>
+</pre></td></tr></table></figure>
+
+]]></content>
+    
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Objective-C的属性和成员变量用法及关系浅析]]></title>
+    <link href="http://yuhaya.github.io/2014/05/11/objective-c%E7%9A%84%E5%B1%9E%E6%80%A7%E5%92%8C%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E7%94%A8%E6%B3%95%E5%8F%8A%E5%85%B3%E7%B3%BB%E6%B5%85%E6%9E%90/"/>
+    <id>http://yuhaya.github.io/2014/05/11/objective-c的属性和成员变量用法及关系浅析/</id>
+    <published>2014-05-11T03:38:18.000Z</published>
+    <updated>2014-05-11T03:50:11.000Z</updated>
+    <content type="html"><![CDATA[<ol>
+<li><p>属性</p>
+<p> 关于属性的用法在苹果的官方文档《The Objective-C Programming Language》中有详细的说明，在这里就不再赘述，链接如下：</p>
+<p> <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html#//apple_ref/doc/uid/TP40011210" target="_blank">《The Objective-c Programming Language》</a></p>
+<p> 如果你的英文不好，没关系，已经有人把这个文档全部翻译完了，链接如下：</p>
+<p> <a href="http://blog.csdn.net/column/details/object-c.html" target="_blank">Objective-C编程语言官方文档翻译</a></p>
+</li>
+<li><p>关于@synthesize object = _object 的解释</p>
+<p> 我们在很多代码中会见到这样的写法：</p>
+</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="variable">@interface</span> MyClass:NSObject{　　
+     MyObjecct <span class="variable">*_object</span>;
+}
+<span class="variable">@property</span>(nonamtic, retain) MyObjecct <span class="variable">*object</span>;
+<span class="variable">@end</span>
+
+<span class="variable">@implementatin</span> MyClass
+<span class="variable">@synthesize</span> object=_object;
+</pre></td></tr></table></figure>
+
+<pre><code>我在网上查阅了一些资料和其他人写的博文，总结了这样写的几条原因如下：  
+</code></pre><h3 id="-1-32-64-">（1）32位系统和64位系统的差异</h3>
+<p>  在32位系统中，如果类的@interface部分没有进行ivar（instance variable）声明，但有@property声明，在类的@implementation部分有响应的@synthesize，则会得到类似下面的编译错误：</p>
+<p>  Synthesize property ‘xX’ must either be named the same as a compatible ivar or must explicitly name an ivar</p>
+<h4 id="-64-ivar-ivar-_-">在64位系统中，运行时系统会自动给类添加ivar，添加的ivar以一个下划线“_”做前缀。</h4>
+<h3 id="-2-bug">（2）避免莫名其妙的Bug</h3>
+<p>  在这里简单说一下_object和object的区别。_object是MyClass类的成员变量，object是属性。property和synthesize定义了一     对getter和setter方法，在这里的getter方法是object，setter方法是setObject，事实上getter和setter方法操作的是变量_object。</p>
+<p>  如果写synthesize objec = _object 时getter方法为：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>-(MyObject *)<span class="keyword">object</span>
+{
+    <span class="keyword">return</span> _object;
+}
+</pre></td></tr></table></figure>
+
+<p>  如果写synthesize object 时getter方法为：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>-(MyObject *)<span class="keyword">object</span>
+{
+    <span class="keyword">return</span> <span class="keyword">object</span>;
+}
+</pre></td></tr></table></figure>
+
+<p>  当函数名和属性名重名的时候会出现意想不到的错误，为了避免这种Bug，Apple给的Demo Code里面多数也采用这种方式。</p>
+<h3 id="-3-">（3）属性和变量的用法</h3>
+<p>  属性是用self.object，通过getter方法来调用的，可以在类外使用。而变量是通过_object来调用，只能在该类对应的implementation中使用，在类外不能使用。</p>
+<p>  下面看一下两种赋值操作：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre> self.<span class="class"><span class="keyword">object</span> = [[<span class="title">MyObject</span> <span class="title">alloc</span>] <span class="title">init</span>];</span>
+_<span class="class"><span class="keyword">object</span> = [[<span class="title">MyObject</span> <span class="title">alloc</span>] <span class="title">init</span>];</span>
+</pre></td></tr></table></figure>
+
+<p>  第一种的方式和@property（nonamtic，retain）有关，实际上是通过调用setter方法setObject来实现赋值的。第二种方式是简单的指针赋值，没有调用setter方法。</p>
+<p>  下面是retainCount的变化：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>MyObject *tmp = [[MyObject alloc] init];
+self.<span class="class"><span class="keyword">object</span> = <span class="title">tmp</span>;  //<span class="title">retainCount</span> = 2</span>
+[tmp release];  <span class="comment">//retainCount = 1</span>
+_<span class="class"><span class="keyword">object</span> = [[<span class="title">MyObject</span> <span class="title">alloc</span>] <span class="title">init</span>];  //<span class="title">retainCount</span> = 1</span>
+</pre></td></tr></table></figure>
+
+]]></content>
+    
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Objective-C中不同方式实现锁]]></title>
+    <link href="http://yuhaya.github.io/2014/05/08/objective-c%E4%B8%AD%E4%B8%8D%E5%90%8C%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E9%94%81/"/>
+    <id>http://yuhaya.github.io/2014/05/08/objective-c中不同方式实现锁/</id>
+    <published>2014-05-08T15:20:03.000Z</published>
+    <updated>2014-05-08T15:28:07.000Z</updated>
+    <content type="html"><![CDATA[<p>为什么需要使用锁，当然熟悉多线程的你，自然不会对它觉得陌生。</p>
+<p>那你在代码中是否很好的使用了锁的机制呢？你又知道几种实现锁的方法呢？</p>
+<p>今天一起来探讨一下Objective-C中几种不同方式实现的锁，在这之前我们先构建一个测试用的类，假想它是我们的一个共享资源，method1与method2是互斥的，代码如下：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="class"><span class="keyword">@implementation</span> <span class="title">TestObj</span></span>
+ 
+- (<span class="keyword">void</span>)method1
+{
+    <span class="built_in">NSLog</span>(@<span class="string">"%@"</span>,NSStringFromSelector(_cmd));
+}
+ 
+- (<span class="keyword">void</span>)method2
+{
+    <span class="built_in">NSLog</span>(@<span class="string">"%@"</span>,NSStringFromSelector(_cmd));    
+}
+ 
+<span class="keyword">@end</span>
+</pre></td></tr></table></figure>
+
+<h2 id="1-nslock-">1.使用NSLock实现的锁</h2>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="code"><pre>//主线程中
+TestObj *obj = [[TestObj alloc] init];
+NSLock *<span class="operator"><span class="keyword">lock</span> = [[NSLock alloc] init];</span>
+ 
+//线程1
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    [<span class="operator"><span class="keyword">lock</span> <span class="keyword">lock</span>];</span>
+    [obj method1];
+    sleep(10);
+    [<span class="operator"><span class="keyword">lock</span> unlock];</span>
+});
+ 
+//线程2
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    sleep(1);//以保证让线程2的代码后执行
+    [<span class="operator"><span class="keyword">lock</span> <span class="keyword">lock</span>];</span>
+    [obj method2];
+    [<span class="operator"><span class="keyword">lock</span> unlock];</span>
+});
+</pre></td></tr></table></figure>
+
+<p>看到打印的结果了吗，你会看到线程1锁住之后，线程2会一直等待走到线程1将锁置为unlock后，才会执行method2方法。</p>
+<p>NSLock是Cocoa提供给我们最基本的锁对象，这也是我们经常所使用的，除lock和unlock方法外，NSLock还提供了tryLock和lockBeforeDate:两个方法，前一个方法会尝试加锁，如果锁不可用(已经被锁住)，刚并不会阻塞线程，并返回NO。lockBeforeDate:方法会在所指定Date之前尝试加锁，如果在指定时间之前都不能加锁，则返回NO。</p>
+<h2 id="2-synchronized-">2.使用synchronized关键字构建的锁</h2>
+<p>当然在Objective-C中你还可以用@synchronized指令快速的实现锁：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
+TestObj *obj = [[TestObj alloc] init];
+ 
+<span class="comment">//线程1</span>
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+    <span class="annotation">@synchronized</span>(obj){
+        [obj method1];
+        sleep(<span class="number">10</span>);
+    }
+});
+ 
+<span class="comment">//线程2</span>
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+    sleep(<span class="number">1</span>);
+    <span class="annotation">@synchronized</span>(obj){
+        [obj method2];
+    }
+});
+</pre></td></tr></table></figure>
+
+<h3 id="-synchronized-obj-_-_-">@synchronized指令使用的obj为该锁的<em>唯一标识</em>，只有当标识相同时，才为满足互斥.</h3>
+<p>如果线程2中的@synchronized(obj)改为@synchronized(other),刚线程2就不会被阻塞，@synchronized指令实现锁的优点就是我们不需要在代码中显式的创建锁对象，便可以实现锁的机制，但作为一种预防措施，@synchronized块会隐式的添加一个异常处理例程来保护代码，该处理例程会在异常抛出的时候自动的释放互斥锁。所以如果不想让隐式的异常处理例程带来额外的开销，你可以考虑使用锁对象。</p>
+<h2 id="3-c-pthread_mutex_t-">3.使用C语言的pthread_mutex_t实现的锁</h2>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
+TestObj *obj = [[TestObj alloc] init];
+ 
+__block pthread_mutex_t mutex;
+pthread_mutex_init(&mutex, <span class="literal">NULL</span>);
+ 
+<span class="comment">//线程1</span>
+<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+    pthread_mutex_lock(&mutex);
+    [obj method1];
+    sleep(<span class="number">5</span>);
+    pthread_mutex_unlock(&mutex);
+});
+ 
+<span class="comment">//线程2</span>
+<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+    sleep(<span class="number">1</span>);
+    pthread_mutex_lock(&mutex);
+    [obj method2];
+    pthread_mutex_unlock(&mutex);
+});
+</pre></td></tr></table></figure>
+
+<p>pthread_mutex_t定义在pthread.h，所以记得#include <pthread.h></p>
+<h2 id="4-gcd-">4.使用GCD来实现的”锁”</h2>
+<p>以上代码构建多线程我们就已经用到了GCD的dispatch_async方法，其实在GCD中也已经提供了一种信号机制，使用它我们也可以来构建一把”锁”(从本质意义上讲，信号量与锁是有区别，具体差异参加信号量与互斥锁之间的区别):</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
+TestObj *obj = [[TestObj alloc] init];
+dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">1</span>);
+ 
+<span class="comment">//线程1</span>
+<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [obj method1];
+    sleep(<span class="number">10</span>);
+    dispatch_semaphore_signal(semaphore);
+});
+ 
+<span class="comment">//线程2</span>
+<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+    sleep(<span class="number">1</span>);
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [obj method2];
+    dispatch_semaphore_signal(semaphore);
+});
+</pre></td></tr></table></figure>
+
+<p>至于代码产生的效果当然和上一例是一模一样的，关于信号机制，熟悉C编程的你肯定也不会陌生的，关于GCD中更多关于dispatch_semaphore_t的信息，可以跳转到本博客的这一往篇文章:GCD介绍（三）: Dispatch Sources</p>
+<p>好了，以上就是我所列举了几种方式来实现锁，当然锁大多数情况下也是配合多线程一起使用的，关于多线程编程，我这儿就不赘述了。</p>
+<p>参考：<a href="http://www.tanhao.me/pieces/616.html" target="_blank">http://www.tanhao.me/pieces/616.html</a></p>
+]]></content>
+    
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Objective-C 之 @property]]></title>
+    <link href="http://yuhaya.github.io/2014/05/05/objective-c-%E4%B9%8B-@property/"/>
+    <id>http://yuhaya.github.io/2014/05/05/objective-c-之-@property/</id>
+    <published>2014-05-05T12:04:27.000Z</published>
+    <updated>2014-05-05T12:22:37.000Z</updated>
+    <content type="html"><![CDATA[<p>@property属性值三类分别是：<em>原子性</em>，<em>访问器控制</em>，<em>内存管理</em>。</p>
+<h3 id="-">原子性</h3>
+<h4 id="atomic-">atomic(默认)：</h4>
+<p>atomic意为操作是原子的，意味着只有一个线程访问实例变量。atomic是线程安全的至少在当前的访器上我是安全的。它是一个默认的，但是很少使用。它的比较慢，这跟ARM平台和内部锁机制有关。</p>
+<h4 id="nonatomic-">nonatomic：</h4>
+<p>nonatomic跟atomic刚好相反。表示非原子的，可以被多个线程访问。它的速度比atomic快。但不能保证在多线程环境下的安全性，在单线程和明确只有一个线程访问的情况下广泛使用。</p>
+<h3 id="-">访问器控制</h3>
+<h4 id="readwrite">readwrite</h4>
+<h4 id="readonly">readonly</h4>
+<h3 id="-">内存管理</h3>
+<h4 id="retain">retain</h4>
+<p>使用了retain意味着实例变量要获取传入参数的所有权。具体表现在setter中对实例变量先release然后将参数 retain之后传给它。下面这段代码展示了retain类似的行为:</p>
+<figure class="highlight Object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="pp">-<span class="params">(void)</span>setStuName:<span class="params">(<span class="variable">NSString</span> *)</span>stuName
+  {
+     if <span class="params">(<span class="variable">_</span>stu<span class="variable">Name</span> != stu<span class="variable">Name</span>)</span>
+     {
+        [_stuName release];
+         _stuName = [stuName retain];
+     }
+  }</span>
+</pre></td></tr></table></figure>
+
+<h4 id="assign">assign</h4>
+<p>用于值类型，如int、float、double和NSInteger，CGFloat等表示单纯的复制。还包括不存在所有权关系的对象，比如常见的delegate。</p>
+<h4 id="strong">strong</h4>
+<p>是在ARC伴随IOS引入的时候引入的关键字是retain的一个可选的替代。表示实例变量对传入的参数要有所有权关系即强引用。strong跟retain的意思相同并产生相同的代码，但是语意上更好更能体现对象的关系。</p>
+<h4 id="weak">weak</h4>
+<p>weak跟assign的效果相似，不同的是weak在对象被回收之后自动设置为nil。而且weak智能用在iOS 5或以后的版本，对于之前的版本，使用unsafe_unretained。</p>
+<h4 id="unsafe_unretained">unsafe_unretained</h4>
+<p>weak的低版本替代。  </p>
+<h4 id="copy">copy</h4>
+<p>查看上一篇<a href="http://yuhaya.github.io/2014/05/05/object-c-%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/">深浅复制</a></p>
+<h3 id="-">补充：</h3>
+<p>NSString 应用 retain 还是 copy</p>
+<ol>
+<li><p>对NSString应用retain，效率无疑是最好的</p>
+</li>
+<li><p>用copy最安全，因为NSString 为 NSMutableString 的基类，如果将NSMutableString 以retain的形式赋值给NSString后，后续修改NSMutableString会导致NSString内容的变化，这通常不是我们希望的，所以用copy最安全。</p>
+</li>
+<li><p>到底用哪个？貌似还是用copy，因为copy并不一定导致一个新对对象创建，而牺牲效率。copy会调用NSCopying中的 -(id)copyWithZone:(NSZone *)，我们可以判断下self是NSString还是NSMutableString，如果是NSString，就地[self  retain]，[return self]。否则老老实实拷贝对象赋值，这样可以实现效率和安全的结合</p>
+</li>
+</ol>
+<h3 id="copy-nscopying-copywithzone-">copy到底是深复制还是浅复制仅仅由NSCopying中的 <code>copyWithZone</code> 来决定</h3>
+]]></content>
+    
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[OBJECT-C 深拷贝和浅拷贝]]></title>
+    <link href="http://yuhaya.github.io/2014/05/05/object-c-%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/"/>
+    <id>http://yuhaya.github.io/2014/05/05/object-c-深拷贝和浅拷贝/</id>
+    <published>2014-05-05T00:13:05.000Z</published>
+    <updated>2014-05-05T00:28:52.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="-">类型转换</h3>
+<p>第一种：非容器类不可变对象</p>
+<p>第二种：容器类不可变对象</p>
+<p>第三种：非容器类可变对象</p>
+<p>第四种：容器类可变对象</p>
+<h2 id="-">概念</h2>
+<p>浅 复 制：对于被复制的对象的每一层复制都是指针复制（复制对象的指针）。</p>
+<p>深 复 制：在复制操作时，对于被复制的对象至少有一层复制是对象复制（复制引用对象内容）。</p>
+<p>完全复制：在复制操作时，对于被复制的对象的每一层复制都是对象复制。</p>
+<ol>
+<li><p>在复制操作时，对于对象有n层是对象复制，我们可称作n级深复制，此处n应大于等于1。</p>
+</li>
+<li><p>对于完全复制如何实现（目前通用的办法是：迭代法和归档），这里后续是否添加视情况而定，暂时不做讲解。</p>
+</li>
+<li><p>指针复制俗称指针拷贝，对象复制也俗称内容拷贝。 </p>
+</li>
+</ol>
+<p><em>retain</em>：</p>
+<pre><code>始终是浅复制。引用计数每次加一。返回对象是否可变与被复制的对象保持一致。
+</code></pre><p><em>copy</em>：</p>
+<pre><code>对于可变对象为深复制，引用计数不改变;
+
+对于不可变对象是浅复制，引用计数每次加一。
+
+始终返回一个不可变对象。
+</code></pre><p><em>mutableCopy</em>：</p>
+<pre><code>始终是深复制，引用计数不改变。始终返回一个可变对象。
+</code></pre><p>不可变对象：值发生改变，其内存首地址随之改变。</p>
+<p>可变对象：无论值是否改变，其内存首地址都不随之改变。</p>
+<p>引用计数：为了让使用者清楚的知道，该对象有多少个拥有者（即有多少个指针指向同一内存地址）。</p>
+<ol>
+<li>不可变对象→可变对象的转换：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="built_in">NSArray</span> *array1= [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"a"</span>,@<span class="string">"b"</span>,@<span class="string">"c"</span>,@<span class="string">"d"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSMutableArray</span>  *str2=[array1 mutableCopy];
+</pre></td></tr></table></figure>
+
+<ol>
+<li>可变对象→不可变对象的转换：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="built_in">NSMutableArray</span> *array2   = [<span class="built_in">NSMutableArray</span> arrayWithObjects:@<span class="string">"aa"</span>,@<span class="string">"bb"</span>,@<span class="string">"cc"</span>,@<span class="string">"dd"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSArray</span> *array1=[  array2    Copy];
+</pre></td></tr></table></figure>
+
+<ol>
+<li>可变对象→可变对象的转换（不同指针变量指向不同的内存地址）：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="built_in">NSMutableArray</span> *array1= [<span class="built_in">NSMutableArray</span> arrayWithObjects:@<span class="string">"a"</span>,@<span class="string">"b"</span>,@<span class="string">"c"</span>,@<span class="string">"d"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSMutableArray</span>  *str2=[array1 mutableCopy];
+</pre></td></tr></table></figure>
+
+<p>通过上边的两个例子，我们可轻松的将一个对象在可变和不可变之间转换，并且这里不用考虑内存使用原则（即引用计数的问题）。没错，这就是深拷贝的魅力了。</p>
+<ol>
+<li>同类型对象之间的指针复制（不同指针变量指向同一块内存地址）：</li>
+</ol>
+<p>a</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="built_in">NSMutableString</span> *str1=[<span class="built_in">NSMutableString</span> stringWithString:@<span class="string">"two day"</span>];
+<span class="built_in">NSMutableString</span> *str2=[str1   retain];
+[str1  release];
+</pre></td></tr></table></figure>
+
+<p>b</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="built_in">NSArray</span> *array1= [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"a"</span>,@<span class="string">"b"</span>,@<span class="string">"c"</span>,@<span class="string">"d"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSArray</span>  *str2=[array1 Copy];
+[array1 release];
+</pre></td></tr></table></figure>
+
+<p>通俗的讲，多个指针同时指向同一块内存区域，那么这些个指针同时拥有对该内存区的所有权。所有权的瓜分过程，这时候就要用到浅拷贝了。</p>
+<p>则简化为：</p>
+<p>问：什么时候用到深浅拷贝？</p>
+<p>答：深拷贝是在要将一个对象从可变（不可变）转为不可变（可变）或者将一个对象内容克隆一份时用到；浅拷贝是在要复制一个对象的指针时用到。</p>
+<p>＃测试以下代码时需将Project中的Ojective-C automic Reference couting设置为NO(Apple LLVM 5.0-language -Modules)</p>
+<p>第一种：非容器类不可变对象</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="code"><pre> NSString *str1=@<span class="string">"one day"</span>;
+        
+ <span class="built_in">printf</span>(<span class="string">"初始化赋值引用计数为::::%lu"</span>,str1.retainCount);
+ NSString *strCopy1=[str1 retain];
+ <span class="built_in">printf</span>(<span class="string">"\n继续retain引用计数为:::%lu"</span>,str1.retainCount);
+NSString *strCopy2=[str1 copy];
+  <span class="built_in">printf</span>(<span class="string">"\n继续copy后引用计数为::::%lu"</span>,str1.retainCount);
+ NSString *strCopy3=[str1 mutableCopy];
+ <span class="built_in">printf</span>(<span class="string">"\n继续mutableCopy后为:::%lu\n"</span>,str1.retainCount);
+        
+<span class="built_in">printf</span>(<span class="string">"\n非容器类不可变对象\n原始地址::::::::::%p"</span>,str1);
+<span class="built_in">printf</span>(<span class="string">"\nretain复制::::::::%p"</span>,strCopy1);
+<span class="built_in">printf</span>(<span class="string">"\ncopy复制::::::::::%p"</span>,strCopy2);
+<span class="built_in">printf</span>(<span class="string">"\nmutableCopy复制:::%p\n"</span>,strCopy3);
+
+<span class="comment">// 初始化赋值引用计数为：18446744073709551615</span>
+  <span class="comment">// 继续retain引用计数为：18446744073709551615</span>
+<span class="comment">// 继续copy后引用计数为：18446744073709551615</span>
+  <span class="comment">// 继续mutableCopy后为：18446744073709551615</span>
+
+ <span class="comment">//原始地址::::::::::0x1000033d0</span>
+<span class="comment">//retain复制::::::::0x1000033d0//浅复制</span>
+ <span class="comment">//copy复制::::::::::0x1000033d0//浅复制</span>
+ <span class="comment">//mutableCopy复制:::0x10010c420//深复制</span>
+</pre></td></tr></table></figure>
+
+<p>小提示：这里很多人都说是赋值，所以就好解释这里没引用计数的概念。而且也能解释为什么</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>NSString *strCopy2=[str1 <span class="keyword">copy</span>];
+
+NSMutableString  *strCopy2=[str1 <span class="keyword">copy</span>];
+</pre></td></tr></table></figure>
+
+<p>这样都不会报错的原因了。那既然只是简单赋值为什么要这么麻烦呢，直接</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>NSString <span class="variable">*strCopy2</span>=<span class="variable">*str1</span>;
+
+NSMutableString  <span class="variable">*strCopy2</span>=<span class="variable">*str1</span>;
+</pre></td></tr></table></figure>
+
+<p>其实大家都看出来了，这里是指针变量，只存在“指针的复制”，</p>
+<p>跟赋值概念完全不同，虽然这里看起来很像。</p>
+<p>原来该类型是字符串常量时，系统会为我们优化，声明了多个字符串，但是都是常量，且内容相等，那么系统就只为我们申请一块空间。</p>
+<p>  疑问： 深复制=浅复制+赋值吗？ </p>
+<p>   赋值过程：输入数据→寄存器处理→开辟内存→写入数据。</p>
+<p>   一次深复制，可以得到被复制对象指针，并进行一次赋值操作。</p>
+<p> 第二种：容器类不可变对象</p>
+<ol>
+<li>不可变对象→可变对象的转换：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="code"><pre>NSArray <span class="variable">*array1</span>= [NSArray arrayWithObjects:<span class="variable">@"</span>a<span class="string">",<span class="variable">@"</span>b"</span>,<span class="variable">@"</span>c<span class="string">",<span class="variable">@"</span>d"</span>,nil];
+        
+        <span class="keyword">printf</span>(<span class="string">"\n初始化赋值引用计数为::::::::::::<span class="variable">%lu</span>"</span>,[array1 retainCount]);
+        NSArray <span class="variable">*arrayCopy1</span> = [array1 retain];
+        <span class="keyword">printf</span>(<span class="string">"\n继续retain后引用计数为:::::::::<span class="variable">%lu</span>"</span>,array1.retainCount);
+        NSArray <span class="variable">*arrayCopy2</span> = [array1 copy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续copy后引用计数为:::::::::::<span class="variable">%lu</span>"</span>,array1.retainCount);
+        NSArray <span class="variable">*arrayCopy3</span> = [array1 mutableCopy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续mutableCopy后引用计数为::::<span class="variable">%lu</span>\n"</span>,array1.retainCount);
+        
+        <span class="keyword">printf</span>(<span class="string">"\n容器类不可变数组\n原始地址::::::::::<span class="variable">%p</span>\t\t<span class="variable">%p</span>"</span>,array1,[array1 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nretain复制::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCopy1,[arrayCopy1 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\ncopy复制::::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCopy2,[arrayCopy2 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nmutableCopy复制:::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCopy3,[arrayCopy3 objectAtIndex:<span class="number">1</span>]);
+<span class="regexp">//</span>结果
+//初始化赋值引用计数为::::::::::::<span class="number">1</span>
+        //继续retain后引用计数为:::::::::<span class="number">2</span>
+        //继续copy后引用计数为:::::::::::<span class="number">3</span>
+        //继续mutableCopy后引用计数为::::<span class="number">3</span>
+        
+        //容器类不可变数组
+        //原始地址::::::::::<span class="number">0x10010c6b0</span> <span class="number">0x100003410</span>
+        //retain复制::::::::<span class="number">0x10010c6b0</span> <span class="number">0x100003410</span>//浅复制
+        //copy复制::::::::::<span class="number">0x10010c6b0</span> <span class="number">0x100003410</span>//浅复制
+        //mutableCopy复制:::<span class="number">0x10010c760</span> <span class="number">0x100003410</span>//深复制
+</pre></td></tr></table></figure>
+
+<p>第三种：非容器类可变对象</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="code"><pre>NSMutableString *str2=[NSMutableString stringWithString:@<span class="string">"two day"</span>];
+        
+        <span class="built_in">printf</span>(<span class="string">"\n初始化赋值引用计数为::::::::::::%lu"</span>,str2.retainCount);
+        NSMutableString *strCpy1=[str2 retain];
+        <span class="built_in">printf</span>(<span class="string">"\n继续retain后引用计数为:::::::::%lu"</span>,str2.retainCount);
+        NSMutableString *strCpy2=[str2 copy];
+        <span class="built_in">printf</span>(<span class="string">"\n继续copy后引用计数为:::::::::::%lu"</span>,str2.retainCount);
+        NSMutableString *strCpy3=[str2 mutableCopy];
+        <span class="built_in">printf</span>(<span class="string">"\n继续mutableCopy后引用计数为::::%lu\n"</span>,str2.retainCount);
+        
+        <span class="built_in">printf</span>(<span class="string">"\n���容器类可变对象\n原始地址::::::::::%p"</span>,str2);
+        <span class="built_in">printf</span>(<span class="string">"\nretin复制::::::::%p"</span>,strCpy1);
+        <span class="built_in">printf</span>(<span class="string">"\ncopy复制::::::::::%p"</span>,strCpy2);
+        <span class="built_in">printf</span>(<span class="string">"\nmutableCopy复制:::%p"</span>,strCpy3);
+<span class="comment">//结果</span>
+<span class="comment">//初始化赋值引用计数为::::::::::::1</span>
+        <span class="comment">//继续retain后引用计数为:::::::::2</span>
+        <span class="comment">//继续copy后引用计数为:::::::::::2</span>
+        <span class="comment">//继续mutableCopy后引用计数为::::2</span>
+        
+        <span class="comment">//非容器类可变对象</span>
+        <span class="comment">//原始地址::::::::::0x10010c560</span>
+        <span class="comment">//retain复制::::::::0x10010c560//浅复制</span>
+        <span class="comment">//copy复制::::::::::0x100102720//深复制</span>
+        <span class="comment">//mutableCopy复制:::0x10010c880//深复制</span>
+</pre></td></tr></table></figure>
+
+<p>第四种：容器类可变对象</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="code"><pre>NSMutableArray <span class="variable">*array2</span>   = [NSMutableArray arrayWithObjects:<span class="variable">@"</span>aa<span class="string">",<span class="variable">@"</span>bb"</span>,<span class="variable">@"</span>cc<span class="string">",<span class="variable">@"</span>dd"</span>,nil];
+        
+        <span class="keyword">printf</span>(<span class="string">"\n初始化赋值引用计数为::::::::::<span class="variable">%lu</span>"</span>,array2.retainCount);
+        NSMutableArray <span class="variable">*arrayCpy1</span> = [array2 retain];
+        <span class="keyword">printf</span>(<span class="string">"\n继续retain后引用计数为:::::::<span class="variable">%lu</span>"</span>,array2.retainCount);
+        NSMutableArray <span class="variable">*arrayCpy2</span>=[array2 copy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续copy后引用计数为:::::::::<span class="variable">%lu</span>"</span>,array2.retainCount);
+        NSMutableArray <span class="variable">*arrayCpy3</span> = [array2 mutableCopy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续mutableCopy后引用计数为::<span class="variable">%lu</span>\n"</span>,array2.retainCount);
+        
+        <span class="keyword">printf</span>(<span class="string">"\n容器类可变数组\n原始地址:::::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,array2,[array2 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nretain复制:::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCpy1,[arrayCpy1 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\ncopy复制:::::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCpy2,[arrayCpy2 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nnmutableCopy复制:::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCpy3,[arrayCpy3 objectAtIndex:<span class="number">1</span>]);
+<span class="regexp">//</span>结果
+        //初始化赋值引用计数为::::::::::<span class="number">1</span>
+        //继续retain后引用计数为:::::::<span class="number">2</span>
+        //继续copy后引用计数为:::::::::<span class="number">2</span>
+        //继续mutableCopy后引用计数为::<span class="number">2</span>
+        
+        //容器类可变数组
+        //原始地址:::::::::::<span class="number">0x10010e6c0</span> <span class="number">0x1000034b0</span>
+        //retain复制:::::::::<span class="number">0x10010e6c0</span> <span class="number">0x1000034b0</span>//浅复制
+        //copy复制:::::::::::<span class="number">0x10010e790</span> <span class="number">0x1000034b0</span>//深复制
+        //nmutableCopy复制:::<span class="number">0x10010e7c0</span> <span class="number">0x1000034b0</span>//深复制
+</pre></td></tr></table></figure>
+
+]]></content>
+    
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[委托(delegate)]]></title>
+    <link href="http://yuhaya.github.io/2014/05/02/%E5%A7%94%E6%89%98(delegate)/"/>
+    <id>http://yuhaya.github.io/2014/05/02/委托(delegate)/</id>
+    <published>2014-05-02T12:37:04.000Z</published>
+    <updated>2014-05-02T12:52:42.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="-">委托的定义：</h2>
+<p>  委托（delegate），就是某个对象指定另一个对象处理某些特定任务的设计模式。</p>
+<p>个人理解委托就类似于对象的注入，将B对象注入到A对象中，使得A对象可以通过一个引用访问到B，从而实现B的方法</p>
+<h2 id="-">委托的更加通俗的解释：</h2>
+<p>A把要做的事委托给B来做</p>
+<p>A：委托者
+B：被委托者</p>
+<h3 id="-">委托者与被委托者的叫法很多，例如（普通对象与委托对象，委托与代理等等）</h3>
+<p>比较标准的叫法是“<em>委托与代理</em>”</p>
+<h2 id="-">协议</h2>
+<p>在委托与代理之间还有一个重要的概念———<em>协议</em>，协议是委托与代理之间的桥梁，把两者紧密联系在一起。</p>
+<p><img src="/images/delegate.jpeg" alt=""></p>
+<p>在程序中实现委托一般需要以下几部分工作</p>
+<ol>
+<li><p>协议的定义</p>
+</li>
+<li><p>委托的工作</p>
+<ul>
+<li>声明委托变量</li>
+<li>设置代理</li>
+<li>通过委托变量调用委托方法</li>
+</ul>
+</li>
+<li><p>代理的工作</p>
+<ul>
+<li>遵循协议</li>
+<li>实现协议方法(其实就是遵循协议)</li>
+</ul>
+</li>
+</ol>
+]]></content>
+    
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Foundation UIKit 框架类组织架构图]]></title>
+    <link href="http://yuhaya.github.io/2014/05/02/foundation-uikit-%E6%A1%86%E6%9E%B6%E7%B1%BB%E7%BB%84%E7%BB%87%E6%9E%B6%E6%9E%84%E5%9B%BE/"/>
+    <id>http://yuhaya.github.io/2014/05/02/foundation-uikit-框架类组织架构图/</id>
+    <published>2014-05-02T12:03:18.000Z</published>
+    <updated>2014-05-02T12:17:10.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="foundation-">Foundation框架</h2>
+<p>图中灰色部分是OS X系统的,iOS不支持的。</p>
+<p><img src="/images/Foundation1.jpg" alt="">
+<img src="/images/Foundation2.jpg" alt="">
+<img src="/images/Foundation3.jpg" alt=""></p>
+<h2 id="uikit-">UIKit框架</h2>
+<p><img src="/images/UIKit.jpg" alt=""></p>
+]]></content>
+    
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[协议与委托 （Protocol and Delegate) 实例解析]]></title>
@@ -585,7 +2847,7 @@ Zend\Mvc\Application::init(<span class="keyword">require</span> <span class="str
     <id>http://yuhaya.github.io/2014/03/30/objective-c对象之类对象和元类对象/</id>
     <published>2014-03-30T08:08:15.000Z</published>
     <updated>2014-03-30T08:23:37.000Z</updated>
-    <content type="html"><![CDATA[<p>作为C语言的超集，面向对象成为Objective-C与C语言的最大区别，因此，对象是Objective-C中最重要的部分之一。目前面向对象的语言有很多，</p>
+    <content type="html"><![CDATA[<p>作为C语言的超集，���向对象成为Objective-C与C语言的最大区别，因此，对象是Objective-C中最重要的部分之一。目前面向对象的语言有很多，</p>
 <p>Objective-C中的对象又和其他语言中的对象有什么区别呢？下面来简单介绍Objective-C中对象的实现。</p>
 <h2 id="objective-c-">Objective-C中的类</h2>
 <p>谁都知道，所有的对象都是由其对应的类实例化而来，殊不知<strong>类本身也是一种对象</strong>，先不要对这句话感到惊讶。</p>
@@ -648,1282 +2910,6 @@ id rectClass = [Rectangle class];
     
     
       <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[MySQL 左右值无限分类]]></title>
-    <link href="http://yuhaya.github.io/2014/03/29/mysql-%E5%B7%A6%E5%8F%B3%E5%80%BC%E6%97%A0%E9%99%90%E5%88%86%E7%B1%BB/"/>
-    <id>http://yuhaya.github.io/2014/03/29/mysql-左右值无限分类/</id>
-    <published>2014-03-29T09:17:58.000Z</published>
-    <updated>2014-03-29T09:42:27.000Z</updated>
-    <content type="html"><![CDATA[<p>这个算法有如下几个数据结构</p>
-<ul>
-<li><p>lft 代表左 left</p>
-</li>
-<li><p>rgt 代表右 right</p>
-</li>
-<li><p>lvl 代表所在的层次 level</p>
-</li>
-</ul>
-<p>下面这个图是一个典型的结构　</p>
-<p><img src="/images/04174230_jKOK.png" alt="yuhaya"></p>
-<p>我们先看一些使用方法</p>
-<ul>
-<li>查看整个树(A)有多少节点(包含自己)</li>
-</ul>
-<p>直接看根节点就行了 (right-left+1)/2 = (20-1+1)/2 = 10</p>
-<p>这个数有10个节点</p>
-<ul>
-<li>查看从节点A到E的路径</li>
-</ul>
-<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft</p>
-<p>得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序</p>
-<p>如果2个节点之间不是上下级的关系，则查询没有结果</p>
-<p>反向也是一样的，可以拿到底部一个节点，到上级节点的路径</p>
-<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc</p>
-<p>唯一的区别就是排序是反向的就行了。</p>
-<ul>
-<li>得到某个节点下面的所有节点，且按照树状结构返回</li>
-</ul>
-<p>我们用B做例子</p>
-<p>select * from tree where lft&gt;2 and right&lt;11 order by lft</p>
-<p>拿到的结果是 C,D,E,F,而且顺序也是正确的。</p>
-<ul>
-<li>拿到所有下2级的子节点</li>
-</ul>
-<p>我们A做例子，这次加上了lvl的参数,因为A的level是1，所以我们查询level不大于3的。</p>
-<p>select * from tree where lft&gt;2 and right&lt;11 and lvl&lt;=3 order by lft</p>
-<p>下面看我们新增加一个节点的方法。</p>
-<p>我们在根节点的下面，G节点的右侧增加一个X节点</p>
-<p><img src="/images/04174230_v8X4.png" alt="yuhaya"></p>
-<p>我们要做的工作就是</p>
-<ul>
-<li><p>G节点的右参数为13</p>
-</li>
-<li><p>变更所有的受影响的节点,给新节点腾出空位子,</p>
-</li>
-</ul>
-<p>所有左节点比G节点大的，都增加2</p>
-<p>update tree set lft=lft+2 where lft&gt;12</p>
-<p>所有右节点比G节点大的，都增加2</p>
-<p>update tree set rgt=rgt+2 where rgt&gt;13</p>
-<ul>
-<li>新节点放在空位子上,lft=14,rgt=15</li>
-</ul>
-<p>这样就完成了一个新节点的增加操作。</p>
-<p><a href="http://my.oschina.net/bootstrap/blog/166805" target="_blank">http://my.oschina.net/bootstrap/blog/166805</a></p>
-]]></content>
-    
-    
-      <category term="Mysql" scheme="http://yuhaya.github.io/categories/Mysql/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[jquery 实现iframe 自适应高度]]></title>
-    <link href="http://yuhaya.github.io/2014/03/29/jquery-%E5%AE%9E%E7%8E%B0iframe-%E8%87%AA%E9%80%82%E5%BA%94%E9%AB%98%E5%BA%A6/"/>
-    <id>http://yuhaya.github.io/2014/03/29/jquery-实现iframe-自适应高度/</id>
-    <published>2014-03-29T03:03:12.000Z</published>
-    <updated>2014-03-29T03:06:28.000Z</updated>
-    <content type="html"><![CDATA[<figure class="highlight html"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="tag">&lt;<span class="title">iframe</span> <span class="attribute">src</span>=<span class="value">"test.html"</span> <span class="attribute">id</span>=<span class="value">"main"</span> <span class="attribute">width</span>=<span class="value">"700"</span> <span class="attribute">height</span>=<span class="value">"300"</span> <span class="attribute">frameborder</span>=<span class="value">"0"</span> <span class="attribute">scrolling</span>=<span class="value">"auto"</span>&gt;</span><span class="tag">&lt;/<span class="title">iframe</span>&gt;</span>
-</pre></td></tr></table></figure>
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-</pre></td><td class="code"><pre><span class="comment">//注意：下面的代码是放在和iframe同一个页面调用</span>
-$(<span class="string">"#main"</span>).load(<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
-  <span class="keyword">var</span> mainheight = $(<span class="keyword">this</span>).contents().find(<span class="string">"body"</span>).height()+<span class="number">30</span>;
-  $(<span class="keyword">this</span>).height(mainheight);
-});
-</pre></td></tr></table></figure>
-
-<p>url:<a href="http://www.cnblogs.com/luluping/archive/2009/04/17/1437843.html" target="_blank">http://www.cnblogs.com/luluping/archive/2009/04/17/1437843.html</a></p>
-]]></content>
-    
-    
-      <category term="iframe" scheme="http://yuhaya.github.io/tags/iframe/"/>
-    
-      <category term="iquery" scheme="http://yuhaya.github.io/categories/iquery/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Web性能压力测试工具之ApacheBench(ab)]]></title>
-    <link href="http://yuhaya.github.io/2014/03/24/web%E6%80%A7%E8%83%BD%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E4%B9%8Bapachebench(ab)/"/>
-    <id>http://yuhaya.github.io/2014/03/24/web性能压力测试工具之apachebench(ab)/</id>
-    <published>2014-03-24T13:38:02.000Z</published>
-    <updated>2014-03-24T13:47:04.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="apachebench-">ApacheBench命令原理：</h2>
-<p>ab命令会创建很多的并发访问线程，模拟多个访问者同时对某一URL地址进行访问。它的测试目标是基于URL的，因此，既可以用来测试Apache的负载压力，也可以测试nginx、lighthttp、tomcat、IIS等其它Web服务器的压力。</p>
-<p>ab命令对发出负载的计算机要求很低，既不会占用很高CPU，也不会占用很多内存，但却会给目标服务器造成巨大的负载，其原理类似CC攻击。自己测试使用也须注意，否则一次上太多的负载，可能造成目标服务器因资源耗完，严重时甚至导致死机。</p>
-<h2 id="apachebench-">ApacheBench参数说明</h2>
-<p>格式：ab [options] [<a href="http://]hostname[:port]/path" target="_blank">http://]hostname[:port]/path</a>
-参数说明：</p>
-<p>-n requests Number of requests to perform</p>
-<p>//在测试会话中所执行的请求个数（本次测试总共要访问页面的次数）。默认时，仅执行一个请求。</p>
-<p>-c concurrency Number of multiple requests to make</p>
-<p>//一次产生的请求个数（并发数）。默认是一次一个。</p>
-<p>-t timelimit Seconds to max. wait for responses</p>
-<p>//测试所进行的最大秒数。其内部隐含值是-n 50000。它可以使对服务器的测试限制在一个固定的总时间以内。默认时，没有时间限制。</p>
-<p>-p postfile File containing data to POST</p>
-<p>//包含了需要POST的数据的文件，文件格式如“p1=1&amp;p2=2”.使用方法是 -p 111.txt 。 （配合-T）</p>
-<p>-T content-type Content-type header for POSTing</p>
-<p>//POST数据所使用的Content-type头信息，如 -T “application/x-www-form-urlencoded” 。 （配合-p）</p>
-<p>-v verbosity How much troubleshooting info to print</p>
-<p>//设置显示信息的详细程度 – 4或更大值会显示头信息， 3或更大值可以显示响应代码(404, 200等), 2或更大值可以显示警告和其他信息。 -V 显示版本号并退出。</p>
-<p>-w Print out results in HTML tables</p>
-<p>//以HTML表的格式输出结果。默认时，它是白色背景的两列宽度的一张表。</p>
-<p>-i Use HEAD instead of GET</p>
-<p>// 执行HEAD请求，而不是GET。</p>
-<p>-x attributes String to insert as table attributes</p>
-<p>-y attributes String to insert as tr attributes</p>
-<p>-z attributes String to insert as td or th attributes</p>
-<p>-C attribute Add cookie, eg. -C “c1=1234,c2=2,c3=3″ (repeatable)</p>
-<p>//-C cookie-name=value 对请求附加一个Cookie:行。 其典型形式是name=value的一个参数对。此参数可以重复，用逗号分割。</p>
-<p>提示：可以借助session实现原理传递 JSESSIONID参数， 实现保持会话的功能，如</p>
-<p>-C ” c1=1234,c2=2,c3=3, JSESSIONID=FF056CD16DA9D71CB131C1D56F0319F8″ 。</p>
-<p>-H attribute Add Arbitrary header line, eg. ‘Accept-Encoding: gzip’ Inserted after all normal header lines. </p>
-<p>(repeatable)</p>
-<p>-A attribute Add Basic WWW Authentication, the attributes</p>
-<p>are a colon separated username and password.</p>
-<p>-P attribute Add Basic Proxy Authentication, the attributes</p>
-<p>are a colon separated username and password.</p>
-<p>//-P proxy-auth-username:password 对一个中转代理提供BASIC认证信任。用户名和密码由一个:隔开，并以base64编码形式发送。无论服务器是否需要(即, 是否发送了401认证需求代码)，此字符串都会被发送。</p>
-<p>-X proxy:port Proxyserver and port number to use</p>
-<p>-V Print version number and exit</p>
-<p>-k Use HTTP KeepAlive feature</p>
-<p>-d Do not show percentiles served table.</p>
-<p>-S Do not show confidence estimators and warnings.</p>
-<p>-g filename Output collected data to gnuplot format file.</p>
-<p>-e filename Output CSV file with percentages served</p>
-<p>-h Display usage information (this message)</p>
-<p>//-attributes 设置属性的字符串. 缺陷程序中有各种静态声明的固定长度的缓冲区。另外，对命令行参数、服务器的响应头和其他外部输入的解析也很简单，这可能会有不良后果。它没有完整地实现 HTTP/1.x; 仅接受某些’预想’的响应格式。 strstr(3)的频繁使用可能会带来性能问题，即你可能是在测试ab而不是服务器的性能。</p>
-<p>参数很多，一般我们用 -c 和 -n 参数就可以了。例如:</p>
-<p>ab -c 5000 -n 600 <a href="http://127.0.0.1/index.php" target="_blank">http://127.0.0.1/index.php</a></p>
-<h2 id="apachebench-">ApacheBench用法详解：</h2>
-<p>在Linux系统，一般安装好Apache后可以直接执行；</p>
-<h3 id="ab-n-4000-c-1000-http-www-ha97-com-">ab -n 4000 -c 1000 <a href="http://www.ha97.com/" target="_blank">http://www.ha97.com/</a></h3>
-<p>如果是Win系统下，打开cmd命令行窗口，cd到apache安装目录的bin目录下；</p>
-<p>-n后面的4000代表总共发出4000个请求；-c后面的1000表示采用1000个并发（模拟1000个人同时访问），后面的网址表示测试的目标URL。</p>
-<p>稍等一会得到类似如下显示结果：</p>
-<p><img src="/images/ab.jpg" alt="ab.jpg"></p>
-<h2 id="-">结果分析：</h2>
-<p>This is ApacheBench, Version 2.3</p>
-<p>Copyright 1996 Adam Twiss, Zeus Technology Ltd, <a href="http://www.zeustech.net/" target="_blank">http://www.zeustech.net/</a></p>
-<p>Licensed to The Apache Software Foundation, <a href="http://www.apache.org/" target="_blank">http://www.apache.org/</a></p>
-<p>Benchmarking 192.168.80.157 (be patient)</p>
-<p>Completed 400 requests</p>
-<p>Completed 800 requests</p>
-<p>Completed 1200 requests</p>
-<p>Completed 1600 requests</p>
-<p>Completed 2000 requests</p>
-<p>Completed 2400 requests</p>
-<p>Completed 2800 requests</p>
-<p>Completed 3200 requests</p>
-<p>Completed 3600 requests</p>
-<p>Completed 4000 requests</p>
-<p>Finished 4000 requests</p>
-<p>Server Software: Apache/2.2.15</p>
-<p>Server Hostname: 192.168.80.157</p>
-<p>Server Port: 80</p>
-<p>Document Path: /phpinfo.php</p>
-<p>测试的页面</p>
-<p>Document Length: 50797 bytes</p>
-<p>页面大小</p>
-<p>Concurrency Level: 1000</p>
-<p>测试的并发数</p>
-<p>Time taken for tests: 11.846 seconds</p>
-<p>整个测试持续的时间</p>
-<p>Complete requests: 4000</p>
-<p>完成的请求数量</p>
-<p>Failed requests: 0</p>
-<p>失败的请求数量</p>
-<p>Write errors: 0</p>
-<p>Total transferred: 204586997 bytes</p>
-<p>整个过程中的网络传输量</p>
-<p>HTML transferred: 203479961 bytes</p>
-<p>整个过程中的HTML内容传输量</p>
-<p>Requests per second: 337.67 [#/sec] (mean)</p>
-<p>最重要的指标之一，相当于LR中的每秒事务数，后面括号中的mean表示这是一个平均值</p>
-<p>Time per request: 2961.449 [ms] (mean)</p>
-<p>最重要的指标之二，相当于LR中的平均事务响应时间，后面括号中的mean表示这是一个平均值</p>
-<p>Time per request: 2.961 [ms] (mean, across all concurrent requests)</p>
-<p>每个连接请求实际运行时间的平均值</p>
-<p>Transfer rate: 16866.07 [Kbytes/sec] received</p>
-<p>平均每秒网络上的流量，可以帮助排除是否存在网络流量过大导致响应时间延长的问题</p>
-<p>Connection Times (ms)</p>
-<p>min mean[+/-sd] median max</p>
-<p>Connect: 0 483 1773.5 11 9052</p>
-<p>Processing: 2 556 1459.1 255 11763</p>
-<p>Waiting: 1 515 1459.8 220 11756</p>
-<p>Total: 139 1039 2296.6 275 11843</p>
-<p>网络上消耗的时间的分解，各项数据的具体算法还不是很清楚</p>
-<p>Percentage of the requests served within a certain time (ms)</p>
-<p>50% 275</p>
-<p>66% 298</p>
-<p>75% 328</p>
-<p>80% 373</p>
-<p>90% 3260</p>
-<p>95% 9075</p>
-<p>98% 9267</p>
-<p>99% 11713</p>
-<p>100% 11843 (longest request)</p>
-<p>整个场景中所有请求的响应情况。在场景中每个请求都有一个响应时间，其中50％的用户响应时间小于275毫秒，66％的用户响应时间小于298毫秒，最大的响应时间小于11843毫秒。对于并发请求，cpu实际上并不是同时处理的，而是按照每个请求获得的时间片逐个轮转处理的，所以基本上第一个Time per request时间约等于第二个Time per request时间乘以并发请求数。</p>
-<h4 id="-web-">总结：在远程对web服务器进行压力测试，往往效果不理想（因为网络延时过大），建议使用内网的另一台或者多台服务器通过内网进行测试，这样得出的数据，准确度会高很多。如果只有单独的一台服务器，可以直接本地测试，比远程测试效果要准确。</h4>
-<p>url:<a href="http://www.ha97.com/4617.html" target="_blank">http://www.ha97.com/4617.html</a></p>
-]]></content>
-    
-    
-      <category term="ab" scheme="http://yuhaya.github.io/tags/ab/"/>
-    
-      <category term="Apache" scheme="http://yuhaya.github.io/categories/Apache/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[HHVM 是如何提升 PHP 性能的？]]></title>
-    <link href="http://yuhaya.github.io/2014/03/23/hhvm-%E6%98%AF%E5%A6%82%E4%BD%95%E6%8F%90%E5%8D%87-php-%E6%80%A7%E8%83%BD%E7%9A%84%EF%BC%9F/"/>
-    <id>http://yuhaya.github.io/2014/03/23/hhvm-是如何提升-php-性能的？/</id>
-    <published>2014-03-23T03:50:01.000Z</published>
-    <updated>2014-03-23T03:51:48.000Z</updated>
-    <content type="html"><![CDATA[<p><a href="http://wuduoyi.com/note/hhvm/" target="_blank"><a href="http://wuduoyi.com/note/hhvm/">http://wuduoyi.com/note/hhvm/</a></a></p>
-]]></content>
-    
-    
-      <category term="hhvm" scheme="http://yuhaya.github.io/tags/hhvm/"/>
-    
-      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[php-fpm cgi php-cgi fastcgi 之间的关系]]></title>
-    <link href="http://yuhaya.github.io/2014/03/23/php-fpm-cgi-php-cgi-fastcgi-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB/"/>
-    <id>http://yuhaya.github.io/2014/03/23/php-fpm-cgi-php-cgi-fastcgi-之间的关系/</id>
-    <published>2014-03-23T01:26:57.000Z</published>
-    <updated>2014-03-23T02:08:34.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="cgi">cgi</h1>
-<p>CGI是为了保证web server传递过来的数据是标准格式的，方便CGI程序的编写者。</p>
-<p>web server（比如说nginx）只是内容的分发者。比如，如果请求/index.html，那么web server会去文件系统中找到这个文件，发送给浏览器，这里分发的是静态数据。好了，如果现在请求的是<code>/index.php</code>，根据配置文件，nginx知道这个不是静态文件，需要去找PHP解析器来处理，那么他会把这个请求简单处理后交给PHP解析器。Nginx会传哪些数据给PHP解析器呢？url要有吧，查询字符串也得有吧，POST数据也要有，HTTP header不能少吧，好的，CGI就是规定要传哪些数据、以什么样的格式传递给后方处理这个请求的协议。仔细想想，你在PHP代码中使用的用户从哪里来的。</p>
-<p>当web server收到<code>/index.php</code>这个请求后，会启动对应的CGI程序，这里就是PHP的解析器。接下来PHP解析器会解析php.ini文件，初始化执行环境，然后处理请求，再以规定CGI规定的格式返回处理后的结果，退出进程。web server再把结果返回给浏览器。</p>
-<h3 id="cgi-">CGI是个协议，跟进程什么的没关系。</h3>
-<h1 id="php-cgi">php-cgi</h1>
-<p>php-cgi是解释PHP脚本的程序</p>
-<h3 id="php-cgi-cgi-">php-cgi 是一个实现了CGI协议的程序</h3>
-<h1 id="fastcgi">fastcgi</h1>
-<p>维基上的解释：
-    快速通用网关接口（Fast Common Gateway Interface／FastCGI）是一种让交互程序与Web服务器通信的协议。FastCGI是早期通用网关接口（CGI）的增强版本。
-FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而使服务器可以同时处理更多的网页请求。</p>
-<h3 id="fastcgi-cgi-cgi-">Fastcgi是用来提高CGI解释器程序性能的一种协议,属于cgi协议的一种</h3>
-<p>提高性能，那么CGI解释器程序的性能问题在哪呢？&quot;PHP解析器会解析php.ini文件，初始化执行环境&quot;，就是这里了。标准的CGI解释器程序对每个请求都会执行这些步骤（不闲累啊！启动进程很累的说！），所以处理每个时间的时间会比较长。这明显不合理嘛！那么Fastcgi是怎么做的呢？首先，Fastcgi会先启一个master，解析配置文件，初始化执行环境，然后再启动多个CGI解释器进程。当请求过来时，master会传递给一个CGI解释器进程，然后立即可以接受下一个请求。这样就避免了重复的劳动，效率自然是高。而且当worker不够用时，master可以根据配置预先启动几个CGI解释器进程等着；当然空闲CGI解释器进程太多时，也会停掉一些，这样就提高了性能，也节约了资源。这就是fastcgi的对进程的管理。</p>
-<h1 id="php-fpm">php-fpm</h1>
-<p>大家都知道，PHP的解释器是php-cgi。php-cgi只是个CGI程序，他自己本身只能解析请求，返回结果，不会进程管理（皇上，臣妾真的做不到啊！）所以就出现了一些能够调度php-cgi进程的程序，比如说由lighthttpd分离出来的spawn-fcgi。好了PHP-FPM也是这么个东东，在长时间的发展后，逐渐得到了大家的认可（要知道，前几年大家可是抱怨PHP-FPM稳定性太差的），也越来越流行。</p>
-<h3 id="php-fpm-fastcgi-php-cgi-">php-fpm是一个实现了Fastcgi的程序。用来管理 php-cgi 程序的</h3>
-<p><strong>FastCGI程序的工作原理</strong></p>
-<p>　　</p>
-<ul>
-<li>Web Server启动时载入FastCGI进程管理器（IIS ISAPI或Apache Module)</li>
-</ul>
-<p>　　</p>
-<ul>
-<li>FastCGI进程管理器自身初始化，启动多个CGI解释器进程(可见多个php-cgi)并等待来自Web Server的连接。</li>
-</ul>
-<p>　
-　</p>
-<ul>
-<li>当客户端请求到达Web Server时，FastCGI进程管理器选择并连接到一个CGI解释器。Web server将CGI环境变量和标准输入发送到FastCGI子进程php-cgi。</li>
-</ul>
-<p>　　</p>
-<ul>
-<li>FastCGI子进程完成处理后将标准输出和错误信息从同一连接返回Web Server。当FastCGI子进程关闭连接时，请求便告处理完成。FastCGI子进程接着等待并处理来自FastCGI进程管理器(运行在Web Server中)的下一个连接。 在CGI模式中，php-cgi在此便退出了。</li>
-</ul>
-<p>　　
-在上述情况中，你可以想象CGI通常有多慢。每一个Web请求PHP都必须重新解析<code>php.ini</code>,重新载入全部扩展并重初始化全部数据结构。使用FastCGI，所有这些都只在进程启动时发生一次。一个额外的好处是，持续数据库连接(Persistent database connection)可以工作。</p>
-]]></content>
-    
-    
-      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[zf2 启动简介：二，服务的获取]]></title>
-    <link href="http://yuhaya.github.io/2014/03/21/zf2-%E5%90%AF%E5%8A%A8%E7%AE%80%E4%BB%8B%EF%BC%9A%E4%BA%8C%EF%BC%8C%E6%9C%8D%E5%8A%A1%E7%9A%84%E8%8E%B7%E5%8F%96/"/>
-    <id>http://yuhaya.github.io/2014/03/21/zf2-启动简介：二，服务的获取/</id>
-    <published>2014-03-21T13:18:30.000Z</published>
-    <updated>2014-03-21T14:29:03.000Z</updated>
-    <content type="html"><![CDATA[<p>zf2框架在启动的过程中会创建一个<strong>service manager</strong>对象 （仅仅会实例化一次）</p>
-<p>而zf2框架中各种服务的调用都是通过 service manager 对象来实现的 </p>
-<p>最常用的如 get 方法，用来获取某一个服务</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-</pre></td><td class="code"><pre>
-	<span class="comment">//Zend\Mvc\Application::init(require 'config/application.config.php')</span>
-	
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(<span class="variable">$configuration</span> = array<span class="params">()</span>)</span>
-    {</span>
-        <span class="variable">$smConfig</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'service_manager'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'service_manager'</span>] : <span class="keyword">array</span>();
-        <span class="variable">$listeners</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'listeners'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'listeners'</span>] : <span class="keyword">array</span>();
-        <span class="variable">$serviceManager</span> = <span class="keyword">new</span> ServiceManager(<span class="keyword">new</span> Service\ServiceManagerConfig(<span class="variable">$smConfig</span>));
-        <span class="variable">$serviceManager</span>-&gt;setService(<span class="string">'ApplicationConfig'</span>, <span class="variable">$configuration</span>);
-        <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'ModuleManager'</span>)-&gt;loadModules();
-        <span class="keyword">return</span> <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'Application'</span>)-&gt;bootstrap(<span class="variable">$listeners</span>);
-    }
-</pre></td></tr></table></figure>
-
-<p>在zf2启动过程中一开始便通过    <code>Zend/Mvc/Service/ServiceManagerConfig.php</code> 来初始化的创建一个服务管理器
-提供的默认配置如下</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-</pre></td><td class="code"><pre><span class="keyword">protected</span> <span class="variable">$invokables</span> = <span class="keyword">array</span>(
-        <span class="string">'SharedEventManager'</span> =&gt; <span class="string">'Zend\EventManager\SharedEventManager'</span>,
-    );
-
-    <span class="comment">/**
-     * Service factories
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$factories</span> = <span class="keyword">array</span>(
-        <span class="string">'EventManager'</span>  =&gt; <span class="string">'Zend\Mvc\Service\EventManagerFactory'</span>,
-        <span class="string">'ModuleManager'</span> =&gt; <span class="string">'Zend\Mvc\Service\ModuleManagerFactory'</span>,
-    );
-
-    <span class="comment">/**
-     * Abstract factories
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$abstractFactories</span> = <span class="keyword">array</span>();
-
-    <span class="comment">/**
-     * Aliases
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$aliases</span> = <span class="keyword">array</span>(
-        <span class="string">'Zend\EventManager\EventManagerInterface'</span> =&gt; <span class="string">'EventManager'</span>,
-    );
-
-    <span class="comment">/**
-     * Shared services
-     *
-     * Services are shared by default; this is primarily to indicate services
-     * that should NOT be shared
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$shared</span> = <span class="keyword">array</span>(
-        <span class="string">'EventManager'</span> =&gt; <span class="keyword">false</span>,
-    );
-</pre></td></tr></table></figure>
-
-<p>这些默认初始化配置会合并到 service manager 对象中，在启动过程中除了这些默认配置以外，其实在启动的其他位置也提供了许多 service manager 对象默认的服务配置
-如 <code>Zend/Mvc/Service/ServiceListenerFactory.php</code> 中提供的默认配置</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-</pre></td><td class="code"><pre><span class="keyword">protected</span> <span class="variable">$defaultServiceConfig</span> = <span class="keyword">array</span>(
-        <span class="string">'invokables'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'DispatchListener'</span>     =&gt; <span class="string">'Zend\Mvc\DispatchListener'</span>,
-            <span class="string">'RouteListener'</span>        =&gt; <span class="string">'Zend\Mvc\RouteListener'</span>,
-            <span class="string">'SendResponseListener'</span> =&gt; <span class="string">'Zend\Mvc\SendResponseListener'</span>
-        ),
-        <span class="string">'factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'Application'</span>                    =&gt; <span class="string">'Zend\Mvc\Service\ApplicationFactory'</span>,
-            <span class="string">'Config'</span>                         =&gt; <span class="string">'Zend\Mvc\Service\ConfigFactory'</span>,
-            <span class="string">'ControllerLoader'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ControllerLoaderFactory'</span>,
-            <span class="string">'ControllerPluginManager'</span>        =&gt; <span class="string">'Zend\Mvc\Service\ControllerPluginManagerFactory'</span>,
-            <span class="string">'ConsoleAdapter'</span>                 =&gt; <span class="string">'Zend\Mvc\Service\ConsoleAdapterFactory'</span>,
-            <span class="string">'ConsoleRouter'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
-            <span class="string">'ConsoleViewManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\ConsoleViewManagerFactory'</span>,
-            <span class="string">'DependencyInjector'</span>             =&gt; <span class="string">'Zend\Mvc\Service\DiFactory'</span>,
-            <span class="string">'DiAbstractServiceFactory'</span>       =&gt; <span class="string">'Zend\Mvc\Service\DiAbstractServiceFactoryFactory'</span>,
-            <span class="string">'DiServiceInitializer'</span>           =&gt; <span class="string">'Zend\Mvc\Service\DiServiceInitializerFactory'</span>,
-            <span class="string">'DiStrictAbstractServiceFactory'</span> =&gt; <span class="string">'Zend\Mvc\Service\DiStrictAbstractServiceFactoryFactory'</span>,
-            <span class="string">'FilterManager'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\FilterManagerFactory'</span>,
-            <span class="string">'FormElementManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\FormElementManagerFactory'</span>,
-            <span class="string">'HttpRouter'</span>                     =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
-            <span class="string">'HttpViewManager'</span>                =&gt; <span class="string">'Zend\Mvc\Service\HttpViewManagerFactory'</span>,
-            <span class="string">'HydratorManager'</span>                =&gt; <span class="string">'Zend\Mvc\Service\HydratorManagerFactory'</span>,
-            <span class="string">'InputFilterManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\InputFilterManagerFactory'</span>,
-            <span class="string">'MvcTranslator'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\TranslatorServiceFactory'</span>,
-            <span class="string">'PaginatorPluginManager'</span>         =&gt; <span class="string">'Zend\Mvc\Service\PaginatorPluginManagerFactory'</span>,
-            <span class="string">'Request'</span>                        =&gt; <span class="string">'Zend\Mvc\Service\RequestFactory'</span>,
-            <span class="string">'Response'</span>                       =&gt; <span class="string">'Zend\Mvc\Service\ResponseFactory'</span>,
-            <span class="string">'Router'</span>                         =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
-            <span class="string">'RoutePluginManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\RoutePluginManagerFactory'</span>,
-            <span class="string">'SerializerAdapterManager'</span>       =&gt; <span class="string">'Zend\Mvc\Service\SerializerAdapterPluginManagerFactory'</span>,
-            <span class="string">'ValidatorManager'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ValidatorManagerFactory'</span>,
-            <span class="string">'ViewHelperManager'</span>              =&gt; <span class="string">'Zend\Mvc\Service\ViewHelperManagerFactory'</span>,
-            <span class="string">'ViewFeedRenderer'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewFeedRendererFactory'</span>,
-            <span class="string">'ViewFeedStrategy'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewFeedStrategyFactory'</span>,
-            <span class="string">'ViewJsonRenderer'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewJsonRendererFactory'</span>,
-            <span class="string">'ViewJsonStrategy'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewJsonStrategyFactory'</span>,
-            <span class="string">'ViewManager'</span>                    =&gt; <span class="string">'Zend\Mvc\Service\ViewManagerFactory'</span>,
-            <span class="string">'ViewResolver'</span>                   =&gt; <span class="string">'Zend\Mvc\Service\ViewResolverFactory'</span>,
-            <span class="string">'ViewTemplateMapResolver'</span>        =&gt; <span class="string">'Zend\Mvc\Service\ViewTemplateMapResolverFactory'</span>,
-            <span class="string">'ViewTemplatePathStack'</span>          =&gt; <span class="string">'Zend\Mvc\Service\ViewTemplatePathStackFactory'</span>,
-        ),
-        <span class="string">'aliases'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'Configuration'</span>                          =&gt; <span class="string">'Config'</span>,
-            <span class="string">'Console'</span>                                =&gt; <span class="string">'ConsoleAdapter'</span>,
-            <span class="string">'Di'</span>                                     =&gt; <span class="string">'DependencyInjector'</span>,
-            <span class="string">'Zend\Di\LocatorInterface'</span>               =&gt; <span class="string">'DependencyInjector'</span>,
-            <span class="string">'Zend\Mvc\Controller\PluginManager'</span>      =&gt; <span class="string">'ControllerPluginManager'</span>,
-            <span class="string">'Zend\View\Resolver\TemplateMapResolver'</span> =&gt; <span class="string">'ViewTemplateMapResolver'</span>,
-            <span class="string">'Zend\View\Resolver\TemplatePathStack'</span>   =&gt; <span class="string">'ViewTemplatePathStack'</span>,
-            <span class="string">'Zend\View\Resolver\AggregateResolver'</span>   =&gt; <span class="string">'ViewResolver'</span>,
-            <span class="string">'Zend\View\Resolver\ResolverInterface'</span>   =&gt; <span class="string">'ViewResolver'</span>,
-        ),
-        <span class="string">'abstract_factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'Zend\Form\FormAbstractServiceFactory'</span>,
-        )
-</pre></td></tr></table></figure>
-
-<p>而对于框架的使用者来说我们可以在模块配置文件中自定义服务配置，或者在控制器或者方法中动态注册服务（不太推荐，相对于在配置中注册多走了一道流程）</p>
-<p>如下是用户自定义配置实例</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
-<span class="comment">// a module configuration, "module/SomeModule/config/module.config.php"</span>
-<span class="keyword">return</span> <span class="keyword">array</span>(
-    <span class="string">'service_manager'</span> =&gt; <span class="keyword">array</span>(
-        <span class="string">'abstract_factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Valid values include names of classes implementing</span>
-            <span class="comment">// AbstractFactoryInterface, instances of classes implementing</span>
-            <span class="comment">// AbstractFactoryInterface, or any PHP callbacks</span>
-            <span class="string">'SomeModule\Service\FallbackFactory'</span>,
-        ),
-        <span class="string">'aliases'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Aliasing a FQCN to a service name</span>
-            <span class="string">'SomeModule\Model\User'</span> =&gt; <span class="string">'User'</span>,
-            <span class="comment">// Aliasing a name to a known service name</span>
-            <span class="string">'AdminUser'</span> =&gt; <span class="string">'User'</span>,
-            <span class="comment">// Aliasing to an alias</span>
-            <span class="string">'SuperUser'</span> =&gt; <span class="string">'AdminUser'</span>,
-        ),
-        <span class="string">'factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Keys are the service names.</span>
-            <span class="comment">// Valid values include names of classes implementing</span>
-            <span class="comment">// FactoryInterface, instances of classes implementing</span>
-            <span class="comment">// FactoryInterface, or any PHP callbacks</span>
-            <span class="string">'User'</span>     =&gt; <span class="string">'SomeModule\Service\UserFactory'</span>,
-            <span class="string">'UserForm'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">(<span class="variable">$serviceManager</span>)</span> {</span>
-                <span class="variable">$form</span> = <span class="keyword">new</span> SomeModule\Form\User();
-
-                <span class="comment">// Retrieve a dependency from the service manager and inject it!</span>
-                <span class="variable">$form</span>-&gt;setInputFilter(<span class="variable">$serviceManager</span>-&gt;get(<span class="string">'UserInputFilter'</span>));
-                <span class="keyword">return</span> <span class="variable">$form</span>;
-            },
-        ),
-        <span class="string">'invokables'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Keys are the service names</span>
-            <span class="comment">// Values are valid class names to instantiate.</span>
-            <span class="string">'UserInputFiler'</span> =&gt; <span class="string">'SomeModule\InputFilter\User'</span>,
-        ),
-        <span class="string">'services'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Keys are the service names</span>
-            <span class="comment">// Values are objects</span>
-            <span class="string">'Auth'</span> =&gt; <span class="keyword">new</span> SomeModule\Authentication\AuthenticationService(),
-        ),
-        <span class="string">'shared'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Usually, you'll only indicate services that should _NOT_ be</span>
-            <span class="comment">// shared -- i.e., ones where you want a different instance</span>
-            <span class="comment">// every time.</span>
-            <span class="string">'UserForm'</span> =&gt; <span class="keyword">false</span>,
-        ),
-    ),
-);
-</pre></td></tr></table></figure>
-
-]]></content>
-    
-    
-      <category term="zf2" scheme="http://yuhaya.github.io/tags/zf2/"/>
-    
-      <category term="Zend Framework 2" scheme="http://yuhaya.github.io/categories/Zend%20Framework%202/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[zf2 启动简介：一，类的加载]]></title>
-    <link href="http://yuhaya.github.io/2014/03/16/zf2-%E5%90%AF%E5%8A%A8%E7%AE%80%E4%BB%8B%EF%BC%9A%E4%B8%80%EF%BC%8C%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD/"/>
-    <id>http://yuhaya.github.io/2014/03/16/zf2-启动简介：一，类的加载/</id>
-    <published>2014-03-16T06:08:29.000Z</published>
-    <updated>2014-03-16T14:04:12.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="autoloaderfactory">AutoloaderFactory</h1>
-<p>自动加载工厂类</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-</pre></td><td class="code"><pre>        Zend\Loader\AutoloaderFactory::factory(<span class="keyword">array</span>(
-            <span class="string">'Zend\Loader\StandardAutoloader'</span> =&gt; <span class="keyword">array</span>(
-                <span class="string">'autoregister_zf'</span> =&gt; <span class="keyword">true</span>,
-                <span class="string">'namespaces'</span>=&gt;<span class="keyword">array</span>(
-        			<span class="string">'Etah'</span>=&gt;<span class="keyword">__DIR__</span> . <span class="string">'/etah'</span>
-        		),
-<span class="comment">//        		'prefixes' =&gt; array(</span>
-<span class="comment">//	       			'Scapi' =&gt; __DIR__ . '/../library/Scapi',</span>
-<span class="comment">//    			),</span>
-        		<span class="string">'fallback_autoloader'</span> =&gt; <span class="keyword">true</span>
-            ),
-            <span class="string">'Zend\Loader\ClassMapAutoloader'</span> =&gt; <span class="keyword">array</span>(
-		        <span class="variable">$zf2Path</span> . <span class="string">'/autoload_classmap.php'</span>
-	      	)
-        ));
-</pre></td></tr></table></figure>
-
-
-<p>后面会介绍这段代码的意思</p>
-<p><strong>既然AutoloaderFactory是工厂类，那么它封装的自动加载类有那些呢</strong></p>
-<ul>
-<li><h1 id="classmapautoloader">ClassMapAutoloader</h1>
-<p>  类地图自动加载器--类地图映射的方式加载类（zf2类库）</p>
-</li>
-<li><h1 id="moduleautoloader">ModuleAutoloader</h1>
-<p>  模块自动加载器--同ClassMapAutoloader（模块类）</p>
-</li>
-<li><h1 id="standardautoloader">StandardAutoloader</h1>
-<p>  标准自动加载器--通过注册命名空间加载类 (默认加载方式)</p>
-</li>
-</ul>
-<h1 id="zend-loader-autoloaderfactory-factory-">Zend\Loader\AutoloaderFactory::factory()</h1>
-<p><code>factory</code>方法参数数组的第一个配置元素必须为 <code>Zend\Loader\StandardAutoloader</code></p>
-<p>或者在 <code>Zend\Loader\AutoloaderFactory::factory</code> 调用之前手动载入 <code>Zend\Loader\ClassMapAutoloader</code></p>
-<ul>
-<li><h2 id="standardautoloader">StandardAutoloader</h2>
-<ul>
-<li><h3 id="autoregister_zf-zend-false-">autoregister_zf  ==  是否自动注册<code>Zend</code>命名空间，若为false，下面需要手动注册</h3>
-</li>
-<li><h3 id="namespaces-">namespaces  == 注册命名空间</h3>
-</li>
-<li><h3 id="prefixes-_-">prefixes 命名空间出现之前的和命名空间作用相似的东西，以<code>_</code>分割（一般用不上）</h3>
-</li>
-<li><h3 id="fallback_autoloader-true-">fallback_autoloader == 拼装实际类路径时可能会用到(一般情况下用不到，默认配成true)</h3>
-</li>
-</ul>
-</li>
-<li><h2 id="classmapautoloader">ClassMapAutoloader</h2>
-<ul>
-<li><h3 id="-php-">类地图映射php文件</h3>
-</li>
-</ul>
-</li>
-<li><h2 id="moduleautoloader">ModuleAutoloader</h2>
-<ul>
-<li><h3 id="-">从各种来源定位和按需加载的模块类(后续介绍)</h3>
-</li>
-</ul>
-</li>
-</ul>
-<p>这三个类都是通过 <strong>spl_autoload_register</strong> 函数注册自动加载函数</p>
-<p>所以建议的<code>Zend\Loader\AutoloaderFactory::factory()</code>参数顺序</p>
-<p>先配置 StandardAutoloader</p>
-<p>然后再配置 ClassMapAutoloader</p>
-<p>原因是：在载入类的时候会先调用 ClassMapAutoloader 中的加载类方法，若未找到则会调用 StandardAutoloader 中的类加载方法</p>
-<blockquote>
-<p>ClassMapAutoloader 加载类的方式比 StandardAutoloader中更加的高效
-前者只是在一个大的数组映射表中寻值，而后者则需要拼装截取才能获得最终的路径</p>
-</blockquote>
-<h3 id="-i7-">以下为测试数据：（请求开始时间-请求结束时间）//i7 四核条件下（性能低的机器上会更加明显）</h3>
-<h1 id="-standardautoloader-">通过 StandardAutoloader 方式</h1>
-<p>start-time = 1394976543.9461</p>
-<p>end-time = 1394976544.2273</p>
-<h4 id="-0-2812-">耗时 0.2812 秒</h4>
-<h1 id="-classmapautoloader-">通过 ClassMapAutoloader 方式</h1>
-<p>start-time = 1394976731.8825</p>
-<p>end-time = 1394976732.2164</p>
-<h4 id="-0-3339-">耗时0.3339 秒</h4>
-<h1 id="-16-">速度提升16%</h1>
-<p>以下是以数组的方式打印自动装载器数组</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-</pre></td><td class="code"><pre><span class="variable">$loader</span> = \Zend\Loader\AutoloaderFactory::getRegisteredAutoloaders();
-        
-<span class="keyword">echo</span> <span class="string">"&lt;pre&gt;"</span>;
-        
-print_r(<span class="variable">$loader</span>);
-</pre></td></tr></table></figure>
-
-
-<p>输出</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-</pre></td><td class="code"><pre><span class="keyword">Array</span>
-(
-    [Zend\Loader\StandardAutoloader] =&gt; Zend\Loader\StandardAutoloader Object
-        (
-            [namespaces:<span class="keyword">protected</span>] =&gt; <span class="keyword">Array</span>
-                (
-                    [Zend\] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/
-                    [Etah\] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/etah/
-                    [Application\] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/module/Application/src/Application/
-                )
-
-           [prefixes:<span class="keyword">protected</span>] =&gt; <span class="keyword">Array</span>
-                (
-                )
-
-            [fallbackAutoloaderFlag:<span class="keyword">protected</span>] =&gt; <span class="number">1</span>
-        )
-
-    [Zend\Loader\ClassMapAutoloader] =&gt; Zend\Loader\ClassMapAutoloader Object
-        (
-            [mapsLoaded:<span class="keyword">protected</span>] =&gt; <span class="keyword">Array</span>
-                (
-                    [<span class="number">0</span>] =&gt; vendor/ZF2/library/autoload_classmap.php
-                )
-
-            [map:<span class="keyword">protected</span>] =&gt; <span class="keyword">Array</span>
-                (
-                    [Zend\Authentication\Adapter\AbstractAdapter] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/AbstractAdapter.php
-                    [Zend\Authentication\Adapter\AdapterInterface] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/AdapterInterface.php
-                    [Zend\Authentication\Adapter\DbTable\AbstractAdapter] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/DbTable/AbstractAdapter.php
-                    [Zend\Authentication\Adapter\DbTable\CallbackCheckAdapter] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/DbTable/CallbackCheckAdapter.php
-                    [Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/DbTable/CredentialTreatmentAdapter.php
-                    [Zend\Authentication\Adapter\DbTable\<span class="keyword">Exception</span>\ExceptionInterface] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/DbTable/<span class="keyword">Exception</span>/ExceptionInterface.php
-                    [Zend\Authentication\Adapter\DbTable\<span class="keyword">Exception</span>\InvalidArgumentException] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/DbTable/<span class="keyword">Exception</span>/InvalidArgumentException.php
-                    [Zend\Authentication\Adapter\DbTable\<span class="keyword">Exception</span>\RuntimeException] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/DbTable/<span class="keyword">Exception</span>/RuntimeException.php
-                    [Zend\Authentication\Adapter\DbTable] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/DbTable.php
-                    [Zend\Authentication\Adapter\Digest] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/Digest.php
-                    [Zend\Authentication\Adapter\<span class="keyword">Exception</span>\ExceptionInterface] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/<span class="keyword">Exception</span>/ExceptionInterface.php
-                    [Zend\Authentication\Adapter\<span class="keyword">Exception</span>\InvalidArgumentException] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/<span class="keyword">Exception</span>/InvalidArgumentException.php
-                    [Zend\Authentication\Adapter\<span class="keyword">Exception</span>\RuntimeException] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/<span class="keyword">Exception</span>/RuntimeException.php
-                    [Zend\Authentication\Adapter\<span class="keyword">Exception</span>\UnexpectedValueException] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/<span class="keyword">Exception</span>/UnexpectedValueException.php
-                    [Zend\Authentication\Adapter\Http\ApacheResolver] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/Http/ApacheResolver.php
-                    )
-       )
-)
-</pre></td></tr></table></figure>
-
-
-<p>如上可以看出若要加载一个类文件，如 <code>Zend\Authentication\Adapter\AbstractAdapter</code></p>
-<p>若使用 <strong>StandardAutoloader</strong> 方式来加载</p>
-<p>则内部原理为 在 Zend\Loader\StandardAutoloader 对象中获取 注册的namespaces数组</p>
-<p>将<code>[Zend\] =&gt; /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/</code></p>
-<p>中的 <code>/Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/</code></p>
-<p>替换到 <code>Zend\Authentication\Adapter\AbstractAdapter</code>中</p>
-<p>最后为 /Applications/XAMPP/xamppfiles/htdocs/zend/vendor/ZF2/library/Zend/Authentication/Adapter/AbstractAdapter</p>
-<p>在加上<code>.php</code>的后缀就为类的实际路径</p>
-<p>而<strong>ClassMapAutoloader</strong> 的加载方式是直接在 <code>Zend\Loader\ClassMapAutoloader</code> 对象的 map数组映射表中寻找，最后获得实际物理路径.</p>
-<p>关于插件的加载日后补充！</p>
-]]></content>
-    
-    
-      <category term="Zend Framework 2" scheme="http://yuhaya.github.io/categories/Zend%20Framework%202/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Node.js MVC框架]]></title>
-    <link href="http://yuhaya.github.io/2014/03/16/nodejs-mvc%E6%A1%86%E6%9E%B6/"/>
-    <id>http://yuhaya.github.io/2014/03/16/nodejs-mvc框架/</id>
-    <published>2014-03-16T00:17:21.000Z</published>
-    <updated>2014-03-16T14:55:01.000Z</updated>
-    <content type="html"><![CDATA[<p>Node.js是JavaScript中最为流行的框架之一，易于创建可扩展的Web应用。Node.js包含不同类型框架，包括MVC， full-stack，REST API以及Generators。借助这些框架使Node.js更加易于使用，它还支持众多特性功能，您只需几个步骤就可快速搭建强大的Web应用。</p>
-<p>本文分享十款最佳的JavaScript框架。</p>
-<ol>
-<li><p><a href="http://sailsjs.org/" target="_blank">Sails.js</a></p>
-<p> <img src="/images/salls.js.jpg" alt="Sall.js">
- Sails易于开发定制企业级、现代化的Node.js 应用，同时，它也适用于创建图表、仪表盘及各种游戏应用。</p>
-</li>
-<li><p><a href="http://www.totaljs.com/" target="_blank">Total.js</a></p>
-<p><img src="/images/Total.js.jpg" alt="Total.js"></p>
-<p>Total.js是另一款伟大的框架，用来帮助创建Web页面及Web应用，支持MVC架构。它是利用HTML、JavaScript及CSS创建网站的一款开源的现代化框架。</p>
-</li>
-<li><p><a href="http://www.partialjs.com/" target="_blank">Partial.js</a></p>
-<p><img src="/images/Partial.js.jpg" alt="Total.js"></p>
-<p>Partial js，利用HTML、CSS和JavaScript开发者可创建大量的Web扩展应用以及网站。</p>
-</li>
-<li><p><a href="http://www.partialjs.com/" target="_blank">Koa. js</a><br/>
- <img src="/images/Koa.js.jpg" alt="Koa.js"></p>
-<p> Kao.js是由Express开发而来，旨在创建更小的、更具表现力Web应用及API。</p>
-</li>
-<li><p><a href="http://locomotivejs.org/" target="_blank">Locomotive. js</a></p>
-<p> <img src="/images/Locomotive.js.jpg" alt="Locomotive.js"></p>
-<p>  Locomotive支持MVC模式、RESTful。主要功能如下：优先配置，Routing Helpers，MVC架构，连接任意数据等。</p>
-</li>
-</ol>
-<p>   更多参考:<a href="http://www.csdn.net/article/2014-02-24/2818519-node-js-mvc-frameworks-for-javascript-developers" target="_blank">node js框架</a></p>
-]]></content>
-    
-    
-      <category term="mvc" scheme="http://yuhaya.github.io/tags/mvc/"/>
-    
-      <category term="Node.js" scheme="http://yuhaya.github.io/categories/Node.js/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[hexo 常用技巧]]></title>
-    <link href="http://yuhaya.github.io/2014/03/16/hexo%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7/"/>
-    <id>http://yuhaya.github.io/2014/03/16/hexo常用技巧/</id>
-    <published>2014-03-15T16:05:45.000Z</published>
-    <updated>2014-03-16T14:38:36.000Z</updated>
-    <content type="html"><![CDATA[<ol>
-<li>插入图片</li>
-</ol>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre>![<span class="link_label">hello</span>](<span class="link_url">/images/hello.jpg</span>)
-</pre></td></tr></table></figure>
-
-
-<p>在source目录下建立images 文件夹，将图片放进���</p>
-]]></content>
-    
-    
-      <category term="hexo" scheme="http://yuhaya.github.io/categories/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[About]]></title>
-    <link href="http://yuhaya.github.io/2014/03/15/about/"/>
-    <id>http://yuhaya.github.io/2014/03/15/about/</id>
-    <published>2014-03-14T16:40:49.000Z</published>
-    <updated>2014-03-14T17:01:44.000Z</updated>
-    <content type="html"><![CDATA[<h4 id="welcome-to-yuhaiyang-s-blog">Welcome to <code>yuhaiyang</code>&#39;s blog</h4>
-<blockquote>
-<p><strong>php</strong></p>
-<p><strong>zend framework</strong></p>
-<p>c/c++</p>
-<p>linux</p>
-<p><strong>javascript</strong></p>
-<p>object-c</p>
-</blockquote>
-<h4 id="email">EMAIL</h4>
-<p><a href="&#x6d;&#x61;&#105;&#108;&#x74;&#111;&#58;&#x33;&#119;&#109;&#x61;&#111;&#99;&#111;&#109;&#112;&#x75;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#x69;&#x6c;&#x2e;&#99;&#111;&#109;">&#x33;&#119;&#109;&#x61;&#111;&#99;&#111;&#109;&#112;&#x75;&#x74;&#101;&#114;&#x40;&#103;&#109;&#x61;&#x69;&#x6c;&#x2e;&#99;&#111;&#109;</a></p>
-<h4 id="blog">BLOG</h4>
-<p><a href="http://3wmao.com" target="_blank">http://3wmao.com</a></p>
-<p>Follow <a href="https://github.com/yuhaya" target="_blank">@yuhaya</a></p>
-]]></content>
-    
-    
-      <category term="public" scheme="http://yuhaya.github.io/categories/public/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Hello World]]></title>
-    <link href="http://yuhaya.github.io/2014/03/14/hello-world/"/>
-    <id>http://yuhaya.github.io/2014/03/14/hello-world/</id>
-    <published>2014-03-14T13:56:49.000Z</published>
-    <updated>2014-03-14T16:55:55.000Z</updated>
-    <content type="html"><![CDATA[<p>Welcome to <a href="http://zespia.tw/hexo" target="_blank">Hexo</a>! This is your very first post. Check <a href="http://zespia.tw/hexo/docs" target="_blank">documentation</a> to learn how to use.</p>
-]]></content>
-    
-    
-      <category term="public" scheme="http://yuhaya.github.io/categories/public/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[zf2博客文档]]></title>
-    <link href="http://yuhaya.github.io/2014/03/14/zf2%E5%8D%9A%E5%AE%A2%E6%96%87%E6%A1%A3/"/>
-    <id>http://yuhaya.github.io/2014/03/14/zf2博客文档/</id>
-    <published>2014-03-14T05:40:17.000Z</published>
-    <updated>2014-03-19T09:37:46.000Z</updated>
-    <content type="html"><![CDATA[<h3 id="-api-">官方api以及教程</h3>
-<p><a href="http://apigen.juzna.cz/doc/zendframework/zf2/" target="_blank"><a href="http://apigen.juzna.cz/doc/zendframework/zf2/">http://apigen.juzna.cz/doc/zendframework/zf2/</a></a></p>
-<p><a href="https://zf2.readthedocs.org/en/latest/" target="_blank"><a href="https://zf2.readthedocs.org/en/latest/">https://zf2.readthedocs.org/en/latest/</a></a></p>
-<h3 id="-blog">国外blog</h3>
-<p><a href="https://juriansluiman.nl/" target="_blank"><a href="https://juriansluiman.nl/">https://juriansluiman.nl/</a></a></p>
-<p><a href="http://samsonasik.wordpress.com/" target="_blank"><a href="http://samsonasik.wordpress.com/">http://samsonasik.wordpress.com/</a></a></p>
-<p><a href="http://www.michaelgallego.fr/" target="_blank"><a href="http://www.michaelgallego.fr/">http://www.michaelgallego.fr/</a></a></p>
-<p><a href="http://mwop.net/blog.html" target="_blank"><a href="http://mwop.net/blog.html">http://mwop.net/blog.html</a></a></p>
-<p><a href="http://blog.evan.pro/" target="_blank"><a href="http://blog.evan.pro/">http://blog.evan.pro/</a></a></p>
-<p><a href="http://akrabat.com/" target="_blank"><a href="http://akrabat.com/">http://akrabat.com/</a></a></p>
-<p><a href="http://adam.lundrigan.ca/" target="_blank"><a href="http://adam.lundrigan.ca/">http://adam.lundrigan.ca/</a></a></p>
-<p><a href="http://my.oschina.net/ohcoding" target="_blank"><a href="http://my.oschina.net/ohcoding">http://my.oschina.net/ohcoding</a></a> --中文的</p>
-<h3 id="stackoverflow">stackoverflow</h3>
-<p><a href="http://stackoverflow.com/questions/tagged/zend-framework2" target="_blank"><a href="http://stackoverflow.com/questions/tagged/zend-framework2">http://stackoverflow.com/questions/tagged/zend-framework2</a></a></p>
-]]></content>
-    
-    
-      <category term="blog" scheme="http://yuhaya.github.io/tags/blog/"/>
-    
-      <category term="Zend Framework 2" scheme="http://yuhaya.github.io/categories/Zend%20Framework%202/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[php性能优化]]></title>
-    <link href="http://yuhaya.github.io/2014/03/14/php%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
-    <id>http://yuhaya.github.io/2014/03/14/php性能优化/</id>
-    <published>2014-03-14T05:40:17.000Z</published>
-    <updated>2014-03-19T07:06:23.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="-io-">降低io消耗</h1>
-<ul>
-<li><p>缓存代码文件</p>
-</li>
-<li><p>预编译所有文件</p>
-</li>
-<li><p>...</p>
-</li>
-</ul>
-<h1 id="session-">Session存储</h1>
-<p>文件存储不是一个优秀的方案</p>
-<ul>
-<li><p>mm – 固话的共享内存存储</p>
-</li>
-<li><p>apc – 用APC存储、获取、删除（apc存储session会有问题，不建议使用）</p>
-</li>
-<li><p>memcache – 基于内存的存储服务</p>
-<p>  session.save_handler = mm</p>
-<p>  session.save_handler = memcache</p>
-</li>
-</ul>
-<p>若服务器运行在linux上，可修改session的存储目录</p>
-<pre><code>session.save_path = /dev/shm
-</code></pre><p>/dev/shm是Linux系统独有的TMPFS文件系统，是以内存为主要存储方式的文件系统，比RAMDISK更优秀，因为可以使用DISKSWAP作为补充，而且是系统自带的功能模块，不需要另行配置</p>
-<h1 id="-php-">使用php加速器</h1>
-<ul>
-<li><p>Zend OPcache</p>
-</li>
-<li><p>apc</p>
-</li>
-<li><p>eAccelerator</p>
-</li>
-<li><p>XCache</p>
-</li>
-</ul>
-<p>根据需要合理使用<strong>user cache</strong></p>
-<h1 id="-">避免重复计算</h1>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span>&lt;getTotal();<span class="variable">$i</span>++) <span class="comment">//getTotal没有必要被重复调用</span>
-</pre></td></tr></table></figure>
-
-<h1 id="-server">为静态文件选择更好的server</h1>
-<p>虽然apache是很强大的动态语言服务器，但静态请求可以通过其他一些webserver很好的支持。
-比如： lighttpd / Boa / Tux / thttpd
-上述webserver在服务于静态内容请求时，响应速度要比apache1或apache2快300~400%倍</p>
-<h1 id="-">分析瓶颈</h1>
-<p><a href="http://xdebug.org/" title="xdebug" target="_blank">xdebug</a> 配合 qcachegrind 分析瓶颈</p>
-<h1 id="-">减少路由查找</h1>
-<p>尽量使用绝对路径</p>
-<p>尽可能的用绝对路径，相对路径虽然简短但会产生额外的寻径开销。而且使用绝对路径也很保险
-少用require＿once</p>
-<p>减少查找开销
-少用魔法函数</p>
-<p>get() | set() | autoload() | call()</p>
-<p>比如,我们的：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="variable">$this</span>-&gt;apiProxy-&gt;page-&gt;page_id;<span class="comment">//__call增加了符号表查找的时间</span>
-</pre></td></tr></table></figure>
-
-<h1 id="-">修复报错</h1>
-<p>每一个报错，会带来性能影响：</p>
-<ul>
-<li>产生一个复杂的错误字符串</li>
-<li>产生一个标准输出</li>
-<li>可能会产生一个日志文件的写操作或者syslog的写操作</li>
-</ul>
-<h1 id="-">少用@</h1>
-<p>不方便调试　&amp;&amp; 低效</p>
-<h1 id="-">合理运用字符串比较函数</h1>
-<p>strncmp / strncasecmp 要比 substr 快</p>
-<h1 id="-">不要随便就复制变量</h1>
-<p>有时候为了使 PHP 代码更加整洁，一些 PHP 新手（包括我）会把预定义好的变量复制���一个名字更简短的变量中，其实这样做的结果是增加了一倍的内存消耗，只会使程序更加慢。试想一下，在下面的例子中，如果用户恶意插入 512KB 字节的文字到文本输入框中，这样就会导致 1MB 的内存被消耗！</p>
-<p>BAD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre><span class="variable">$description</span> = <span class="variable">$_POST</span>[<span class="string">'description'</span>];
-<span class="keyword">echo</span> <span class="variable">$description</span>;
-</pre></td></tr></table></figure>
-
-<p>GOOD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="keyword">echo</span> <span class="variable">$_POST</span>[<span class="string">'description'</span>];
-</pre></td></tr></table></figure>
-
-<h1 id="-">对字符串使用单引号</h1>
-<p>PHP 引擎允许使用单引号和双引号来封装字符串变量，但是这个是有很大的差别的！使用双引号的字符串告诉 PHP 引擎首先去读取字符串内容，查找其中的变量，并改为变量对应的值。一般来说字符串是没有变量的，所以使用双引号会导致性能不佳。最好是使用字符串连接而不是双引号字符串。</p>
-<p>BAD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre><span class="variable">$type</span> = <span class="string">"mixed"</span>;
-<span class="variable">$output</span> = <span class="string">"This is a $type string"</span>;
-</pre></td></tr></table></figure>
-
-<p>GOOD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre><span class="variable">$type</span> = <span class="string">'mixed'</span>;
-<span class="variable">$output</span> = <span class="string">'This is a '</span> . <span class="variable">$type</span> .<span class="string">' string'</span>;
-</pre></td></tr></table></figure>
-
-<h1 id="-echo-">不要在 echo 中使用连接符</h1>
-<p>很多 PHP 程序员（有包括我）不知道在用 echo 输出多个变量的时候，其实可以使用逗号来分开的，而不必用字符串先把他们先连起来，如下面的第一个例子中，由于使用了连接符就会有性能问题，因为这样就会需要 PHP 引擎首先把所有的变量连接起来，然后在输出，而在第二个例子中，PHP 引擎就会按照循序输出他们。</p>
-<p>BAD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="keyword">echo</span> <span class="string">'Hello, my name is'</span> . <span class="variable">$firstName</span> . <span class="variable">$lastName</span> . <span class="string">' and I live in '</span> . <span class="variable">$city</span>;
-</pre></td></tr></table></figure>
-
-<p>GOOD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="keyword">echo</span> <span class="string">'Hello, my name is'</span> , <span class="variable">$firstName</span> , <span class="variable">$lastName</span> , <span class="string">' and I live in '</span> , <span class="variable">$city</span>;
-</pre></td></tr></table></figure>
-
-<h1 id="-switch-case-if-else">使用 switch/case 代替 if/else</h1>
-<p>对于只有单个变量的判断，使用 switch/case 语句而不是 if/else 语句，会有更好的性能，并且代码更加容易阅读和维护。</p>
-<p>BAD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-</pre></td><td class="code"><pre><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">'action'</span>] == <span class="string">'add'</span>) {
-  addUser();
-} <span class="keyword">elseif</span> (<span class="variable">$_POST</span>[<span class="string">'action'</span>] == <span class="string">'delete'</span>) {
-  deleteUser();
-} <span class="keyword">elseif</span> (<span class="variable">$_POST</span>[<span class="string">'action'</span>] == <span class="string">'edit'</span>) {
-  editUser();
-} <span class="keyword">else</span> {
-  defaultAction();
-}
-</pre></td></tr></table></figure>
-
-<p>GOOD:</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-</pre></td><td class="code"><pre><span class="keyword">switch</span>(<span class="variable">$_POST</span>[<span class="string">'action'</span>]) {
-<span class="keyword">case</span> <span class="string">'add'</span>:
-  addUser();
-  <span class="keyword">break</span>;
-<span class="keyword">case</span> <span class="string">'delete'</span>:
-   deleteUser();
-  <span class="keyword">break</span>;
-<span class="keyword">case</span> <span class="string">'edit'</span>:
-   editUser();
-   <span class="keyword">break</span>;
-<span class="keyword">default</span>:
-   defaultAction();
-   <span class="keyword">break</span>;
-}
-</pre></td></tr></table></figure>
-
-<h1 id="-">压缩</h1>
-<p>大多数的浏览器均支持内容解压缩 平均能压缩页面的60~80%
-Apache1 采用mod_gzip / mod_deflate
-Apache2 采用 mod_deflate
-PHP 通过设置配置文件中 zlib.output_compression=1 或者在代码中使用 ob_start(“ob_gzhandler”) 压缩内容</p>
-<p>压缩一般要额外消耗3~5%的CPU（是否开启压缩，还需要根据情况而定）</p>
-]]></content>
-    
-    
-      <category term="performance" scheme="http://yuhaya.github.io/tags/performance/"/>
-    
-      <category term="php" scheme="http://yuhaya.github.io/categories/php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[C和C++中Const 修饰指针]]></title>
-    <link href="http://yuhaya.github.io/2014/01/05/c%E5%92%8Cc%E4%B8%ADconst-%E4%BF%AE%E9%A5%B0%E6%8C%87%E9%92%88/"/>
-    <id>http://yuhaya.github.io/2014/01/05/c和c中const-修饰指针/</id>
-    <published>2014-01-05T12:40:06.000Z</published>
-    <updated>2014-03-15T14:47:51.000Z</updated>
-    <content type="html"><![CDATA[<p>C、C++中Const修饰指针时总是记不住到底作用的是指针还是指针指向的变量内容：</p>
-<p>最近总结了一个绝招，可以绝对理清楚！那就是<code>就近原则</code></p>
-<p>所谓就近原则，意思就是const靠哪个近，就作用在那个上面.</p>
-<blockquote>
-<p>const靠int类型关键字近，那就是说修饰的是整形变量；const靠指针变量名近，那就是说修饰该指针，说明它不是指针变量，而是指针常量；;</p>
-</blockquote>
-<p>但是有一个问题：既然说到是const修饰指针，那就一定有如 <code>char const * pContent</code>; 那这个const在*和变量名之间，到底靠谁近呢？</p>
-<blockquote>
-<p>这里要解释说明的是：const靠谁近指的是类型（如int、char等）和变量名（如这里的pContent），不能算*，因此这里const当然靠char近，所以pContent是一个指向字符常量的指针;</p>
-</blockquote>
-<p>有了这一条就近原则，const问题迎刃而解！;</p>
-<p>1) const在前面;</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-</pre></td><td class="code"><pre><span class="keyword">const</span> <span class="keyword">int</span> nValue； <span class="comment">//nValue是const</span>
-
-<span class="keyword">const</span> <span class="keyword">char</span> *pContent; <span class="comment">//*pContent是const, pContent可变</span>
-
-<span class="keyword">const</span> (<span class="keyword">char</span> *) pContent; <span class="comment">//pContent是const,*pContent可变</span>
-
-<span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent是const,*pContent可变</span>
-
-<span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">const</span> pContent; <span class="comment">//pContent和*pContent都是const</span>
-</pre></td></tr></table></figure>
-
-
-
-
-<p>2) const在后面，与上面的声明对等</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-</pre></td><td class="code"><pre><span class="keyword">int</span> <span class="keyword">const</span> nValue； <span class="comment">// nValue是const</span>
-
-<span class="keyword">char</span> <span class="keyword">const</span> * pContent;<span class="comment">// *pContent是const, pContent可变</span>
-
-(<span class="keyword">char</span> *) <span class="keyword">const</span> pContent;<span class="comment">//pContent是const, *pContent可变</span>
-
-<span class="keyword">char</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent是const, *pContent可变</span>
-
-<span class="keyword">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> pContent;<span class="comment">// pContent和*pContent都是const;</span>
-</pre></td></tr></table></figure>
-
-
-<p>=================================================================================;</p>
-<p>Bjarne在他的The C++ Programming Language里面给出过一个助记的方法： 把一个声明从右向左读。;</p>
-<p>char <em> const cp;;( </em> 读成 pointer to );</p>
-<p>cp is a const pointer to char ：cp是一个指向字符型的常量指针，指针不能改变；;</p>
-<p>const char * p;;</p>
-<p>p is a pointer to const char：cp是一个指向字符型常量的指针，指针指向的值不能随便改变；;</p>
-<p>char const * p; 同上。;</p>
-<p>url:<a href="http://guhanjie.iteye.com/blog/1683154" target="_blank"><a href="http://guhanjie.iteye.com/blog/1683154">http://guhanjie.iteye.com/blog/1683154</a></a></p>
-]]></content>
-    
-    
-      <category term="const" scheme="http://yuhaya.github.io/tags/const/"/>
-    
-      <category term="C/C++" scheme="http://yuhaya.github.io/categories/C/C++/"/>
     
   </entry>
   

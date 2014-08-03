@@ -1,0 +1,442 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS多线程的初步研究--dispatch队列 | yuhaya</title>
+  <meta name="author" content="3wmao">
+  
+  <meta name="description" content="Simple code farming life">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="iOS多线程的初步研究--dispatch队列"/>
+  <meta property="og:site_name" content="yuhaya"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="yuhaya" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <script src="//upcdn.b0.upaiyun.com/libs/modernizr/modernizr-2.6.2.min.js"></script>
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-50598159-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <div id="container" class="container">
+    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
+  <a href="/">
+    <img class="circle" src="/img/koala.jpg" alt="Anthem">
+  </a>
+  <h1 id="site-title" class="title">
+    <a href="/">yuhaya</a>
+  </h1>
+</div>
+<a href="#" id="toggle">信息</a>
+<div class="about" style="display: none">
+  <p>Simple code farming life</p>
+</div>
+<nav class="menu-navigation-container">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+    <li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+</nav>
+<div class="widget">
+  
+  <nav class="search">
+  <form action="http://google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:yuhaya.github.io">
+  </form>
+</nav>
+
+  
+<nav class="categories">
+  <h3 class="title">分类</h3>
+  <ul>
+  
+    <li><a href="/categories/AFNetworking/">AFNetworking</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(2)</small></li>
+  
+    <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Mysql/">Mysql</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Node.js/">Node.js</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Object-c/">Object-c</a>&nbsp;<small>(11)</small></li>
+  
+    <li><a href="/categories/Yii/">Yii</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(6)</small></li>
+  
+    <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/iquery/">iquery</a>&nbsp;<small>(1)</small></li>
+  
+    <li><a href="/categories/php/">php</a>&nbsp;<small>(3)</small></li>
+  
+    <li><a href="/categories/public/">public</a>&nbsp;<small>(3)</small></li>
+  
+    <li><a href="/categories/wireshark/">wireshark</a>&nbsp;<small>(1)</small></li>
+  
+  </ul>
+</nav>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a>
+  </div>
+</div>
+
+
+
+  <nav class="other">
+  <ul>
+    <li>
+        Email : 3wmaocomputer@gmail.com
+    </li>
+    <li>
+      <a href="https://github.com/yuhaya" target="_blank">Github</a>
+    </li>
+  </ul>
+</nav>
+
+
+</div>
+</header>
+    <section id="content" class="blog">
+      <article class="post">
+  <header>
+    
+  
+    <h1 class="title">iOS多线程的初步研究--dispatch队列</h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>GCD编程的核心就是dispatch队列，dispatch block的执行最终都会放进某个队列中去进行，它类似NSOperationQueue但更复杂也更强大，并且可以嵌套使用。所以说，结合block实现的GCD，把函数闭包（Closure）的特性发挥得淋漓尽致。</p>
+<h3 id="dispatch-">dispatch队列的生成可以有这几种方式：</h3>
+<ol>
+<li><h5 id="dispatch_queue_t-queue-dispatch_queue_create-com-dispatch-serial-dispatch_queue_serial-">dispatch_queue_t queue = dispatch_queue_create(&quot;com.dispatch.serial&quot;, DISPATCH_QUEUE_SERIAL);</h5>
+<p>  //生成一个串行队列，队列中的block按照先进先出（FIFO）的顺序去执行，实际上为单线程执行。第一个参数是队列的名称，在调试程序时会非常有用，所有尽量不要重名了。</p>
+</li>
+<li><h5 id="dispatch_queue_t-queue-dispatch_queue_create-com-dispatch-concurrent-dispatch_queue_concurrent-block-">dispatch_queue_t queue = dispatch_queue_create(&quot;com.dispatch.concurrent&quot;, DISPATCH_QUEUE_CONCURRENT); //生成一个并发执行队列，block被分发到多个线程去执行</h5>
+</li>
+</ol>
+<ol>
+<li><h5 id="dispatch_queue_t-queue-dispatch_get_global_queue-dispatch_queue_priority_default-0-">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</h5>
+ //获得程序进程缺省产生的并发队列，可设定优先级来选择高、中、低三个优先级队列。由于是系统默认生成的，所以无法调用dispatch_resume()和dispatch_suspend()来控制执行继续或中断。需要注意的是，三个队列不代表三个线程，可能会有更多的线程。并发队列可以根据实际情况来自动产生合理的线程数，也可理解为dispatch队列实现了一个线程池的管理，对于程序逻辑是透明的。</li>
+</ol>
+<p>官网文档解释说共有三个并发队列，但实际还有一个更低优先级的队列，设置优先级为DISPATCH_QUEUE_PRIORITY_BACKGROUND。Xcode调试时可以观察到正在使用的各个dispatch队列。</p>
+<ol>
+<li><h5 id="dispatch_queue_t-queue-dispatch_get_main_queue-">dispatch_queue_t queue = dispatch_get_main_queue();</h5>
+ //获得主线程的dispatch队列，实际是一个串行队列���同样无法控制主线程dispatch队列的执行继续或中断。</li>
+</ol>
+<p>接下来我们可以使用dispatch_async或dispatch_sync函数来加载需要运行的block。</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="built_in">dispatch_async</span>(queue, ^{
+
+　　<span class="comment">//block具体代码</span>
+
+}); 
+<span class="comment">//异步执行block，函数立即返回</span>
+
+<span class="built_in">dispatch_sync</span>(queue, ^{
+
+　　<span class="comment">//block具体代码</span>
+
+}); 
+<span class="comment">//同步执行block，函数不返回，一直等到block执行完毕。编译器会根据实际情况优化代码，所以有时候你会发现block其实还在当前线程上执行，并没用产生新线程。</span>
+</pre></td></tr></table></figure>
+
+<h4 id="-dispatch_sync-">实际编程经验告诉我们，尽可能避免使用dispatch_sync，嵌套使用时还容易引起程序死锁。</h4>
+<p>如果queue1是一个串行队列的话，这段代码立即产生死锁：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="code"><pre>   dispatch_sync(queue1, ^{
+
+      dispatch_sync(queue1, ^{
+
+　　　　<span class="attribute">...</span><span class="attribute">...</span>
+
+　　});
+
+　　<span class="attribute">...</span><span class="attribute">...</span>
+
+　});
+</pre></td></tr></table></figure>
+
+<p>不妨思考下，为什么下面代码也肯定死锁：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="function">dispatch_sync(<span class="function">dispatch_get_main_queue()</span>, ^{
+
+　　......
+
+})</span>;
+</pre></td></tr></table></figure>
+
+
+
+<p>那实际运用中，一般可以用dispatch这样来写，常见的网络请求数据多线程执行模型：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
+
+　　<span class="comment">//子线程中开始网络请求数据</span>
+
+　　<span class="comment">//更新数据模型</span>
+
+　　<span class="built_in">dispatch_sync</span>(dispatch_get_main_queue(), ^{
+
+　　　　<span class="comment">//在主线程中更新UI代码</span>
+
+　　});
+
+});
+</pre></td></tr></table></figure>
+
+<p>程序的后台运行和UI更新代码紧凑，代码逻辑一目了然。</p>
+<h4 id="dispatch-">dispatch队列是线程安全的，可以利用串行队列实现锁的功能。比如多线程写同一数据库，需要保持写入的顺序和每次写入的完整性，简单地利用串行队列即可实现：</h4>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="built_in">dispatch_queue_t</span> queue1 = dispatch_queue_create(<span class="string">"com.dispatch.writedb"</span>, DISPATCH_QUEUE_SERIAL);
+
+- (<span class="keyword">void</span>)writeDB:(NSData *)data
+
+{
+
+　　<span class="built_in">dispatch_async</span>(queue1, ^{
+
+　　　　<span class="comment">//write database</span>
+
+　　});
+
+}
+</pre></td></tr></table></figure>
+
+<p>下一次调用writeDB:必须等到上次调用完成后才能进行，保证writeDB:方法是线程安全的。 </p>
+<h4 id="dispatch-">dispatch队列还实现其它一些常用函数，包括：</h4>
+<p>void dispatch_apply(size_t iterations, dispatch_queue_t queue, void (^block)(size_t)); </p>
+<p>//重复执行block，需要注意的是这个方法是同步返回，也就是说等到所有block执行完毕才返回，如需异步返回则嵌套在dispatch_async中来使用。多个block的运行是否并发或串行执行也依赖queue的是否并发或串行。</p>
+<p>void dispatch_barrier_async(dispatch_queue_t queue, dispatch_block_t block); </p>
+<p>//这个函数可以设置同步执行的block，它会等到在它加入队列之前的block执行完毕后，才开始执行。在它之后加入队列的block，则等到这个block执行完毕后才开始执行。</p>
+<p>void dispatch_barrier_sync(dispatch_queue_t queue, dispatch_block_t block); </p>
+<p>//同上，除了它是同步返回函数</p>
+<p>void dispatch_after(dispatch_time_t when, dispatch_queue_t queue, dispatch_block_t block); </p>
+<p>//延迟执行block</p>
+<h4 id="-dispatch-">最后再来看看dispatch队列的一个很有特色的函数：</h4>
+<p>void dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);</p>
+<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且这个过程可以是动态的，可以实现队列的动态调度管理等等。比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
+<p>dispatch_set_target_queue(dispatchA, dispatchB);</p>
+<p>那么dispatchA上还未运行的block会在dispatchB上运行。这时如果暂停dispatchA运行：</p>
+<p>dispatch_suspend(dispatchA);</p>
+<p>则只会暂停dispatchA上原来的block的执行，dispatchB的block则不受影响。而如果暂停dispatchB的运行，则会暂停dispatchA的运行。</p>
+<p>这里只简单举个例子，说明dispatch队列运行的灵活性，在实际应用中你会逐步发掘出它的潜力。</p>
+<p>dispatch队列不支持cancel（取消），没有实现dispatch_cancel()函数，不像NSOperationQueue，不得不说这是个小小的缺憾。 </p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="widget">
+        
+          <time datetime="2014-07-27T23:16:13.000Z"><a href="/2014/07/28/-ios多线程的初步研究--dispatch队列/">7月 28 2014</a></time>
+        
+        
+  
+  <a href="/categories/GCD/">@GCD</a>
+
+
+        
+  
+  <a href="/tags/dispatch/">#dispatch</a>
+
+
+        
+      </div>
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<section id="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+
+    </section>
+    <footer id="footer" class="clearfix footer"><div class="alignleft">
+  
+  &copy; 2014 3wmao
+  
+</div>
+<div class="clearfix"></div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-50598159-1', 'yuhaya.github.io');
+                ga('send', 'pageview');
+</script>
+</footer>
+  </div>
+  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'yuhaya';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
+<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox({
+    prevEffect: 'none',
+    nextEffect: 'none',
+    closeBtn: false,
+    helpers: {
+        title: {type: 'inside'},
+        buttons: {
+            position: 'bottom'
+        }
+    }
+  });
+})(jQuery);
+</script>
+
+  <a href="https://github.com/yuhaya"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
+</body>
+</html>
