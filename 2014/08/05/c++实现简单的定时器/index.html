@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>zf2事件相关图解 | yuhaya</title>
+  <title>c++实现简单的定时器 | yuhaya</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="zf2事件相关图解"/>
+  <meta property="og:title" content="c++实现简单的定时器"/>
   <meta property="og:site_name" content="yuhaya"/>
 
   
@@ -139,7 +139,7 @@
   <header>
     
   
-    <h1 class="title">zf2事件相关图解</h1>
+    <h1 class="title">c++实现简单的定时器</h1>
   
 
 
@@ -159,10 +159,118 @@
   </header>
   <section class="entry">
     
-      <p><img src="/images/event.png" alt=""></p>
-<p><img src="/images/EventManager.png" alt=""></p>
-<p><img src="/images/SharedEventManager.png" alt=""></p>
-<p><img src="/images/trigger.png" alt=""></p>
+      <figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+</pre></td><td class="code"><pre><span class="preprocessor">#include &lt;iostream&gt;</span>
+<span class="preprocessor">#include &lt;thread&gt;</span>
+<span class="preprocessor">#include &lt;unistd.h&gt;</span>
+
+<span class="keyword">class</span> Object;
+
+<span class="keyword">typedef</span> <span class="keyword">void</span>(Object::*SayHi)();
+<span class="keyword">typedef</span> <span class="keyword">void</span>(Object::*CallaterHandler)();
+<span class="keyword">void</span> threadFunc(Object *target,CallaterHandler handler,<span class="keyword">int</span> delay){
+    sleep(delay);
+    (target-&gt;*handler)();
+}
+
+<span class="keyword">void</span> callater(Object *target,CallaterHandler handler,<span class="keyword">int</span> delay){
+    <span class="built_in">std</span>::thread t(threadFunc,target,handler,delay);
+    t.join();
+}
+
+<span class="preprocessor">#define CH(fp) (CallaterHandler)(&fp)</span>
+
+
+<span class="keyword">class</span> Object {
+    
+<span class="keyword">public</span>:
+    SayHi sayHi;
+};
+
+<span class="keyword">class</span> Hello:<span class="keyword">public</span> Object {
+    
+<span class="keyword">public</span>:
+    Hello(){
+<span class="comment">//        sayHi = (SayHi)(&Hello::HelloSayHi);</span>
+<span class="comment">//        </span>
+<span class="comment">//        (this-&gt;*sayHi)();</span>
+        
+        callater(<span class="keyword">this</span>, CH(Hello::HelloSayHi), <span class="number">3</span>);
+    }
+    
+    <span class="keyword">void</span> HelloSayHi(){
+        <span class="built_in">printf</span>(<span class="string">"Hello CPP\n"</span>);
+    }
+};
+
+
+
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])
+{
+    
+    Hello *h = <span class="keyword">new</span> Hello();
+    <span class="keyword">delete</span> h;
+
+    <span class="comment">// insert code here...</span>
+    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Hello, World!\n"</span>;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</pre></td></tr></table></figure>
+
 
     
   </section>
@@ -172,16 +280,16 @@
     
       <div class="widget">
         
-          <time datetime="2014-04-04T00:17:06.000Z"><a href="/2014/04/04/zf2事件相关图解/">4月 4 2014</a></time>
+          <time datetime="2014-08-05T01:21:45.000Z"><a href="/2014/08/05/c++实现简单的定时器/">8月 5 2014</a></time>
         
         
   
-  <a href="/categories/Zend Framework 2/">@Zend Framework 2</a>
+  <a href="/categories/C/C++/">@C/C++</a>
 
 
         
   
-  <a href="/tags/Event/">#Event</a>
+  <a href="/tags/定时器/">#定时器</a>
 
 
         

@@ -80,7 +80,7 @@
   
     <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(4)</small></li>
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(5)</small></li>
   
     <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,133 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/05/05/objective-c-之-@property/">Objective-C 之 @property</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>@property属性值三类分别是：<em>原子性</em>，<em>访问器控制</em>，<em>内存管理</em>。</p>
+<h3 id="-">原子性</h3>
+<h4 id="atomic-">atomic(默认)：</h4>
+<p>atomic意为操作是原子的，意味着只有一个线程访问实例变量。atomic是线程安全的至少在当前的访器上我是安全的。它是一个默认的，但是很少使用。它的比较慢，这跟ARM平台和内部锁机制有关。</p>
+<h4 id="nonatomic-">nonatomic：</h4>
+<p>nonatomic跟atomic刚好相反。表示非原子的，可以被多个线程访问。它的速度比atomic快。但不能保证在多线程环境下的安全性，在单线程和明确只有一个线程访问的情况下广泛使用。</p>
+<h3 id="-">访问器控制</h3>
+<h4 id="readwrite">readwrite</h4>
+<h4 id="readonly">readonly</h4>
+<h3 id="-">内存管理</h3>
+<h4 id="retain">retain</h4>
+<p>使用了retain意味着实例变量要获取传入参数的所有权。具体表现在setter中对实例变量先release然后将参数 retain之后传给它。下面这段代码展示了retain类似的行为:</p>
+<figure class="highlight Object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="pp">-<span class="params">(void)</span>setStuName:<span class="params">(<span class="variable">NSString</span> *)</span>stuName
+  {
+     if <span class="params">(<span class="variable">_</span>stu<span class="variable">Name</span> != stu<span class="variable">Name</span>)</span>
+     {
+        [_stuName release];
+         _stuName = [stuName retain];
+     }
+  }</span>
+</pre></td></tr></table></figure>
+
+<h4 id="assign">assign</h4>
+<p>用于值类型，如int、float、double和NSInteger，CGFloat等表示单纯的复制。还包括不存在所有权关系的对象，比如常见的delegate。</p>
+<h4 id="strong">strong</h4>
+<p>是在ARC伴随IOS引入的时候引入的关键字是retain的一个可选的替代。表示实例变量对传入的参数要有所有权关系即强引用。strong跟retain的意思相同并产生相同的代码，但是语意上更好更能体现对象的关系。</p>
+<h4 id="weak">weak</h4>
+<p>weak跟assign的效果相似，不同的是weak在对象被回收之后自动设置为nil。而且weak智能用在iOS 5或以后的版本，对于之前的版本，使用unsafe_unretained。</p>
+<h4 id="unsafe_unretained">unsafe_unretained</h4>
+<p>weak的低版本替代。  </p>
+<h4 id="copy">copy</h4>
+<p>查看上一篇<a href="http://yuhaya.github.io/2014/05/05/object-c-%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/">深浅复制</a></p>
+<h3 id="-">补充：</h3>
+<p>NSString 应用 retain 还是 copy</p>
+<ol>
+<li><p>对NSString应用retain，效率无疑是最好的</p>
+</li>
+<li><p>用copy最安全，因为NSString 为 NSMutableString 的基类，如果将NSMutableString 以retain的形式赋值给NSString后，后续修改NSMutableString会导致NSString内容的变化，这通常不是我们希望的，所以用copy最安全。</p>
+</li>
+<li><p>到底用哪个？貌似还是用copy，因为copy并不一定导致一个新对对象创建，而牺牲效率。copy会调用NSCopying中的 -(id)copyWithZone:(NSZone *)，我们可以判断下self是NSString还是NSMutableString，如果是NSString，就地[self  retain]，[return self]。否则老老实实拷贝对象赋值，这样可以实现效率和安全的结合</p>
+</li>
+</ol>
+<h3 id="copy-nscopying-copywithzone-">copy到底是深复制还是浅复制仅仅由NSCopying中的 <code>copyWithZone</code> 来决定</h3>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-05-05T12:04:27.000Z"><a href="/2014/05/05/objective-c-之-@property/">5月 5 2014</a></time>
+        
+        
+  
+  <a href="/categories/Object-c/">@Object-c</a>
+
+
+        
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -1062,7 +1189,7 @@ B：被委托者</p>
 <span class="keyword">@end</span>
 </pre></td></tr></table></figure>
 
-<p>那么老板就具有这4个方法，当调用前2个时是自己完成功能，而调用后2个时则转为调用秘书的方法。</p>
+<p>那么老板就具有这4个方法，当调用前2个时是自己完成功能，而调用后2个���则转为调用秘书的方法。</p>
 <p>此时我们跟秘书对象就叫做代理对象，代理模式的名字由来于此。</p>
 <p>最后调用测试下：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
@@ -1148,107 +1275,6 @@ boss<span class="variable">.detegate</span>=sec;
 
 
         
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/04/21/kindle-paperwhite-2-越狱/">kindle paperwhite 2 越狱</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <p>要安装Koreader必须先要越狱，幸好国外的大神已经提供了越狱方法，参见
-<a href="http://www.mobileread.com/forums/showthread.php?t=186645" target="_blank">http://www.mobileread.com/forums/showthread.php?t=186645</a></p>
-<ol>
-<li><p>下载kindle-jailbreak-1.8.N.zip 这个文件</p>
-</li>
-<li><p>把文件解压到KINDLE的根目录，会得到一些文件，里面有一个kindle-5.4-jailbreak.zip ，把它也解压到根目录里</p>
-</li>
-<li><p>断开USB，在设置里升级，过一会儿会出现 <strong><strong> JAILBREAK </strong></strong> ，表示越狱成功</p>
-</li>
-</ol>
-<p>越狱以后看一下设置能不能出来设备信息，如果点不出来就重启一下。下面的步骤就跟paperwhite 1一样了，我直接COPY别人的教程了</p>
-<ol>
-<li>安装KPVBooklet</li>
-</ol>
-<p>下载地址：<a href="https://code.google.com/p/kpvbooklet-package/downloads" target="_blank">https://code.google.com/p/kpvbooklet-package/downloads</a> 。
-将下载的zip文件解压缩，把update_kpvbooklet_x.x.x_install.bin文件拷贝到Kindle的磁盘根目录下，断开USB连接。通过Menu&gt; Settings&gt; Menu&gt; Update Your Kindle升级安装，注意不要通过restart来安装。</p>
-<ol>
-<li>安装Koreader</li>
-</ol>
-<p>下载最新的Koreader安装包，下载地址：<a href="https://github.com/koreader/koreader/releases" target="_blank">https://github.com/koreader/koreader/releases</a> 。
-将下载的zip文件解压缩后得到的三个目录（extensions, koreader和launchpad）拷贝到Kindle磁盘根目录即可。</p>
-<p>参考：<a href="http://tieba.baidu.com/p/2747673281" target="_blank">http://tieba.baidu.com/p/2747673281</a></p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-04-21T12:08:15.000Z"><a href="/2014/04/21/kindle-paperwhite-2-越狱/">4月 21 2014</a></time>
-        
-        
-  
-  <a href="/categories/public/">@public</a>
-
-
-        
-  
-  <a href="/tags/kindle paperwhite 2/">#kindle paperwhite 2</a>
-
 
       </div>
       
