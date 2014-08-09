@@ -80,7 +80,7 @@
   
     <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(5)</small></li>
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(6)</small></li>
   
     <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,138 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/03/29/mysql-左右值无限分类/">MySQL 左右值无限分类</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>这个算法有如下几个数据结构</p>
+<ul>
+<li><p>lft 代表左 left</p>
+</li>
+<li><p>rgt 代表右 right</p>
+</li>
+<li><p>lvl 代表所在的层次 level</p>
+</li>
+</ul>
+<p>下面这个图是一个典型的结构　</p>
+<p><img src="/images/04174230_jKOK.png" alt="yuhaya"></p>
+<p>我们先看一些使用方法</p>
+<ul>
+<li>查看整个树(A)有多少节点(包含自己)</li>
+</ul>
+<p>直接看根节点就行了 (right-left+1)/2 = (20-1+1)/2 = 10</p>
+<p>这个数有10个节点</p>
+<ul>
+<li>查看从节点A到E的路径</li>
+</ul>
+<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft</p>
+<p>得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序</p>
+<p>如果2个节点之间不是上下级的关系，则查询没有结果</p>
+<p>反向也是一样的，可以拿到底部一个节点，到上级节点的路径</p>
+<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc</p>
+<p>唯一的区别就是排序是反向的就行了。</p>
+<ul>
+<li>得到某个节点下面的所有节点，且按照树状结构返回</li>
+</ul>
+<p>我们用B做例子</p>
+<p>select * from tree where lft&gt;2 and right&lt;11 order by lft</p>
+<p>拿到的结果是 C,D,E,F,而且顺序也是正确的。</p>
+<ul>
+<li>拿到所有下2级的子节点</li>
+</ul>
+<p>我们A做例子，这次加上了lvl的参数,因为A的level是1，所以我们查询level不大于3的。</p>
+<p>select * from tree where lft&gt;2 and right&lt;11 and lvl&lt;=3 order by lft</p>
+<p>下面看我们新增加一个节点的方法。</p>
+<p>我们在根节点的下面，G节点的右侧增加一个X节点</p>
+<p><img src="/images/04174230_v8X4.png" alt="yuhaya"></p>
+<p>我们要做的工作就是</p>
+<ul>
+<li><p>G节点的右参数为13</p>
+</li>
+<li><p>变更所有的受影响的节点,给新节点腾出空位子,</p>
+</li>
+</ul>
+<p>所有左节点比G节点大的，都增加2</p>
+<p>update tree set lft=lft+2 where lft&gt;12</p>
+<p>所有右节点比G节点大的，都增加2</p>
+<p>update tree set rgt=rgt+2 where rgt&gt;13</p>
+<ul>
+<li>新节点放在空位子上,lft=14,rgt=15</li>
+</ul>
+<p>这样就完成了一个新节点的增加操作。</p>
+<p><a href="http://my.oschina.net/bootstrap/blog/166805" target="_blank">http://my.oschina.net/bootstrap/blog/166805</a></p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-03-29T09:17:58.000Z"><a href="/2014/03/29/mysql-左右值无限分类/">3月 29 2014</a></time>
+        
+        
+  
+  <a href="/categories/Mysql/">@Mysql</a>
+
+
+        
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -588,420 +720,6 @@ FastCGI致力于减少网页服务器与CGI程序之间互动的开销，从而�
 
 
         
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/03/21/zf2-启动简介：二，服务的获取/">zf2 启动简介：二，服务的获取</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <p>zf2框架在启动的过程中会创建一个<strong>service manager</strong>对象 （仅仅会实例化一次）</p>
-<p>而zf2框架中各种服务的调用都是通过 service manager 对象来实现的 </p>
-<p>最常用的如 get 方法，用来获取某一个服务</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-</pre></td><td class="code"><pre>
-	<span class="comment">//Zend\Mvc\Application::init(require 'config/application.config.php')</span>
-	
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(<span class="variable">$configuration</span> = array<span class="params">()</span>)</span>
-    {</span>
-        <span class="variable">$smConfig</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'service_manager'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'service_manager'</span>] : <span class="keyword">array</span>();
-        <span class="variable">$listeners</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'listeners'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'listeners'</span>] : <span class="keyword">array</span>();
-        <span class="variable">$serviceManager</span> = <span class="keyword">new</span> ServiceManager(<span class="keyword">new</span> Service\ServiceManagerConfig(<span class="variable">$smConfig</span>));
-        <span class="variable">$serviceManager</span>-&gt;setService(<span class="string">'ApplicationConfig'</span>, <span class="variable">$configuration</span>);
-        <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'ModuleManager'</span>)-&gt;loadModules();
-        <span class="keyword">return</span> <span class="variable">$serviceManager</span>-&gt;get(<span class="string">'Application'</span>)-&gt;bootstrap(<span class="variable">$listeners</span>);
-    }
-</pre></td></tr></table></figure>
-
-<p>在zf2启动过程中一开始便通过    <code>Zend/Mvc/Service/ServiceManagerConfig.php</code> 来初始化的创建一个服务管理器
-提供的默认配置如下</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-</pre></td><td class="code"><pre><span class="keyword">protected</span> <span class="variable">$invokables</span> = <span class="keyword">array</span>(
-        <span class="string">'SharedEventManager'</span> =&gt; <span class="string">'Zend\EventManager\SharedEventManager'</span>,
-    );
-
-    <span class="comment">/**
-     * Service factories
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$factories</span> = <span class="keyword">array</span>(
-        <span class="string">'EventManager'</span>  =&gt; <span class="string">'Zend\Mvc\Service\EventManagerFactory'</span>,
-        <span class="string">'ModuleManager'</span> =&gt; <span class="string">'Zend\Mvc\Service\ModuleManagerFactory'</span>,
-    );
-
-    <span class="comment">/**
-     * Abstract factories
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$abstractFactories</span> = <span class="keyword">array</span>();
-
-    <span class="comment">/**
-     * Aliases
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$aliases</span> = <span class="keyword">array</span>(
-        <span class="string">'Zend\EventManager\EventManagerInterface'</span> =&gt; <span class="string">'EventManager'</span>,
-    );
-
-    <span class="comment">/**
-     * Shared services
-     *
-     * Services are shared by default; this is primarily to indicate services
-     * that should NOT be shared
-     *
-     *<span class="phpdoc"> @var</span> array
-     */</span>
-    <span class="keyword">protected</span> <span class="variable">$shared</span> = <span class="keyword">array</span>(
-        <span class="string">'EventManager'</span> =&gt; <span class="keyword">false</span>,
-    );
-</pre></td></tr></table></figure>
-
-<p>这些默认初始化配置会合并到 service manager 对象中，在启动过程中除了这些默认配置以外，其实在启动的其他位置也提供了许多 service manager 对象默认的服务配置
-如 <code>Zend/Mvc/Service/ServiceListenerFactory.php</code> 中提供的默认配置</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-</pre></td><td class="code"><pre><span class="keyword">protected</span> <span class="variable">$defaultServiceConfig</span> = <span class="keyword">array</span>(
-        <span class="string">'invokables'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'DispatchListener'</span>     =&gt; <span class="string">'Zend\Mvc\DispatchListener'</span>,
-            <span class="string">'RouteListener'</span>        =&gt; <span class="string">'Zend\Mvc\RouteListener'</span>,
-            <span class="string">'SendResponseListener'</span> =&gt; <span class="string">'Zend\Mvc\SendResponseListener'</span>
-        ),
-        <span class="string">'factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'Application'</span>                    =&gt; <span class="string">'Zend\Mvc\Service\ApplicationFactory'</span>,
-            <span class="string">'Config'</span>                         =&gt; <span class="string">'Zend\Mvc\Service\ConfigFactory'</span>,
-            <span class="string">'ControllerLoader'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ControllerLoaderFactory'</span>,
-            <span class="string">'ControllerPluginManager'</span>        =&gt; <span class="string">'Zend\Mvc\Service\ControllerPluginManagerFactory'</span>,
-            <span class="string">'ConsoleAdapter'</span>                 =&gt; <span class="string">'Zend\Mvc\Service\ConsoleAdapterFactory'</span>,
-            <span class="string">'ConsoleRouter'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
-            <span class="string">'ConsoleViewManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\ConsoleViewManagerFactory'</span>,
-            <span class="string">'DependencyInjector'</span>             =&gt; <span class="string">'Zend\Mvc\Service\DiFactory'</span>,
-            <span class="string">'DiAbstractServiceFactory'</span>       =&gt; <span class="string">'Zend\Mvc\Service\DiAbstractServiceFactoryFactory'</span>,
-            <span class="string">'DiServiceInitializer'</span>           =&gt; <span class="string">'Zend\Mvc\Service\DiServiceInitializerFactory'</span>,
-            <span class="string">'DiStrictAbstractServiceFactory'</span> =&gt; <span class="string">'Zend\Mvc\Service\DiStrictAbstractServiceFactoryFactory'</span>,
-            <span class="string">'FilterManager'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\FilterManagerFactory'</span>,
-            <span class="string">'FormElementManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\FormElementManagerFactory'</span>,
-            <span class="string">'HttpRouter'</span>                     =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
-            <span class="string">'HttpViewManager'</span>                =&gt; <span class="string">'Zend\Mvc\Service\HttpViewManagerFactory'</span>,
-            <span class="string">'HydratorManager'</span>                =&gt; <span class="string">'Zend\Mvc\Service\HydratorManagerFactory'</span>,
-            <span class="string">'InputFilterManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\InputFilterManagerFactory'</span>,
-            <span class="string">'MvcTranslator'</span>                  =&gt; <span class="string">'Zend\Mvc\Service\TranslatorServiceFactory'</span>,
-            <span class="string">'PaginatorPluginManager'</span>         =&gt; <span class="string">'Zend\Mvc\Service\PaginatorPluginManagerFactory'</span>,
-            <span class="string">'Request'</span>                        =&gt; <span class="string">'Zend\Mvc\Service\RequestFactory'</span>,
-            <span class="string">'Response'</span>                       =&gt; <span class="string">'Zend\Mvc\Service\ResponseFactory'</span>,
-            <span class="string">'Router'</span>                         =&gt; <span class="string">'Zend\Mvc\Service\RouterFactory'</span>,
-            <span class="string">'RoutePluginManager'</span>             =&gt; <span class="string">'Zend\Mvc\Service\RoutePluginManagerFactory'</span>,
-            <span class="string">'SerializerAdapterManager'</span>       =&gt; <span class="string">'Zend\Mvc\Service\SerializerAdapterPluginManagerFactory'</span>,
-            <span class="string">'ValidatorManager'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ValidatorManagerFactory'</span>,
-            <span class="string">'ViewHelperManager'</span>              =&gt; <span class="string">'Zend\Mvc\Service\ViewHelperManagerFactory'</span>,
-            <span class="string">'ViewFeedRenderer'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewFeedRendererFactory'</span>,
-            <span class="string">'ViewFeedStrategy'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewFeedStrategyFactory'</span>,
-            <span class="string">'ViewJsonRenderer'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewJsonRendererFactory'</span>,
-            <span class="string">'ViewJsonStrategy'</span>               =&gt; <span class="string">'Zend\Mvc\Service\ViewJsonStrategyFactory'</span>,
-            <span class="string">'ViewManager'</span>                    =&gt; <span class="string">'Zend\Mvc\Service\ViewManagerFactory'</span>,
-            <span class="string">'ViewResolver'</span>                   =&gt; <span class="string">'Zend\Mvc\Service\ViewResolverFactory'</span>,
-            <span class="string">'ViewTemplateMapResolver'</span>        =&gt; <span class="string">'Zend\Mvc\Service\ViewTemplateMapResolverFactory'</span>,
-            <span class="string">'ViewTemplatePathStack'</span>          =&gt; <span class="string">'Zend\Mvc\Service\ViewTemplatePathStackFactory'</span>,
-        ),
-        <span class="string">'aliases'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'Configuration'</span>                          =&gt; <span class="string">'Config'</span>,
-            <span class="string">'Console'</span>                                =&gt; <span class="string">'ConsoleAdapter'</span>,
-            <span class="string">'Di'</span>                                     =&gt; <span class="string">'DependencyInjector'</span>,
-            <span class="string">'Zend\Di\LocatorInterface'</span>               =&gt; <span class="string">'DependencyInjector'</span>,
-            <span class="string">'Zend\Mvc\Controller\PluginManager'</span>      =&gt; <span class="string">'ControllerPluginManager'</span>,
-            <span class="string">'Zend\View\Resolver\TemplateMapResolver'</span> =&gt; <span class="string">'ViewTemplateMapResolver'</span>,
-            <span class="string">'Zend\View\Resolver\TemplatePathStack'</span>   =&gt; <span class="string">'ViewTemplatePathStack'</span>,
-            <span class="string">'Zend\View\Resolver\AggregateResolver'</span>   =&gt; <span class="string">'ViewResolver'</span>,
-            <span class="string">'Zend\View\Resolver\ResolverInterface'</span>   =&gt; <span class="string">'ViewResolver'</span>,
-        ),
-        <span class="string">'abstract_factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="string">'Zend\Form\FormAbstractServiceFactory'</span>,
-        )
-</pre></td></tr></table></figure>
-
-<p>而对于框架的使用者来说我们可以在模块配置文件中自定义服务配置，或者在控制器或者方法中动态注册服务（不太推荐，相对于在配置中注册多走了一道流程）</p>
-<p>如下是用户自定义配置实例</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
-<span class="comment">// a module configuration, "module/SomeModule/config/module.config.php"</span>
-<span class="keyword">return</span> <span class="keyword">array</span>(
-    <span class="string">'service_manager'</span> =&gt; <span class="keyword">array</span>(
-        <span class="string">'abstract_factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Valid values include names of classes implementing</span>
-            <span class="comment">// AbstractFactoryInterface, instances of classes implementing</span>
-            <span class="comment">// AbstractFactoryInterface, or any PHP callbacks</span>
-            <span class="string">'SomeModule\Service\FallbackFactory'</span>,
-        ),
-        <span class="string">'aliases'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Aliasing a FQCN to a service name</span>
-            <span class="string">'SomeModule\Model\User'</span> =&gt; <span class="string">'User'</span>,
-            <span class="comment">// Aliasing a name to a known service name</span>
-            <span class="string">'AdminUser'</span> =&gt; <span class="string">'User'</span>,
-            <span class="comment">// Aliasing to an alias</span>
-            <span class="string">'SuperUser'</span> =&gt; <span class="string">'AdminUser'</span>,
-        ),
-        <span class="string">'factories'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Keys are the service names.</span>
-            <span class="comment">// Valid values include names of classes implementing</span>
-            <span class="comment">// FactoryInterface, instances of classes implementing</span>
-            <span class="comment">// FactoryInterface, or any PHP callbacks</span>
-            <span class="string">'User'</span>     =&gt; <span class="string">'SomeModule\Service\UserFactory'</span>,
-            <span class="string">'UserForm'</span> =&gt; <span class="function"><span class="keyword">function</span> <span class="params">(<span class="variable">$serviceManager</span>)</span> {</span>
-                <span class="variable">$form</span> = <span class="keyword">new</span> SomeModule\Form\User();
-
-                <span class="comment">// Retrieve a dependency from the service manager and inject it!</span>
-                <span class="variable">$form</span>-&gt;setInputFilter(<span class="variable">$serviceManager</span>-&gt;get(<span class="string">'UserInputFilter'</span>));
-                <span class="keyword">return</span> <span class="variable">$form</span>;
-            },
-        ),
-        <span class="string">'invokables'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Keys are the service names</span>
-            <span class="comment">// Values are valid class names to instantiate.</span>
-            <span class="string">'UserInputFiler'</span> =&gt; <span class="string">'SomeModule\InputFilter\User'</span>,
-        ),
-        <span class="string">'services'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Keys are the service names</span>
-            <span class="comment">// Values are objects</span>
-            <span class="string">'Auth'</span> =&gt; <span class="keyword">new</span> SomeModule\Authentication\AuthenticationService(),
-        ),
-        <span class="string">'shared'</span> =&gt; <span class="keyword">array</span>(
-            <span class="comment">// Usually, you'll only indicate services that should _NOT_ be</span>
-            <span class="comment">// shared -- i.e., ones where you want a different instance</span>
-            <span class="comment">// every time.</span>
-            <span class="string">'UserForm'</span> =&gt; <span class="keyword">false</span>,
-        ),
-    ),
-);
-</pre></td></tr></table></figure>
-
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-03-21T13:18:30.000Z"><a href="/2014/03/21/zf2-启动简介：二，服务的获取/">3月 21 2014</a></time>
-        
-        
-  
-  <a href="/categories/Zend Framework 2/">@Zend Framework 2</a>
-
-
-        
-  
-  <a href="/tags/zf2/">#zf2</a>
-
 
       </div>
       

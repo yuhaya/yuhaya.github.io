@@ -80,7 +80,7 @@
   
     <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(5)</small></li>
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(6)</small></li>
   
     <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,206 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/08/09/c++的const用法/">c++的const用法</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>转载自：<a href="http://blog.csdn.net/zcf1002797280/article/details/7816977" target="_blank">http://blog.csdn.net/zcf1002797280/article/details/7816977</a></p>
+<p>在普通的非 const成员函数中，this的类型是一个指向类类型的 const指针。可以改变this所指向的值，但不能改变 this所保存的地址。</p>
+<p>在 const成员函数中，this的类型是一个指向 const类类型对象的 const指针。既不能改变 this所指向的对象，也不能改变 this所保存的地址。</p>
+<h3 id="-const-const-const-const">关键字：Const，Const函数，Const变量，函数后面的Const</h3>
+<p>看到const关键字，C++程序员首先想到的可能是const常量。这可不是良好的条件反射。如果只知道用const定义常量，那么相当于把火药仅用于制作鞭炮。const更大的魅力是它可以修饰函数的参数、返回值，甚至函数的定义体。</p>
+<p>const 是constant的缩写，“恒定不变”的意思。被const修饰的东西都受到强制保护，可以预防意外的变动，能提高程序的健壮性。所以很多C++程序设计书籍建议：“Useconst whenever you need”。</p>
+<h2 id="-const-">用const修饰函数的参数</h2>
+<ol>
+<li><p>如果参数作输出用，不论它是什么数据类型，也不论它采用“指针传递”还是“引用传递”，都不能加const修饰，否则该参数将失去输出功能。const只能修饰输入参数.</p>
+</li>
+<li><p>如果输入参数采用“指针传递”，那么加const修饰可以防止意外地改动该指针，起到保护作用。</p>
+<p> 例如StringCopy函数：
+ void StringCopy(char*strDestination, const char *strSource);</p>
+<p> 其中strSource是输入参数，strDestination是输出参数。给strSource加上const修饰后，如果函数体内的语句试图改动    strSource的内容，编译器将指出错误。</p>
+</li>
+<li><p>如果输入参数采用“值传递”，由于函数将自动产生临时变量用于复制该参数，该输入参数本来就无需保护，所以不要加const修饰。</p>
+</li>
+</ol>
+<p>例如不要将函数voidFunc1(int x) 写成voidFunc1(const int x)。同理不要将函数voidFunc2(A a) 写成voidFunc2(const A a)。其中A为用户自定义的数据类型。</p>
+<p>对于非内部数据类型的参数而言，象voidFunc(A a) 这样声明的函数注定效率比较底。因为函数体内将产生A类型的临时对象用于复制参数a，而临时对象的构造、复制、析构过程都将消耗时间。</p>
+<p>为了提高效率，可以将函数声明改为voidFunc(A &amp;a)，因为“引用传递”仅借用一下参数的别名而已，不需要产生临时对象。但是函数voidFunc(A &amp;a) 存在一个缺点：</p>
+<p>“引用传递”有可能改变参数a，这是我们不期望的。解决这个问题很容易，加const修饰即可，因此函数最终成为voidFunc(const A &amp;a)。</p>
+<p>以此类推，是否应将voidFunc(int x) 改写为voidFunc(const int&amp;x)，以便提高效率？完全没有必要，因为内部数据类型的参数不存在构造、析构的过程，而复制也非常快，“值传递”和“引用传递”的效率几乎相当。</p>
+<p>问题是如此的缠绵，我只好将“const&amp;”修饰输入参数的用法总结一下。</p>
+<h3 id="-const-voidfunc-a-a-voidfunc-const-a-a-">对于非内部数据类型的输入参数，应该将“值传递”的方式改为“const引用传递”，目的是提高效率。例如将voidFunc(A a) 改为voidFunc(const A &amp;a)。</h3>
+<h3 id="-const-voidfunc-int-x-voidfunc-const-int-x-">对于内部数据类型的输入参数，不要将“值传递”的方式改为“const引用传递”。否则既达不到提高效率的目的，又降低了函数的可理解性。例如voidFunc(int x) 不应该改为voidFunc(const int &amp;x)。</h3>
+<h2 id="-const-">用const修饰函数的返回值</h2>
+<p>如果给以“指针传递”方式的函数返回值加const修饰，那么函数返回值（即指针）的内容不能被修改，该返回值只能被赋给加const修饰的同类型指针。例如函数</p>
+<p>constchar * GetString(void);</p>
+<p>如下语句将出现编译错误：</p>
+<p>char *str = GetString();</p>
+<p>正确的用法是
+constchar *str =GetString();</p>
+<p>如果函数返回值采用“值传递方式”，由于函数会把返回值复制到外部临时的存储单元中，加const修饰没有任何价值。</p>
+<p>例如不要把函数intGetInt(void) 写成constint GetInt(void)。</p>
+<p>同理不要把函数AGetA(void) 写成constA GetA(void)，其中A为用户自定义的数据类型。</p>
+<p>如果返回值不是内部数据类型，将函数AGetA(void) 改写为constA &amp;GetA(void)的确能提高效率。但此时千万千万要小心，一定要搞清楚函数究竟是想返回一个对象的“拷贝”还是仅返回“别名”就可以了，否则程序会出错。</p>
+<p>函数返回值采用“引用传递”的场合并不多，这种方式一般只出现在类的赋值函数中，目的是为了实现链式表达。</p>
+<p>例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>classA
+{
+A & operate = (<span class="keyword">const</span> A &other); <span class="comment">// 赋值函数</span>
+};
+Aa, b, c; <span class="comment">// a, b, c 为A的对象</span>
+
+a= b = c; <span class="comment">// 正常的链式赋值</span>
+(a= b) = c; <span class="comment">// 不正常的链式赋值，但合法</span>
+</pre></td></tr></table></figure>
+
+<p>如果将赋值函数的返回值加const修饰，那么该返回值的内容不允许被改动。上例中，语句a= b = c 仍然正确，但是语句(a= b) = c 则是非法的。</p>
+<h2 id="const-">const 成员函数</h2>
+<p>任何不会修改数据成员的函数都应该声明为const类型。如果在编写const成员函数时，不慎修改了数据成员，或者调用了其它非const成员函数，编译器将指出错误，这无疑会提高程序的健壮性。以下程序中，类stack的成员函数GetCount仅用于计数，从逻辑上讲GetCount应当为const函数。编译器将指出GetCount函数中的错误。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre>class Stack
+{
+<span class="keyword">public</span>:
+<span class="keyword">void</span> <span class="title">Push</span>(<span class="keyword">int</span> elem);
+<span class="keyword">int</span> Pop(<span class="keyword">void</span>);
+intGetCount(<span class="keyword">void</span>) <span class="keyword">const</span>; <span class="comment">// const 成员函数</span>
+<span class="keyword">private</span>:
+intm_num;
+<span class="keyword">int</span> m_data[<span class="number">100</span>];
+};
+<span class="keyword">int</span> Stack::GetCount(<span class="keyword">void</span>)<span class="keyword">const</span>
+{
+++ m_num; <span class="comment">// 编译错误，企图修改数据成员m_num</span>
+Pop();<span class="comment">// 编译错误，企图调用非const函数</span>
+returnm_num;
+}
+</pre></td></tr></table></figure>
+
+<p>const 成员函数的声明看起来怪怪的：const关键字只能放在函数声明的尾部，大概是因为其它地方都已经被占用了。
+关于Const函数的几点规则：</p>
+<p>a. const对象只能访问const成员函数,而非const对象可以访问任意的成员函数,包括const成员函数.
+b. const对象的成员是不可修改的,然而const对象通过指针维护的对象却是可以修改的.
+c. const成员函数不可以修改对象的数据,不管对象是否具有const性质.它在编译时,以是否修改成员数据为依据,进行检查.
+e. 然而加上mutable修饰符的数据成员,对于任何情况下通过任何手段都可修改,自然此时的const成员函数是可以修改它的</p>
+<h2 id="-const-">标题:const放在后面有什么意思？</h2>
+<p>一个函数</p>
+<p>AcGePoint3dstartPoint() const;</p>
+<p>const放在后面跟前面有区别么</p>
+<p>==&gt;</p>
+<p>准确的说const是修饰this指向的对象的</p>
+<p>譬如，我们定义了</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="tag">classA</span><span class="rules">{
+<span class="rule"><span class="attribute">public</span>:<span class="value">
+<span class="function">f(int)</span></span></span>;
+<span class="rule">}</span></span>;
+</pre></td></tr></table></figure>
+
+<p>这里f函数其实有两个参数，第一个是A *const this, 另一个才是int类型的参数</p>
+<p>如果我们不想f函数改变参数的值，可以把函数原型改为f(const int),但如果我们不允许f改变this指向的对象呢？</p>
+<p>因为this是隐含参数，const没法直接修饰它，就加在函数的后面了，表示this的类型是constA *const this。</p>
+<p>const修饰*this是本质，至于说“表示该成员函数不会修改类的数据。否则会编译报错”之类的说法只是一个现象，根源就是因为*this是const类型的</p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-08-09T03:41:55.000Z"><a href="/2014/08/09/c++的const用法/">8月 9 2014</a></time>
+        
+        
+  
+  <a href="/categories/C/C++/">@C/C++</a>
+
+
+        
+  
+  <a href="/tags/const/">#const</a>
+
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -755,7 +955,7 @@
 </pre></td></tr></table></figure>
 
 <p>到此为止，我们已经看到了如何使用依赖注入解决我们的问题。不是在代码内部创建依赖关系，而是让其作为一个参数传递，这使得我们的程序更容易维护，降低程序代码的耦合度，实现一种松耦合。但是从长远来看，这种形式的依赖注入也有一些缺点。</p>
-<p>例如，如果组件中有较多的依赖���系，我们需要创建多个setter方法传递，或创建构造函数进行传递。另外，每次使用组件时，都需要创建依赖组件，使代码维护不太易，我们编写的代码可能像这样：</p>
+<p>例如，如果组件中有较多的依赖关系，我们需要创建多个setter方法传递，或创建构造函数进行传递。另外，每次使用组件时，都需要创建依赖组件，使代码维护不太易，我们编写的代码可能像这样：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -1465,7 +1665,7 @@ pStr1 s1, s2;
 pStr2 s3, s4;
 </pre></td></tr></table></figure>
 
-<p>在上述的变量定义中，s1、s2、s3都被定义为char *，而s4则定义成了char，不是我们</p>
+<p>在上述的变量定义中，s1、s2���s3都被定义为char *，而s4则定义成了char，不是我们</p>
 <p>所预期的指针变量，根本原因就在于#define只是简单的字符串替换而typedef则是为一</p>
 <p>个类型起新名字。</p>
 <p>案例二：</p>
@@ -1609,7 +1809,7 @@ p2++;
 <p>首先，表达式的后半部分被两个（）分隔开了，我们分别分析它们。( *b[10] )，其中出现了变量名b，很容易就知道，b是一个有10个元素的数组，每个元素都是一个指针。</p>
 <p>然后，看(void(*)())，其中没有出现变量名，所以它代表了一个类型，即“指向返回值为void型的函数的指针“，而我们知道，C语法中，类型修饰符是必须出现在变量名的左边的，而在整个表达式中这个类型符是在变量名b的右边，所以， (void(*)())最外层的这个()，表示了定义了一个函数，这个函数有一个参数，就是一个指针，具体来说，就是“指向返回值为void型的函数的指针“。</p>
 <p>这样就很清楚了，b数组里，每一个指针元素，都是一个函数指针，这个函数有一个参数，这个参数是一个函数指针。整个表达式最左边的void，则定义了b数组中函数指针所指向函数的返回值类型。</p>
-<p>在一串绕口令式的解说后，我们终于看到了事实的真相：这行代码就是逗你玩...</p>
+<p>在一串绕口令式的解说后，我们终���看到了事实的真相：这行代码就是逗你玩...</p>
 <p>如果不是故意偷懒，这样代码的作者真是在玩弄阅读者的感情，如果非要实现这样一个复杂的定义的话，我们也是有更好的方法的，就是使用typedef来进行类型声明。</p>
 <p>在面对void (*b[10]) (void (*)());时，我们可以先声明后半部分的类型：</p>
 <p>typdef void (*pFunParam)();</p>
@@ -1641,215 +1841,6 @@ p2++;
 
 
         
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/08/03/c实现简单的面向对象/">C实现简单的面向对象</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <figure class="highlight c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-</pre></td><td class="code"><pre><span class="preprocessor">#include &lt;stdio.h&gt;</span>
-<span class="preprocessor">#include &lt;stdlib.h&gt;</span>
-
-<span class="comment">//Object begin&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
-<span class="preprocessor">#define ObjectField \</span>
-    <span class="keyword">void</span>(*onDelete)(<span class="keyword">void</span>*);
-
-<span class="keyword">typedef</span> <span class="keyword">struct</span> Object{
-    ObjectField
-} Object;
-
-<span class="preprocessor">#define ObjectCreate(TYPE) malloc(sizeof(TYPE))</span>
-<span class="preprocessor">#define ObjectDelete(obj) {\</span>
-    obj-&gt;onDelete(obj);\
-    <span class="built_in">free</span>(obj);\
-}
-
-<span class="keyword">void</span> ObjectOnDelete(<span class="keyword">void</span> *obj){
-    <span class="built_in">printf</span>(<span class="string">"Object on delete\n"</span>);
-}
-
-Object* ObjectInit(Object *obj){
-    obj-&gt;onDelete = ObjectOnDelete;
-    <span class="keyword">return</span> obj;
-}
-
-<span class="comment">//Object end&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
-
-
-<span class="keyword">typedef</span> <span class="keyword">struct</span>{
-    ObjectField
-    <span class="keyword">int</span> age;
-    <span class="keyword">void</span>(*sayHello)();
-} People;
-
-<span class="keyword">void</span> PeopleSayHello(){
-    <span class="built_in">printf</span>(<span class="string">"Hello\n"</span>);
-}
-
-<span class="keyword">void</span> PeopleOnDelete(<span class="keyword">void</span> *p){
-    ObjectOnDelete(p);
-    
-    <span class="built_in">printf</span>(<span class="string">"People on delete\n"</span>);
-}
-
-People* PeopleInit(People *p,<span class="keyword">int</span> age){
-    ObjectInit((Object*)p);
-    
-    p-&gt;age = age;
-    p-&gt;sayHello = PeopleSayHello;
-    p-&gt;onDelete = PeopleOnDelete;
-    <span class="keyword">return</span> p;
-}
-
-
-<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])
-{
-    People *p = PeopleInit(ObjectCreate(People), <span class="number">20</span>);
-    p-&gt;sayHello();
-    ObjectDelete(p);
-    
-<span class="comment">//    printf("Hello, %d!\n",p-&gt;age);</span>
-    <span class="keyword">return</span> <span class="number">0</span>;
-}
-</pre></td></tr></table></figure>
-
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-08-03T09:07:19.000Z"><a href="/2014/08/03/c实现简单的面向对象/">8月 3 2014</a></time>
-        
-        
-  
-  <a href="/categories/C/C++/">@C/C++</a>
-
-
-        
-  
-  <a href="/tags/c/">#c</a>
-
 
       </div>
       

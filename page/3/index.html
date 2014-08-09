@@ -80,7 +80,7 @@
   
     <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(5)</small></li>
+    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(6)</small></li>
   
     <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 10.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,236 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/06/11/block的使用/">block的使用</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <h2 id="-">语法介绍</h2>
+<p>代码块本质上是和其他变量类似。不同的是，代码块存储的数据是一个函数体。使用代码块是，你可以像调用其他标准函数一样，传入参数数，并得到返回值。
+脱字符（^）是块的语法标记。按照我们熟悉的参数语法规约所定义的返回值以及块的主体（也就是可以执行的代码）。下图是如何把块变量赋值给一个变量的语法讲解：
+<img src="/images/1344323584_7609.png" alt="">
+按照调用函数的方式调用块对象变量就可以了：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">int</span> result = myBlock(<span class="number">4</span>); <span class="comment">// result是 28</span>
+</pre></td></tr></table></figure>
+
+<h2 id="1-nsstring-">1、参数是NSString*的代码块</h2>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="keyword">void</span> (^printBlock)(<span class="built_in">NSString</span> *x);
+printBlock = ^(<span class="built_in">NSString</span>* str)
+{
+    <span class="built_in">NSLog</span>(@<span class="string">"print:%@"</span>, str);
+};
+printBlock(@<span class="string">"hello world!"</span>);
+</pre></td></tr></table></figure>
+
+<p>运行结果是：print:hello world!</p>
+<h2 id="2-">2、代码用在字符串数组排序</h2>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="built_in">NSArray</span> *stringArray = [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"abc 1"</span>, @<span class="string">"abc 21"</span>, @<span class="string">"abc 12"</span>,@<span class="string">"abc 13"</span>,@<span class="string">"abc 05"</span>,<span class="literal">nil</span>];
+NSComparator sortBlock = ^(<span class="keyword">id</span> string1, <span class="keyword">id</span> string2)
+{
+     <span class="keyword">return</span> [string1 compare:string2];
+};
+<span class="built_in">NSArray</span> *sortArray = [stringArray sortedArrayUsingComparator:sortBlock];
+<span class="built_in">NSLog</span>(@<span class="string">"sortArray:%@"</span>, sortArray);
+</pre></td></tr></table></figure>
+
+<p>运行结果：
+sortArray:(
+    &quot;abc 05&quot;,
+    &quot;abc 1&quot;,
+    &quot;abc 12&quot;,
+    &quot;abc 13&quot;,
+    &quot;abc 21&quot;
+)</p>
+<h2 id="3-">3、代码块的递归调用</h2>
+<p>代码块想要递归调用，代码块变量必须是全局变量或者是静态变量，这样在程序启动的时候代码块变量就初始化了，可以递归调用</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">static</span> <span class="keyword">void</span> (^ <span class="keyword">const</span> blocks)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> i)
+{
+    <span class="keyword">if</span> (i &gt; <span class="number">0</span>) {
+        <span class="built_in">NSLog</span>(@<span class="string">"num:%d"</span>, i);
+        blocks(i - <span class="number">1</span>);
+     }
+};
+blocks(<span class="number">3</span>);
+</pre></td></tr></table></figure>
+
+<p>运行打印结果：</p>
+<p>num:3</p>
+<p>num:2</p>
+<p>num:1</p>
+<h2 id="4-">4、在代码块中使用局部变量和全局变量</h2>
+<p>在代码块中可以使用和改变全局变量</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre><span class="keyword">int</span> global = <span class="number">1000</span>;
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])
+{
+    @autoreleasepool {
+        <span class="keyword">void</span>(^block)(<span class="keyword">void</span>) = ^(<span class="keyword">void</span>)
+        {
+            global++;
+            <span class="built_in">NSLog</span>(@<span class="string">"global:%d"</span>, global);
+        };
+        block();
+        <span class="built_in">NSLog</span>(@<span class="string">"global:%d"</span>, global);
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</pre></td></tr></table></figure>
+
+<p>运行打印结果：</p>
+<p>global:1001</p>
+<p>global:1001</p>
+<p>而局部变量可以使用，但是不能改变。</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">int</span> local = <span class="number">500</span>;
+<span class="keyword">void</span>(^block)(<span class="keyword">void</span>) = ^(<span class="keyword">void</span>)
+    {
+<span class="comment">//      local++;</span>
+         <span class="built_in">NSLog</span>(@<span class="string">"local:%d"</span>, local);
+    };
+block();
+<span class="built_in">NSLog</span>(@<span class="string">"local:%d"</span>, local);
+</pre></td></tr></table></figure>
+
+<p>在代码块中改变局部变量编译不通过。怎么在代码块中改变局部变量呢？在局部变量前面加上关键字：__block</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre>__block int <span class="built_in">local</span> <span class="subst">=</span> <span class="number">500</span>;
+<span class="literal">void</span>(^block)(<span class="literal">void</span>) <span class="subst">=</span> ^(<span class="literal">void</span>)
+   {
+     <span class="built_in">local</span><span class="subst">++</span>;
+      NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</span>);
+    };
+block();
+NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</span>);
+</pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p>local:501</p>
+<p>local:501</p>
+<p>转载自：<a href="http://blog.csdn.net/totogo2010/article/details/7839061" target="_blank">http://blog.csdn.net/totogo2010/article/details/7839061</a></p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-06-10T23:41:41.000Z"><a href="/2014/06/11/block的使用/">6月 11 2014</a></time>
+        
+        
+  
+  <a href="/categories/Object-c/">@Object-c</a>
+
+
+        
+  
+  <a href="/tags/block/">#block</a>
+
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -837,289 +1067,6 @@ _<span class="class"><span class="keyword">object</span> = [[<span class="title"
         
         
           <time datetime="2014-05-11T03:38:18.000Z"><a href="/2014/05/11/objective-c的属性和成员变量用法及关系浅析/">5月 11 2014</a></time>
-        
-        
-  
-  <a href="/categories/Object-c/">@Object-c</a>
-
-
-        
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/05/08/objective-c中不同方式实现锁/">Objective-C中不同方式实现锁</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <p>为什么需要使用锁，当然熟悉多线程的你，自然不会对它觉得陌生。</p>
-<p>那你在代码中是否很好的使用了锁的机制呢？你又知道几种实现锁的方法呢？</p>
-<p>今天一起来探讨一下Objective-C中几种不同方式实现的锁，在这之前我们先构建一个测试用的类，假想它是我们的一个共享资源，method1与method2是互斥的，代码如下：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-</pre></td><td class="code"><pre><span class="class"><span class="keyword">@implementation</span> <span class="title">TestObj</span></span>
- 
-- (<span class="keyword">void</span>)method1
-{
-    <span class="built_in">NSLog</span>(@<span class="string">"%@"</span>,NSStringFromSelector(_cmd));
-}
- 
-- (<span class="keyword">void</span>)method2
-{
-    <span class="built_in">NSLog</span>(@<span class="string">"%@"</span>,NSStringFromSelector(_cmd));    
-}
- 
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
-
-<h2 id="1-nslock-">1.使用NSLock实现的锁</h2>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-</pre></td><td class="code"><pre>//主线程中
-TestObj *obj = [[TestObj alloc] init];
-NSLock *<span class="operator"><span class="keyword">lock</span> = [[NSLock alloc] init];</span>
- 
-//线程1
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [<span class="operator"><span class="keyword">lock</span> <span class="keyword">lock</span>];</span>
-    [obj method1];
-    sleep(10);
-    [<span class="operator"><span class="keyword">lock</span> unlock];</span>
-});
- 
-//线程2
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    sleep(1);//以保证让线程2的代码后执行
-    [<span class="operator"><span class="keyword">lock</span> <span class="keyword">lock</span>];</span>
-    [obj method2];
-    [<span class="operator"><span class="keyword">lock</span> unlock];</span>
-});
-</pre></td></tr></table></figure>
-
-<p>看到打印的结果了吗，你会看到线程1锁住之后，线程2会一直等待走到线程1将锁置为unlock后，才会执行method2方法。</p>
-<p>NSLock是Cocoa提供给我们最基本的锁对象，这也是我们经常所使用的，除lock和unlock方法外，NSLock还提供了tryLock和lockBeforeDate:两个方法，前一个方法会尝试加锁，如果锁不可用(已经被锁住)，刚并不会阻塞线程，并返回NO。lockBeforeDate:方法会在所指定Date之前尝试加锁，如果在指定时间之前都不能加锁，则返回NO。</p>
-<h2 id="2-synchronized-">2.使用synchronized关键字构建的锁</h2>
-<p>当然在Objective-C中你还可以用@synchronized指令快速的实现锁：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
-TestObj *obj = [[TestObj alloc] init];
- 
-<span class="comment">//线程1</span>
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    <span class="annotation">@synchronized</span>(obj){
-        [obj method1];
-        sleep(<span class="number">10</span>);
-    }
-});
- 
-<span class="comment">//线程2</span>
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    sleep(<span class="number">1</span>);
-    <span class="annotation">@synchronized</span>(obj){
-        [obj method2];
-    }
-});
-</pre></td></tr></table></figure>
-
-<h3 id="-synchronized-obj-_-_-">@synchronized指令使用的obj为该锁的<em>唯一标识</em>，只有当标识相同时，才为满足互斥.</h3>
-<p>如果线程2中的@synchronized(obj)改为@synchronized(other),刚线程2就不会被阻塞，@synchronized指令实现锁的优点就是我们不需要在代码中显式的创建锁对象，便可以实现锁的机制，但作为一种预防措施，@synchronized块会隐式的添加一个异常处理例程来保护代码，该处理例程会在异常抛出的时候自动的释放互斥锁。所以如果不想让隐式的异常处理例程带来额外的开销，你可以考虑使用锁对象。</p>
-<h2 id="3-c-pthread_mutex_t-">3.使用C语言的pthread_mutex_t实现的锁</h2>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
-TestObj *obj = [[TestObj alloc] init];
- 
-__block pthread_mutex_t mutex;
-pthread_mutex_init(&mutex, <span class="literal">NULL</span>);
- 
-<span class="comment">//线程1</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    pthread_mutex_lock(&mutex);
-    [obj method1];
-    sleep(<span class="number">5</span>);
-    pthread_mutex_unlock(&mutex);
-});
- 
-<span class="comment">//线程2</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    sleep(<span class="number">1</span>);
-    pthread_mutex_lock(&mutex);
-    [obj method2];
-    pthread_mutex_unlock(&mutex);
-});
-</pre></td></tr></table></figure>
-
-<p>pthread_mutex_t定义在pthread.h，所以记得#include <pthread.h></p>
-<h2 id="4-gcd-">4.使用GCD来实现的”锁”</h2>
-<p>以上代码构建多线程我们就已经用到了GCD的dispatch_async方法，其实在GCD中也已经提供了一种信号机制，使用它我们也可以来构建一把”锁”(从本质意义上讲，信号量与锁是有区别，具体差异参加信号量与互斥锁之间的区别):</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
-TestObj *obj = [[TestObj alloc] init];
-dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">1</span>);
- 
-<span class="comment">//线程1</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    [obj method1];
-    sleep(<span class="number">10</span>);
-    dispatch_semaphore_signal(semaphore);
-});
- 
-<span class="comment">//线程2</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    sleep(<span class="number">1</span>);
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    [obj method2];
-    dispatch_semaphore_signal(semaphore);
-});
-</pre></td></tr></table></figure>
-
-<p>至于代码产生的效果当然和上一例是一模一样的，关于信号机制，熟悉C编程的你肯定也不会陌生的，关于GCD中更多关于dispatch_semaphore_t的信息，可以跳转到本博客的这一往篇文章:GCD介绍（三）: Dispatch Sources</p>
-<p>好了，以上就是我所列举了几种方式来实现锁，当然锁大多数情况下也是配合多线程一起使用的，关于多线程编程，我这儿就不赘述了。</p>
-<p>参考：<a href="http://www.tanhao.me/pieces/616.html" target="_blank">http://www.tanhao.me/pieces/616.html</a></p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-05-08T15:20:03.000Z"><a href="/2014/05/08/objective-c中不同方式实现锁/">5月 8 2014</a></time>
         
         
   
