@@ -82,7 +82,7 @@
   
     <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(6)</small></li>
   
-    <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
+    <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(2)</small></li>
   
     <li><a href="/categories/Laravel/">Laravel</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,157 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/07/27/wireshark-常用过滤表达式/">wireshark 常用过滤表达式</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <h2 id="-wireshark-ip-">针对wireshark最常用的自然是针对IP地址的过滤。其中有几种情况：</h2>
+<ol>
+<li>对源地址为192.168.0.1的包的过滤，即抓取源地址满足要求的包。<ul>
+<li>表达式为：ip.src == 192.168.0.1</li>
+</ul>
+</li>
+<li>对目的地址为192.168.0.1的包的过滤，即抓取目的地址满足要求的包。<ul>
+<li>表达式为：ip.dst == 192.168.0.1</li>
+</ul>
+</li>
+<li>对源或者目的地址为192.168.0.1的包的过滤，即抓取满足源或者目的地址的ip地址是192.168.0.1的包。<ul>
+<li>表达式为：ip.addr == 192.168.0.1,或者 ip.src == 192.168.0.1 or ip.dst == 192.168.0.1</li>
+</ul>
+</li>
+<li>要排除以上的数据包，我们只需要将其用括号囊括，然后使用 &quot;!&quot; 即可。<ul>
+<li>表达式为：!(表达式)    </li>
+</ul>
+</li>
+</ol>
+<h2 id="-">针对协议的过滤</h2>
+<ol>
+<li>仅仅需要捕获某种协议的数据包，表达式很简单仅仅需要把协议的名字输入即可。<ul>
+<li>表达式为：http</li>
+</ul>
+</li>
+<li>需要捕获多种协议的数据包，也只需对协议进行逻辑组合即可.<ul>
+<li>表达式为：http or telnet （多种协议加上逻辑符号的组合即可）</li>
+</ul>
+</li>
+<li>排除某种协议的数据包<ul>
+<li>表达式为：not arp      !tcp</li>
+</ul>
+</li>
+</ol>
+<h2 id="-">针对端口的过滤（视协议而定）</h2>
+<ol>
+<li>捕获某一端口的数据包<ul>
+<li>表达式为：tcp.port == 80</li>
+</ul>
+</li>
+<li>捕获多端口的数据包，可以使用and来连接，下面是捕获高端口的表达式<ul>
+<li>表达式为：udp.port &gt;= 2048</li>
+</ul>
+</li>
+</ol>
+<h2 id="-">针对长度和内容的过滤</h2>
+<ol>
+<li>针对长度的过虑（这里的长度指定的是数据段的长度）<ul>
+<li>表达式为：udp.length &lt; 30   http.content_length &lt;=20
+　　         </li>
+</ul>
+</li>
+<li>针对数据包内容的过滤<ul>
+<li>表达式为：http.request.uri matches &quot;vipscu&quot;  （匹配http请求中含有vipscu字段的请求信息）
+���　　　  </li>
+</ul>
+</li>
+</ol>
+<h4 id="-wireshark-">通过以上的最基本的功能的学习，如果随意发挥，可以灵活应用，就基本上算是入门了。以下是比较复杂的实例（来自wireshark图解教程）：</h4>
+<p>tcp dst port 3128</p>
+<p>ip src host 10.1.1.1</p>
+<p>显示来源IP地址为10.1.1.1的封包。</p>
+<p>host 10.1.2.3</p>
+<p>显示目的或来源IP地址为10.1.2.3的封包。</p>
+<p>src portrange 2000-2500</p>
+<p>显示来源为UDP或TCP，并且端口号在2000至2500范围内的封包。</p>
+<p>not imcp</p>
+<p>显示除了icmp以外的所有封包。（icmp通常被ping工具使用）</p>
+<p>src host 10.7.2.12 and not dst net 10.200.0.0/16</p>
+<p>显示来源IP地址为10.7.2.12，但目的地不是10.200.0.0/16的封包。</p>
+<p>(src host 10.4.1.12 or src net 10.6.0.0/16) and tcp dst portrange 200-10000 and dst net 10.0.0.0/8</p>
+<p>显示来源IP为10.4.1.12或者来源网络为10.6.0.0/16，目的地TCP端口号在200至10000之间，并且目的位于网络10.0.0.0/8内的所有封包。</p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-07-27T08:48:06.000Z"><a href="/2014/07/27/wireshark-常用过滤表达式/">7月 27 2014</a></time>
+        
+        
+  
+  <a href="/categories/wireshark/">@wireshark</a>
+
+
+        
+  
+  <a href="/tags/wireshark/">#wireshark</a>
+
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -911,162 +1062,6 @@ NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</spa
         
         
           <time datetime="2014-05-11T23:39:42.000Z"><a href="/2014/05/12/singletons-in-objective-c/">5月 12 2014</a></time>
-        
-        
-  
-  <a href="/categories/Object-c/">@Object-c</a>
-
-
-        
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/05/11/objective-c的属性和成员变量用法及关系浅析/">Objective-C的属性和成员变量用法及关系浅析</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <ol>
-<li><p>属性</p>
-<p> 关于属性的用法在苹果的官方文档《The Objective-C Programming Language》中有详细的说明，在这里就不再赘述，链接如下：</p>
-<p> <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html#//apple_ref/doc/uid/TP40011210" target="_blank">《The Objective-c Programming Language》</a></p>
-<p> 如果你的英文不好，没关系，已经有人把这个文档全部翻译完了，链接如下：</p>
-<p> <a href="http://blog.csdn.net/column/details/object-c.html" target="_blank">Objective-C编程语言官方文档翻译</a></p>
-</li>
-<li><p>关于@synthesize object = _object 的解释</p>
-<p> 我们在很多代码中会见到这样的写法：</p>
-</li>
-</ol>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-</pre></td><td class="code"><pre><span class="variable">@interface</span> MyClass:NSObject{　　
-     MyObjecct <span class="variable">*_object</span>;
-}
-<span class="variable">@property</span>(nonamtic, retain) MyObjecct <span class="variable">*object</span>;
-<span class="variable">@end</span>
-
-<span class="variable">@implementatin</span> MyClass
-<span class="variable">@synthesize</span> object=_object;
-</pre></td></tr></table></figure>
-
-<pre><code>我在网上查阅了一些资料和其他人写的博文，总结了这样写的几条原因如下：  
-</code></pre><h3 id="-1-32-64-">（1）32位系统和64位系统的差异</h3>
-<p>  在32位系统中，如果类的@interface部分没有进行ivar（instance variable）声明，但有@property声明，在类的@implementation部分有响应的@synthesize，则会得到类似下面的编译错误：</p>
-<p>  Synthesize property ‘xX’ must either be named the same as a compatible ivar or must explicitly name an ivar</p>
-<h4 id="-64-ivar-ivar-_-">在64位系统中，运行时系统会自动给类添加ivar，添加的ivar以一个下划线“_”做前缀。</h4>
-<h3 id="-2-bug">（2）避免莫名其妙的Bug</h3>
-<p>  在这里简单说一下_object和object的区别。_object是MyClass类的成员变量，object是属性。property和synthesize定义了一     对getter和setter方法，在这里的getter方法是object，setter方法是setObject，事实上getter和setter方法操作的是变量_object。</p>
-<p>  如果写synthesize objec = _object 时getter方法为：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-</pre></td><td class="code"><pre>-(MyObject *)<span class="keyword">object</span>
-{
-    <span class="keyword">return</span> _object;
-}
-</pre></td></tr></table></figure>
-
-<p>  如果写synthesize object 时getter方法为：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-</pre></td><td class="code"><pre>-(MyObject *)<span class="keyword">object</span>
-{
-    <span class="keyword">return</span> <span class="keyword">object</span>;
-}
-</pre></td></tr></table></figure>
-
-<p>  当函数名和属性名重名的时候会出现意想不到的错误，为了避免这种Bug，Apple给的Demo Code里面多数也采用这种方式。</p>
-<h3 id="-3-">（3）属性和变量的用法</h3>
-<p>  属性是用self.object，通过getter方法来调用的，可以在类外使用。而变量是通过_object来调用，只能在该类对应的implementation中使用，在类外不能使用。</p>
-<p>  下面看一下两种赋值操作：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre> self.<span class="class"><span class="keyword">object</span> = [[<span class="title">MyObject</span> <span class="title">alloc</span>] <span class="title">init</span>];</span>
-_<span class="class"><span class="keyword">object</span> = [[<span class="title">MyObject</span> <span class="title">alloc</span>] <span class="title">init</span>];</span>
-</pre></td></tr></table></figure>
-
-<p>  第一种的方式和@property（nonamtic，retain）有关，实际上是通过调用setter方法setObject来实现赋值的。第二种方式是简单的指针赋值，没有调用setter方法。</p>
-<p>  下面是retainCount的变化：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-</pre></td><td class="code"><pre>MyObject *tmp = [[MyObject alloc] init];
-self.<span class="class"><span class="keyword">object</span> = <span class="title">tmp</span>;  //<span class="title">retainCount</span> = 2</span>
-[tmp release];  <span class="comment">//retainCount = 1</span>
-_<span class="class"><span class="keyword">object</span> = [[<span class="title">MyObject</span> <span class="title">alloc</span>] <span class="title">init</span>];  //<span class="title">retainCount</span> = 1</span>
-</pre></td></tr></table></figure>
-
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-05-11T03:38:18.000Z"><a href="/2014/05/11/objective-c的属性和成员变量用法及关系浅析/">5月 11 2014</a></time>
         
         
   

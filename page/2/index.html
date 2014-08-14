@@ -82,7 +82,7 @@
   
     <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(6)</small></li>
   
-    <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(1)</small></li>
+    <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(2)</small></li>
   
     <li><a href="/categories/Laravel/">Laravel</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/dispatch/" style="font-size: 10.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,124 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/08/03/void-(b[10])-(void-()())/">void (\*b[10]) (void (\*)())</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p>void (*b[10]) (void (*)());</p>
+<p>看到这行代码，相信程序员们都会倒吸一口冷气吧。如果非常不幸的在维护的代码中看到类似的表述，除了想办法找出写出这种天书的猛人来，只能自己硬着头皮搞清楚了。</p>
+<p>在C和C++中，构造这类声明表达式只有一条简单的规则：按照使用的方式来声明。</p>
+<p>C变量的声明都是由两部分组成的：类型，以及一组类似表达式的声明符（declarator）。声明符类似于表达式，对它求值应该返回一个声明中给定类型的结果。例如，我们来看一个简单的声明：</p>
+<p>float f;</p>
+<p>这里f就是声明符，对其求值，应该得到一个float型的数值。</p>
+<p>然后看括号的作用，比如：</p>
+<p>float ((f))；</p>
+<p>很简单，这个声明的含义就是，((f))的类型为浮点类型。因为括号和f之间没有其他的修饰了，所以，我们可以推知，f也是浮点型。</p>
+<p>再来看稍微复杂点的：</p>
+<p>float f();</p>
+<p>我们注意到有一个（）表达式出现，这个声明符的含义是一个函数。所以这个声明的含义就是，f()的求值结果是一个浮点数，也就是说，f是个返回值为浮点数的函数。</p>
+<p>OK，这些都很简单，再看一个：</p>
+<p>float *f();</p>
+<p>这个就是表示*f()是个浮点表达式，而()的结合优先级高于*，所以，*f()也就是*(f())，f是个函数，返回值是个指针，这个指针指向一个浮点数。</p>
+<p>如果*f是先结合的呢？比如：</p>
+<p>float (*f)();</p>
+<p>这时，f就不是和()结合而成为一个函数名，而是和*结合成为一个指针名，这个指针，是指向函数入口的函数指针，而这个函数，返回值是浮点型。</p>
+<p>现在我们知道怎么声明一个指定类型的变量了。在这个声明表达式中，把变量名，和声明末尾的分号去掉，剩余的部分用一个括号整个括起来，这样就得到了这个变量的类型声明了，比如：</p>
+<p>float (*f)();</p>
+<p>这个表示f是一���指向返回值为浮点型的函数指针。而我们把f这个变量名，和最后的；号去掉，就得到：</p>
+<p>( float (*)() )</p>
+<p>这个就表示，这个表达式是一个类型，即“指向返回值为浮点型的函数的指针”。如果用这个类型去修饰一个变量名，我们就叫它类型转换符。</p>
+<p>现在有了这些预备知识，我们可以回头看标题的声明到底是什么意思了：</p>
+<p>void (*b[10]) (void (*)());</p>
+<p>首先，表达式的后半部分被两个（）分隔开了，我们分别分析它们。( *b[10] )，其中出现了变量名b，很容易就知道，b是一个有10个元素的数组，每个元素都是一个指针。</p>
+<p>然后，看(void(*)())，其中没有出现变量名，所以它代表了一个类型，即“指向返回值为void型的函数的指针“，而我们知道，C语法中，类型修饰符是必须出现在变量名的左边的，而在整个表达式中这个类型符是在变量名b的右边，所以， (void(*)())最外层的这个()，表示了定义了一个函数，这个函数有一个参数，就是一个指针，具体来说，就是“指向返回值为void型的函数的指针“。</p>
+<p>这样就很清楚了，b数组里，每一个指针元素，都是一个函数指针，这个函数有一个参数，这个参数是一个函数指针。整个表达式最左边的void，则定义了b数组中函数指针所指向函数的返回值类型。</p>
+<p>在一串绕口令式的解说后，我们终于看到了事实的真相：这行代码就是逗你玩...</p>
+<p>如果不是故意偷懒，这样代码的作者真是在玩弄阅读者的感情，如果非要实现这样一个复杂的定义的话，我们也是有更好的方法的，就是使用typedef来进行类型声明。</p>
+<p>在面对void (*b[10]) (void (*)());时，我们可以先声明后半部分的类型：</p>
+<p>typdef void (*pFunParam)();</p>
+<p>即表示，类型pFunParam，是一个函数指针。</p>
+<p>然后，针对整个表达式声明一个类型：</p>
+<p>typedef void (*pFun)(pFunParam)；</p>
+<p>即表示，类型pFun，是一个函数指针。此函数的参数类型为pFunParam。</p>
+<p>最后，进行变量的声明：</p>
+<p>pFun b[10]；</p>
+<p>这样，就清晰许多了吧。最重要的时，利用这样的方式，将编写者的设计思路也体现在了代码中。</p>
+<p>最后，介绍一个更快速的阅读方法：从右向左。</p>
+<p>编译器在进行代码扫描时是从左向右的，而我们在解读这个表达式的时候，从右向左的方法会更容易些，如：</p>
+<p>从右向左扫描以上表达式，首先我们看到一个“)”，因为其右边再没有变量，所以我们知道这是一个函数定义，然后，又看到一对“()“，显然也是函数定义，在就是(*)，显然和后面的()联合起来表达了一个函数指针，再左边的void，即修饰了此指针的类型；然后出现了和最右边”)&quot;对应的”(”，显然这个函数定义也完成了，再左边的[10]表达了一个数组，左边是它的名字b，而更左边的“*”和后面的“(“一起表达了一个函数指针，这个函数指针定义了b数组中元素的类型。再往左，指针元素的定义void也出现了。这样，我们就又看到了此表达式的真相。</p>
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-08-03T12:37:30.000Z"><a href="/2014/08/03/void-(b[10])-(void-()())/">8月 3 2014</a></time>
+        
+        
+  
+  <a href="/categories/C/C++/">@C/C++</a>
+
+
+        
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -1170,7 +1288,7 @@ op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer 
 <p>//延迟执行block</p>
 <h4 id="-dispatch-">最后再来看看dispatch队列的一个很有特色的函数：</h4>
 <p>void dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);</p>
-<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且这个过程可以是动态的，可以实现队列的动态调度管理等等。比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
+<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且���个过程可以是动态的，可以实现队列的动态调度管理等等。比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
 <p>dispatch_set_target_queue(dispatchA, dispatchB);</p>
 <p>那么dispatchA上还未运行的block会在dispatchB上运行。这时如果暂停dispatchA运行：</p>
 <p>dispatch_suspend(dispatchA);</p>
@@ -1197,157 +1315,6 @@ op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer 
         
   
   <a href="/tags/dispatch/">#dispatch</a>
-
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/07/27/wireshark-常用过滤表达式/">wireshark 常用过滤表达式</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <h2 id="-wireshark-ip-">针对wireshark最常用的自然是针对IP地址的过滤。其中有几种情况：</h2>
-<ol>
-<li>对源地址为192.168.0.1的包的过滤，即抓取源地址满足要求的包。<ul>
-<li>表达式为：ip.src == 192.168.0.1</li>
-</ul>
-</li>
-<li>对目的地址为192.168.0.1的包的过滤，即抓取目的地址满足要求的包。<ul>
-<li>表达式为：ip.dst == 192.168.0.1</li>
-</ul>
-</li>
-<li>对源或者目的地址为192.168.0.1的包的过滤，即抓取满足源或者目的地址的ip地址是192.168.0.1的包。<ul>
-<li>表达式为：ip.addr == 192.168.0.1,或者 ip.src == 192.168.0.1 or ip.dst == 192.168.0.1</li>
-</ul>
-</li>
-<li>要排除以上的数据包，我们只需要将其用括号囊括，然后使用 &quot;!&quot; 即可。<ul>
-<li>表达式为：!(表达式)    </li>
-</ul>
-</li>
-</ol>
-<h2 id="-">针对协议的过滤</h2>
-<ol>
-<li>仅仅需要捕获某种协议的数据包，表达式很简单仅仅需要把协议的名字输入即可。<ul>
-<li>表达式为：http</li>
-</ul>
-</li>
-<li>需要捕获多种协议的数据包，也只需对协议进行逻辑组合即可.<ul>
-<li>表达式为：http or telnet （多种协议加上逻辑符号的组合即可）</li>
-</ul>
-</li>
-<li>排除某种协议的数据包<ul>
-<li>表达式为：not arp      !tcp</li>
-</ul>
-</li>
-</ol>
-<h2 id="-">针对端口的过滤（视协议而定）</h2>
-<ol>
-<li>捕获某一端口的数据包<ul>
-<li>表达式为：tcp.port == 80</li>
-</ul>
-</li>
-<li>捕获多端口的数据包，可以使用and来连接，下面是捕获高端口的表达式<ul>
-<li>表达式为：udp.port &gt;= 2048</li>
-</ul>
-</li>
-</ol>
-<h2 id="-">针对长度和内容的过滤</h2>
-<ol>
-<li>针对长度的过虑（这里的长度指定的是数据段的长度）<ul>
-<li>表达式为：udp.length &lt; 30   http.content_length &lt;=20
-　　         </li>
-</ul>
-</li>
-<li>针对数据包内容的过滤<ul>
-<li>表达式为：http.request.uri matches &quot;vipscu&quot;  （匹配http请求中含有vipscu字段的请求信息）
-　　　　  </li>
-</ul>
-</li>
-</ol>
-<h4 id="-wireshark-">通过以上的最基本的功能的学习，如果随意发挥，可以灵活应用，就基本上算是入门了。以下是比较复杂的实例（来自wireshark图解教程）：</h4>
-<p>tcp dst port 3128</p>
-<p>ip src host 10.1.1.1</p>
-<p>显示来源IP地址为10.1.1.1的封包。</p>
-<p>host 10.1.2.3</p>
-<p>显示目的或来源IP地址为10.1.2.3的封包。</p>
-<p>src portrange 2000-2500</p>
-<p>显示来源为UDP或TCP，并且端口号在2000至2500范围内的封包。</p>
-<p>not imcp</p>
-<p>显示除了icmp以外的所有封包。（icmp通常被ping工具使用）</p>
-<p>src host 10.7.2.12 and not dst net 10.200.0.0/16</p>
-<p>显示来源IP地址为10.7.2.12，但目的地不是10.200.0.0/16的封包。</p>
-<p>(src host 10.4.1.12 or src net 10.6.0.0/16) and tcp dst portrange 200-10000 and dst net 10.0.0.0/8</p>
-<p>显示来源IP为10.4.1.12或者来源网络为10.6.0.0/16，目的地TCP端口号在200至10000之间，并且目的位于网络10.0.0.0/8内的所有封包。</p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-07-27T08:48:06.000Z"><a href="/2014/07/27/wireshark-常用过滤表达式/">7月 27 2014</a></time>
-        
-        
-  
-  <a href="/categories/wireshark/">@wireshark</a>
-
-
-        
-  
-  <a href="/tags/wireshark/">#wireshark</a>
 
 
       </div>
