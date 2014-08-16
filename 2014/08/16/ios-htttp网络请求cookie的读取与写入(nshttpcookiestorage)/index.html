@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Objective-C中不同方式实现锁 | yuhaya</title>
+  <title>ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage) | yuhaya</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Objective-C中不同方式实现锁"/>
+  <meta property="og:title" content="ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)"/>
   <meta property="og:site_name" content="yuhaya"/>
 
   
@@ -139,7 +139,7 @@
   <header>
     
   
-    <h1 class="title">Objective-C中不同方式实现锁</h1>
+    <h1 class="title">ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)</h1>
   
 
 
@@ -159,123 +159,16 @@
   </header>
   <section class="entry">
     
-      <p>为什么需要使用锁，当然熟悉多线程的你，自然不会对它觉得陌生。</p>
-<p>那你在代码中是否很好的使用了锁的机制呢？你又知道几种实现锁的方法呢？</p>
-<p>今天一起来探讨一下Objective-C中几种不同方式实现的锁，在这之前我们先构建一个测试用的类，假想它是我们的一个共享资源，method1与method2是互斥的，代码如下：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-</pre></td><td class="code"><pre><span class="class"><span class="keyword">@implementation</span> <span class="title">TestObj</span></span>
- 
-- (<span class="keyword">void</span>)method1
-{
-    <span class="built_in">NSLog</span>(@<span class="string">"%@"</span>,NSStringFromSelector(_cmd));
-}
- 
-- (<span class="keyword">void</span>)method2
-{
-    <span class="built_in">NSLog</span>(@<span class="string">"%@"</span>,NSStringFromSelector(_cmd));    
-}
- 
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
-
-<h2 id="1-nslock-">1.使用NSLock实现的锁</h2>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-</pre></td><td class="code"><pre>//主线程中
-TestObj *obj = [[TestObj alloc] init];
-NSLock *<span class="operator"><span class="keyword">lock</span> = [[NSLock alloc] init];</span>
- 
-//线程1
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [<span class="operator"><span class="keyword">lock</span> <span class="keyword">lock</span>];</span>
-    [obj method1];
-    sleep(10);
-    [<span class="operator"><span class="keyword">lock</span> unlock];</span>
-});
- 
-//线程2
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    sleep(1);//以保证让线程2的代���后执行
-    [<span class="operator"><span class="keyword">lock</span> <span class="keyword">lock</span>];</span>
-    [obj method2];
-    [<span class="operator"><span class="keyword">lock</span> unlock];</span>
-});
-</pre></td></tr></table></figure>
-
-<p>看到打印的结果了吗，你会看到线程1锁住之后，线程2会一直等待走到线程1将锁置为unlock后，才会执行method2方法。</p>
-<p>NSLock是Cocoa提供给我们最基本的锁对象，这也是我们经常所使用的，除lock和unlock方法外，NSLock还提供了tryLock和lockBeforeDate:两个方法，前一个方法会尝试加锁，如果锁不可用(已经被锁住)，刚并不会阻塞线程，并返回NO。lockBeforeDate:方法会在所指定Date之前尝试加锁，如果在指定时间之前都不能加锁，则返回NO。</p>
-<h2 id="2-synchronized-">2.使用synchronized关键字构建的锁</h2>
-<p>当然在Objective-C中你还可以用@synchronized指令快速的实现锁：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
-TestObj *obj = [[TestObj alloc] init];
- 
-<span class="comment">//线程1</span>
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    <span class="annotation">@synchronized</span>(obj){
-        [obj method1];
-        sleep(<span class="number">10</span>);
-    }
-});
- 
-<span class="comment">//线程2</span>
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    sleep(<span class="number">1</span>);
-    <span class="annotation">@synchronized</span>(obj){
-        [obj method2];
-    }
-});
-</pre></td></tr></table></figure>
-
-<h3 id="-synchronized-obj-_-_-">@synchronized指令使用的obj为该锁的<em>唯一标识</em>，只有当标识相同时，才为满足互斥.</h3>
-<p>如果线程2中的@synchronized(obj)改为@synchronized(other),刚线程2就不会被阻塞，@synchronized指令实现锁的优点就是我们不需要在代码中显式的创建锁对象，便可以实现锁的机制，但作为一种预防措施，@synchronized块会隐式的添加一个异常处理例程来保护代码，该处理例程会在异常抛出的时候自动的释放互斥锁。所以如果不想让隐式的异常处理例程带来额外的开销，你可以考虑使用锁对象。</p>
-<h2 id="3-c-pthread_mutex_t-">3.使用C语言的pthread_mutex_t实现的锁</h2>
+      <p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
+<p>同样适用于ASIHTTPRequest,AFNetworking, Webview等,cookie常用于一些基于认证的网络请求</p>
+<p>认识下NSHTTPCookieStorage</p>
+<p>NSHTTPCookieStorage 实现了一个管理cookie的单例对象(只有一个实例)，每个cookie都是NSHTTPCookie类的实例，最为一个规则，cookie在所有应用之间共享并在不同进程之间保持同步。Session cookie(一个isSessionOnly方法返回YES的cookie)只能在单一进程中使用。</p>
+<h2 id="cookie">Cookie</h2>
+<p>Cookie是由服务器端生成，发送给User-Agent（一般是浏览器或者客户端），浏览器会将Cookie的key/value保存到某个目录下的文本文件内，下次请求同一网站地址时就发送该Cookie给服务器</p>
+<h2 id="http-header">HTTP header</h2>
+<p>HTTP header中包含HTTP请求与响应的操作参数. header属性定义了所传输数据的各种特性. header属性以属性名开始,以冒号结尾,最后是属性值.属性名及值会因应用的不同</p>
+<p>ios htttp网络请求cookie的读取与写入:</p>
+<h3 id="1-nsurlconnection-">1.原生NSURLConnection写法</h3>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -297,32 +190,86 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span 
 19
 20
 21
-</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
-TestObj *obj = [[TestObj alloc] init];
- 
-__block pthread_mutex_t mutex;
-pthread_mutex_init(&mutex, <span class="literal">NULL</span>);
- 
-<span class="comment">//线程1</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    pthread_mutex_lock(&mutex);
-    [obj method1];
-    sleep(<span class="number">5</span>);
-    pthread_mutex_unlock(&mutex);
-});
- 
-<span class="comment">//线程2</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    sleep(<span class="number">1</span>);
-    pthread_mutex_lock(&mutex);
-    [obj method2];
-    pthread_mutex_unlock(&mutex);
-});
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td><td class="code"><pre>- (<span class="type">IBAction</span>)cookieTouched:(id)sender {
+    <span class="type">NSURL</span> *url = [<span class="type">NSURL</span> <span class="type">URLWithString</span>:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
+    <span class="type">NSURLRequest</span> *request = [<span class="type">NSURLRequest</span> requestWithURL:url]
+                                             cachePolicy:<span class="type">NSURLRequestReloadIgnoringLocalAndRemoteCacheData</span>
+                                         timeoutInterval:<span class="number">3</span>];
+    <span class="type">NSOperationQueue</span> *queue = [[<span class="type">NSOperationQueue</span> alloc]init];
+    [<span class="type">NSURLConnection</span> sendAsynchronousRequest:request
+                                       queue:queue
+                           completionHandler:^(<span class="type">NSURLResponse</span> *response, <span class="type">NSData</span> *<span class="typedef"><span class="keyword">data</span>, <span class="type">NSError</span> *error)<span class="container">{
+                              
+                               //转换<span class="type">NSURLResponse</span>成为<span class="type">HTTPResponse</span>
+                               <span class="type">NSHTTPURLResponse</span> *<span class="type">HTTPResponse</span> = (<span class="type">NSHTTPURLResponse</span> *)<span class="title">response</span>;
+                               //获取<span class="title">headerfields</span>
+                               <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>];//原生<span class="type">NSURLConnection</span>写法
+                               // <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="title">operation</span>.<span class="title">response</span> <span class="title">allHeaderFields</span>]; //<span class="title">afnetworking</span>写法
+                               <span class="type">NSLog</span>(@"<span class="title">fields</span> = %@",[<span class="title">fields</span> <span class="title">description</span>]);
+
+                               //获取<span class="title">cookie</span>方法1
+                               // <span class="type">NSArray</span> *<span class="title">cookies</span> = [<span class="type">NSHTTPCookie</span> <span class="title">cookiesWithResponseHeaderFields</span>:<span class="title">fields</span> <span class="title">forURL</span>:<span class="title">url</span>];
+							   //获取<span class="title">cookie</span>方法2
+                               //<span class="type">NSString</span> *<span class="title">cookieString</span> = [[<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>] <span class="title">valueForKey</span>:@"<span class="type">Set</span>-<span class="type">Cookie</span>"];
+                               //获取<span class="title">cookie</span>方法3
+                               <span class="type">NSHTTPCookieStorage</span> *<span class="title">cookieJar</span> = [<span class="type">NSHTTPCookieStorage</span> <span class="title">sharedHTTPCookieStorage</span>];
+                               <span class="title">for</span> (<span class="type">NSHTTPCookie</span> *<span class="title">cookie</span> <span class="title">in</span> [<span class="title">cookieJar</span> <span class="title">cookies</span>]) {
+                                   <span class="type">NSLog</span>(@"<span class="title">cookie</span>%@", <span class="title">cookie</span>);
+                               }</span></span>
+                           }];
+    
+}
 </pre></td></tr></table></figure>
 
-<p>pthread_mutex_t定义在pthread.h，所以记得#include <pthread.h></p>
-<h2 id="4-gcd-">4.使用GCD来实现的”锁”</h2>
-<p>以上代码构建多线程我们就已经用到了GCD的dispatch_async方法，其实在GCD中也已经提供了一种信号机制，使用它我们也可以来构建一把”锁”(从本质意义上讲，信号量与锁是有区别，具体差异参加信号量与互斥锁之间的区别):</p>
+<h3 id="2-afnetworking-">2.AFNetworking 写法</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre> [[APIClient sharedClient] postPath:@<span class="string">"http://api.skyfox.org/api-test.php"</span> parameters:p success:^(AFHTTPRequestOperation *operation, <span class="keyword">id</span> JSON) {
+        <span class="built_in">NSDictionary</span> *fields = [operation<span class="variable">.response</span> allHeaderFields]; <span class="comment">//afnetworking写法</span>
+        <span class="built_in">NSLog</span>(@<span class="string">"fields = %@"</span>,[fields description]);
+        <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
+        <span class="comment">//获取cookie方法1</span>
+         <span class="built_in">NSArray</span> *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:url];
+        <span class="comment">//获取cookie方法2</span>
+        <span class="comment">//NSString *cookieString = [[HTTPResponse allHeaderFields] valueForKey:@"Set-Cookie"];</span>
+ 
+    } failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span> *error) {
+      
+    }];
+</pre></td></tr></table></figure>
+
+<p>二.清空cookie</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>  NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  <span class="built_in">NSArray</span> *cookieArray = [<span class="built_in">NSArray</span> arrayWithArray:[cookieJar cookies]];
+  <span class="keyword">for</span> (<span class="keyword">id</span> obj in cookieArray) {
+    [cookieJar deleteCookie:obj];
+  }
+</pre></td></tr></table></figure>
+
+<p>三.手动设置cookie</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -342,30 +289,38 @@ pthread_mutex_init(&mutex, <span class="literal">NULL</span>);
 17
 18
 19
-</pre></td><td class="code"><pre><span class="comment">//主线程中</span>
-TestObj *obj = [[TestObj alloc] init];
-dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">1</span>);
- 
-<span class="comment">//线程1</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    [obj method1];
-    sleep(<span class="number">10</span>);
-    dispatch_semaphore_signal(semaphore);
-});
- 
-<span class="comment">//线程2</span>
-<span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{
-    sleep(<span class="number">1</span>);
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    [obj method2];
-    dispatch_semaphore_signal(semaphore);
-});
+20
+21
+</pre></td><td class="code"><pre>-(void)test1:(NSString*)urlString{
+    NSURL *url = [NSURL URLWithString:@<span class="string">"http://api.skyfox.org/cookie.php"</span>];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"username"</span> <span class="keyword">for</span>Key:NSHTTPCookieName];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"my ios cookie"</span> <span class="keyword">for</span>Key:NSHTTPCookieValue];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"api.skyfox.org"</span> <span class="keyword">for</span>Key:NSHTTPCookieDomain];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"api.skyfox.org"</span> <span class="keyword">for</span>Key:NSHTTPCookieOriginURL];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"/"</span> <span class="keyword">for</span>Key:NSHTTPCookiePath];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"0"</span> <span class="keyword">for</span>Key:NSHTTPCookieVersion];
+    NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
+    [[NSHTTPCookieStorage sharedHTTPCookieStorage] <span class="keyword">set</span>Cookie:cookie];
+    [self.myWebView loadRequest:request];
+}
+//第二次请求会自动带上cookie
+- (IBAction)test2:(id)sender {
+    NSURL *url = [NSURL URLWithString:@<span class="string">"http://api.skyfox.org/cookie.php"</span>];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [self.mywebview2 loadRequest:request];
+}
 </pre></td></tr></table></figure>
 
-<p>至于代码产生的效果当然和上一例是一模一样的，关于信号机制，熟悉C编程的你肯定也不会陌生的，关于GCD中更多关于dispatch_semaphore_t的信息，可以跳转到本博客的这一往篇文章:GCD介绍（三）: Dispatch Sources</p>
-<p>好了，以上就是我所列举了几种方式来实现锁，当然锁大多数情况下也是配合多线程一起使用的，关于多线程编程，我这儿就不赘述了。</p>
-<p>参考：<a href="http://www.tanhao.me/pieces/616.html" target="_blank">http://www.tanhao.me/pieces/616.html</a></p>
+<p>request还可以这样设置个cookie</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>[request <span class="keyword">set</span>HTTPShouldHandleCookies:YES];
+[request <span class="keyword">set</span>Value:[NSString stringWithFormat:@<span class="string">"%@=%@"</span>, [cookie name], [cookie value]] <span class="keyword">for</span>HTTPHeaderField:@<span class="string">"Cookie"</span>];
+</pre></td></tr></table></figure>
+
 
     
   </section>
@@ -375,7 +330,7 @@ dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">
     
       <div class="widget">
         
-          <time datetime="2014-05-08T15:20:03.000Z"><a href="/2014/05/08/objective-c中不同方式实现锁/">5月 8 2014</a></time>
+          <time datetime="2014-08-16T13:05:50.000Z"><a href="/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/">8月 16 2014</a></time>
         
         
   
@@ -383,6 +338,9 @@ dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">
 
 
         
+  
+  <a href="/tags/cookie/">#cookie</a>
+
 
         
       </div>

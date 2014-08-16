@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-08-14T23:50:03.326Z</updated>
+  <updated>2014-08-16T13:13:19.588Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -13,6 +13,183 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)]]></title>
+    <link href="http://yuhaya.github.io/2014/08/16/ios-htttp%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82cookie%E7%9A%84%E8%AF%BB%E5%8F%96%E4%B8%8E%E5%86%99%E5%85%A5(nshttpcookiestorage)/"/>
+    <id>http://yuhaya.github.io/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/</id>
+    <published>2014-08-16T13:05:50.000Z</published>
+    <updated>2014-08-16T13:12:55.000Z</updated>
+    <content type="html"><![CDATA[<p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
+<p>同样适用于ASIHTTPRequest,AFNetworking, Webview等,cookie常用于一些基于认证的网络请求</p>
+<p>认识下NSHTTPCookieStorage</p>
+<p>NSHTTPCookieStorage 实现了一个管理cookie的单例对象(只有一个实例)，每个cookie都是NSHTTPCookie类的实例，最为一个规则，cookie在所有应用之间共享并在不同进程之间保持同步。Session cookie(一个isSessionOnly方法返回YES的cookie)只能在单一进程中使用。</p>
+<h2 id="cookie">Cookie</h2>
+<p>Cookie是由服务器端生成，发送给User-Agent（一般是浏览器或者客户端），浏览器会将Cookie的key/value保存到某个目录下的文本文件内，下次请求同一网站地址时就发送该Cookie给服务器</p>
+<h2 id="http-header">HTTP header</h2>
+<p>HTTP header中包含HTTP请求与响应的操作参数. header属性定义了所传输数据的各种特性. header属性以属性名开始,以冒号结尾,最后是属性值.属性名及值会因应用的不同</p>
+<p>ios htttp网络请求cookie的读取与写入:</p>
+<h3 id="1-nsurlconnection-">1.原生NSURLConnection写法</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td><td class="code"><pre>- (<span class="type">IBAction</span>)cookieTouched:(id)sender {
+    <span class="type">NSURL</span> *url = [<span class="type">NSURL</span> <span class="type">URLWithString</span>:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
+    <span class="type">NSURLRequest</span> *request = [<span class="type">NSURLRequest</span> requestWithURL:url]
+                                             cachePolicy:<span class="type">NSURLRequestReloadIgnoringLocalAndRemoteCacheData</span>
+                                         timeoutInterval:<span class="number">3</span>];
+    <span class="type">NSOperationQueue</span> *queue = [[<span class="type">NSOperationQueue</span> alloc]init];
+    [<span class="type">NSURLConnection</span> sendAsynchronousRequest:request
+                                       queue:queue
+                           completionHandler:^(<span class="type">NSURLResponse</span> *response, <span class="type">NSData</span> *<span class="typedef"><span class="keyword">data</span>, <span class="type">NSError</span> *error)<span class="container">{
+                              
+                               //转换<span class="type">NSURLResponse</span>成为<span class="type">HTTPResponse</span>
+                               <span class="type">NSHTTPURLResponse</span> *<span class="type">HTTPResponse</span> = (<span class="type">NSHTTPURLResponse</span> *)<span class="title">response</span>;
+                               //获取<span class="title">headerfields</span>
+                               <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>];//原生<span class="type">NSURLConnection</span>写法
+                               // <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="title">operation</span>.<span class="title">response</span> <span class="title">allHeaderFields</span>]; //<span class="title">afnetworking</span>写法
+                               <span class="type">NSLog</span>(@"<span class="title">fields</span> = %@",[<span class="title">fields</span> <span class="title">description</span>]);
+
+                               //获取<span class="title">cookie</span>方法1
+                               // <span class="type">NSArray</span> *<span class="title">cookies</span> = [<span class="type">NSHTTPCookie</span> <span class="title">cookiesWithResponseHeaderFields</span>:<span class="title">fields</span> <span class="title">forURL</span>:<span class="title">url</span>];
+							   //获取<span class="title">cookie</span>方法2
+                               //<span class="type">NSString</span> *<span class="title">cookieString</span> = [[<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>] <span class="title">valueForKey</span>:@"<span class="type">Set</span>-<span class="type">Cookie</span>"];
+                               //获取<span class="title">cookie</span>方法3
+                               <span class="type">NSHTTPCookieStorage</span> *<span class="title">cookieJar</span> = [<span class="type">NSHTTPCookieStorage</span> <span class="title">sharedHTTPCookieStorage</span>];
+                               <span class="title">for</span> (<span class="type">NSHTTPCookie</span> *<span class="title">cookie</span> <span class="title">in</span> [<span class="title">cookieJar</span> <span class="title">cookies</span>]) {
+                                   <span class="type">NSLog</span>(@"<span class="title">cookie</span>%@", <span class="title">cookie</span>);
+                               }</span></span>
+                           }];
+    
+}
+</pre></td></tr></table></figure>
+
+<h3 id="2-afnetworking-">2.AFNetworking 写法</h3>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre> [[APIClient sharedClient] postPath:@<span class="string">"http://api.skyfox.org/api-test.php"</span> parameters:p success:^(AFHTTPRequestOperation *operation, <span class="keyword">id</span> JSON) {
+        <span class="built_in">NSDictionary</span> *fields = [operation<span class="variable">.response</span> allHeaderFields]; <span class="comment">//afnetworking写法</span>
+        <span class="built_in">NSLog</span>(@<span class="string">"fields = %@"</span>,[fields description]);
+        <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
+        <span class="comment">//获取cookie方法1</span>
+         <span class="built_in">NSArray</span> *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:url];
+        <span class="comment">//获取cookie方法2</span>
+        <span class="comment">//NSString *cookieString = [[HTTPResponse allHeaderFields] valueForKey:@"Set-Cookie"];</span>
+ 
+    } failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span> *error) {
+      
+    }];
+</pre></td></tr></table></figure>
+
+<p>二.清空cookie</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>  NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+  <span class="built_in">NSArray</span> *cookieArray = [<span class="built_in">NSArray</span> arrayWithArray:[cookieJar cookies]];
+  <span class="keyword">for</span> (<span class="keyword">id</span> obj in cookieArray) {
+    [cookieJar deleteCookie:obj];
+  }
+</pre></td></tr></table></figure>
+
+<p>三.手动设置cookie</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="code"><pre>-(void)test1:(NSString*)urlString{
+    NSURL *url = [NSURL URLWithString:@<span class="string">"http://api.skyfox.org/cookie.php"</span>];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"username"</span> <span class="keyword">for</span>Key:NSHTTPCookieName];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"my ios cookie"</span> <span class="keyword">for</span>Key:NSHTTPCookieValue];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"api.skyfox.org"</span> <span class="keyword">for</span>Key:NSHTTPCookieDomain];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"api.skyfox.org"</span> <span class="keyword">for</span>Key:NSHTTPCookieOriginURL];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"/"</span> <span class="keyword">for</span>Key:NSHTTPCookiePath];
+    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"0"</span> <span class="keyword">for</span>Key:NSHTTPCookieVersion];
+    NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
+    [[NSHTTPCookieStorage sharedHTTPCookieStorage] <span class="keyword">set</span>Cookie:cookie];
+    [self.myWebView loadRequest:request];
+}
+//第二次请求会自动带上cookie
+- (IBAction)test2:(id)sender {
+    NSURL *url = [NSURL URLWithString:@<span class="string">"http://api.skyfox.org/cookie.php"</span>];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [self.mywebview2 loadRequest:request];
+}
+</pre></td></tr></table></figure>
+
+<p>request还可以这样设置个cookie</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>[request <span class="keyword">set</span>HTTPShouldHandleCookies:YES];
+[request <span class="keyword">set</span>Value:[NSString stringWithFormat:@<span class="string">"%@=%@"</span>, [cookie name], [cookie value]] <span class="keyword">for</span>HTTPHeaderField:@<span class="string">"Cookie"</span>];
+</pre></td></tr></table></figure>
+
+]]></content>
+    
+    
+      <category term="cookie" scheme="http://yuhaya.github.io/tags/cookie/"/>
+    
+      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Grand Central Dispatch介绍和使用]]></title>
@@ -1600,7 +1777,7 @@ p2++;
 <p>现在有了这些预备知识，我们可以回头看标题的声明到底是什么意思了：</p>
 <p>void (*b[10]) (void (*)());</p>
 <p>首先，表达式的后半部分被两个（）分隔开了，我们分别分析它们。( *b[10] )，其中出现了变量名b，很容易就知道，b是一个有10个元素的数组，每个元素都是一个指针。</p>
-<p>然后，看(void(*)())，其中没有出现变量名，所以它代表了一个类型，即“指向返回值为void型的函数的指针“，而我们知道，C语法中，类型修饰符是必须出现在变量名的左边的，而在整个表达式中这个类型符是在变量名b的右边，所以， (void(*)())最外层的这个()，表示了定义了一个函数，这个函数有一个参数，就是一个指针，具体来说，就是“指向返回值为void型的函数的指针“。</p>
+<p>然后，看(void(*)())，其中没有出现变量名，所以它代表了一个类型，即“指向返回值为void型的函数的指针“，而我们知道，C语法中，类型修饰符是必须出现在变量名的左边的，而在整个表达式中这个类型符是在变量名b的右边，所以， (void(*)())最外层的这个()，表示了定义了一个函数，这个函数有一个参数，就是一���指针，具体来说，就是“指向返回值为void型的函数的指针“。</p>
 <p>这样就很清楚了，b数组里，每一个指针元素，都是一个函数指针，这个函数有一个参数，这个参数是一个函数指针。整个表达式最左边的void，则定义了b数组中函数指针所指向函数的返回值类型。</p>
 <p>在一串绕口令式的解说后，我们终于看到了事实的真相：这行代码就是逗你玩...</p>
 <p>如果不是故意偷懒，这样代码的作者真是在玩弄阅读者的感情，如果非要实现这样一个复杂的定义的话，我们也是有更好的方法的，就是使用typedef来进行类型声明。</p>
@@ -1875,7 +2052,7 @@ defined(<span class="string">'YII_TRACE_LEVEL'</span>) <span class="keyword">or<
   <entry>
     <title><![CDATA[AFNetworking官方例子]]></title>
     <link href="http://yuhaya.github.io/2014/07/28/afnetworking%E5%AE%98%E6%96%B9%E4%BE%8B%E5%AD%90/"/>
-    <id>http://yuhaya.github.io/2014/07/28/afnetworking���方例子/</id>
+    <id>http://yuhaya.github.io/2014/07/28/afnetworking官方例子/</id>
     <published>2014-07-27T23:53:38.000Z</published>
     <updated>2014-07-28T00:06:43.000Z</updated>
     <content type="html"><![CDATA[<h2 id="-">建筑</h2>
@@ -2509,7 +2686,7 @@ op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer 
 <li>表达式为：tcp.port == 80</li>
 </ul>
 </li>
-<li>捕获多端口的���据包，可以使用and来连接，下面是捕获高端口的表达式<ul>
+<li>捕获多端口的数据包，可以使用and来连接，下面是捕获高端口的表达式<ul>
 <li>表达式为：udp.port &gt;= 2048</li>
 </ul>
 </li>
@@ -3211,7 +3388,7 @@ _<span class="class"><span class="keyword">object</span> = [[<span class="title"
     <published>2014-05-08T15:20:03.000Z</published>
     <updated>2014-05-08T15:28:07.000Z</updated>
     <content type="html"><![CDATA[<p>为什么需要使用锁，当然熟悉多线程的你，自然不会对它觉得陌生。</p>
-<p>那你在代码中是否很好的使用了锁的机制呢？你又知道几种实现锁的方法呢？</p>
+<p>那你在代码中是否很好的使用了锁的机制呢？你���知道几种实现锁的方法呢？</p>
 <p>今天一起来探讨一下Objective-C中几种不同方式实现的锁，在这之前我们先构建一个测试用的类，假想它是我们的一个共享资源，method1与method2是互斥的，代码如下：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
@@ -3815,49 +3992,6 @@ NSMutableString  <span class="variable">*strCopy2</span>=<span class="variable">
         //nmutableCopy复制:::<span class="number">0x10010e7c0</span> <span class="number">0x1000034b0</span>//深复制
 </pre></td></tr></table></figure>
 
-]]></content>
-    
-    
-      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[委托(delegate)]]></title>
-    <link href="http://yuhaya.github.io/2014/05/02/%E5%A7%94%E6%89%98(delegate)/"/>
-    <id>http://yuhaya.github.io/2014/05/02/委托(delegate)/</id>
-    <published>2014-05-02T12:37:04.000Z</published>
-    <updated>2014-05-02T12:52:42.000Z</updated>
-    <content type="html"><![CDATA[<h2 id="-">委托的定义：</h2>
-<p>  委托（delegate），就是某个对象指定另一个对象处理某些特定任务的设计模式。</p>
-<p>个人理解委托就类似于对象的注入，将B对象注入到A对象中，使得A对象可以通过一个引用访问到B，从而实现B的方法</p>
-<h2 id="-">委托的更加通俗的解释：</h2>
-<p>A把要做的事委托给B来做</p>
-<p>A：委托者
-B：被委托者</p>
-<h3 id="-">委托者与被委托者的叫法很多，例如（普通对象与委托对象，委托与代理等等）</h3>
-<p>比较标准的叫法是“<em>委托与代理</em>”</p>
-<h2 id="-">协议</h2>
-<p>在委托与代理之间还有一个重要的概念———<em>协议</em>，协议是委托与代理之间的桥梁，把两者紧密联系在一起。</p>
-<p><img src="/images/delegate.jpeg" alt=""></p>
-<p>在程序中实现委托一般需要以下几部分工作</p>
-<ol>
-<li><p>协议的定义</p>
-</li>
-<li><p>委托的工作</p>
-<ul>
-<li>声明委托变量</li>
-<li>设置代理</li>
-<li>通过委托变量调用委托方法</li>
-</ul>
-</li>
-<li><p>代理的工作</p>
-<ul>
-<li>遵循协议</li>
-<li>实现协议方法(其实就是遵循协议)</li>
-</ul>
-</li>
-</ol>
 ]]></content>
     
     
