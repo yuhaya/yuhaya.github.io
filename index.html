@@ -171,6 +171,7 @@
 <p>HTTP header中包含HTTP请求与响应的操作参数. header属性定义了所传输数据的各种特性. header属性以属性名开始,以冒号结尾,最后是属性值.属性名及值会因应用的不同</p>
 <p>ios htttp网络请求cookie的读取与写入:</p>
 <h3 id="1-nsurlconnection-">1.原生NSURLConnection写法</h3>
+<p>一.获取cookie</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -200,33 +201,37 @@
 27
 28
 29
-</pre></td><td class="code"><pre>- (<span class="type">IBAction</span>)cookieTouched:(id)sender {
-    <span class="type">NSURL</span> *url = [<span class="type">NSURL</span> <span class="type">URLWithString</span>:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
-    <span class="type">NSURLRequest</span> *request = [<span class="type">NSURLRequest</span> requestWithURL:url]
-                                             cachePolicy:<span class="type">NSURLRequestReloadIgnoringLocalAndRemoteCacheData</span>
+30
+31
+</pre></td><td class="code"><pre>- (<span class="keyword">IBAction</span>)cookieTouched:(<span class="keyword">id</span>)sender {
+    <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
+    <span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:url]
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                          timeoutInterval:<span class="number">3</span>];
-    <span class="type">NSOperationQueue</span> *queue = [[<span class="type">NSOperationQueue</span> alloc]init];
-    [<span class="type">NSURLConnection</span> sendAsynchronousRequest:request
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    [<span class="built_in">NSURLConnection</span> sendAsynchronousRequest:request
                                        queue:queue
-                           completionHandler:^(<span class="type">NSURLResponse</span> *response, <span class="type">NSData</span> *<span class="typedef"><span class="keyword">data</span>, <span class="type">NSError</span> *error)<span class="container">{
+                           completionHandler:^(NSURLResponse *response, NSData *data, <span class="built_in">NSError</span> *error){
                               
-                               //转换<span class="type">NSURLResponse</span>成为<span class="type">HTTPResponse</span>
-                               <span class="type">NSHTTPURLResponse</span> *<span class="type">HTTPResponse</span> = (<span class="type">NSHTTPURLResponse</span> *)<span class="title">response</span>;
-                               //获取<span class="title">headerfields</span>
-                               <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>];//原生<span class="type">NSURLConnection</span>写法
-                               // <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="title">operation</span>.<span class="title">response</span> <span class="title">allHeaderFields</span>]; //<span class="title">afnetworking</span>写法
-                               <span class="type">NSLog</span>(@"<span class="title">fields</span> = %@",[<span class="title">fields</span> <span class="title">description</span>]);
+                               <span class="comment">//转换NSURLResponse成为HTTPResponse</span>
+                               NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+                               <span class="comment">//获取headerfields</span>
+                               <span class="built_in">NSDictionary</span> *fields = [HTTPResponse allHeaderFields];
+                               <span class="comment">//原生NSURLConnection写法</span>
+                               <span class="comment">// NSDictionary *fields = [operation.response allHeaderFields]; </span>
+                               <span class="comment">//afnetworking写法</span>
+                               <span class="built_in">NSLog</span>(@<span class="string">"fields = %@"</span>,[fields description]);
  
-                               //获取<span class="title">cookie</span>方法1
-                               // <span class="type">NSArray</span> *<span class="title">cookies</span> = [<span class="type">NSHTTPCookie</span> <span class="title">cookiesWithResponseHeaderFields</span>:<span class="title">fields</span> <span class="title">forURL</span>:<span class="title">url</span>];
-                               //获取<span class="title">cookie</span>方法2
-                               //<span class="type">NSString</span> *<span class="title">cookieString</span> = [[<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>] <span class="title">valueForKey</span>:@"<span class="type">Set</span>-<span class="type">Cookie</span>"];
-                               //获取<span class="title">cookie</span>方法3
-                               <span class="type">NSHTTPCookieStorage</span> *<span class="title">cookieJar</span> = [<span class="type">NSHTTPCookieStorage</span> <span class="title">sharedHTTPCookieStorage</span>];
-                               <span class="title">for</span> (<span class="type">NSHTTPCookie</span> *<span class="title">cookie</span> <span class="title">in</span> [<span class="title">cookieJar</span> <span class="title">cookies</span>]) {
-                                   <span class="type">NSLog</span>(@"<span class="title">cookie</span>%@", <span class="title">cookie</span>);
-                               }</span></span>
-                           }];
+                               <span class="comment">//获取cookie方法1</span>
+                               <span class="comment">// NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:url];</span>
+                               <span class="comment">//获取cookie方法2</span>
+                               <span class="comment">//NSString *cookieString = [[HTTPResponse allHeaderFields] valueForKey:@"Set-Cookie"];</span>
+                               <span class="comment">//获取cookie方法3</span>
+                               NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+                               <span class="keyword">for</span> (NSHTTPCookie *cookie in [cookieJar cookies]) {
+                                   <span class="built_in">NSLog</span>(@<span class="string">"cookie%@"</span>, cookie);
+                               }
+ }];
     
 }
 </pre></td></tr></table></figure>
@@ -1724,7 +1729,7 @@ e. 然而加上mutable修饰符的数据成员,对于任何情况下通过任何
 <p>在上面的例子中，当向框架请求访问一个请求数据时，它将首先确定容器中是否存在这个”reqeust”名称的服务。</p>
 <p>容器会反回一个请求数据的实例，开发人员最终得到他们想要的组件。</p>
 <p>在上面示例中的每一种方法都有优缺点，具体使用哪一种，由开发过程中的特定场景来决定的。</p>
-<p>用一个字符串来设定一个服务非常简单，但缺少灵活性。设置服务时，使用数组则提供了更多的灵活性，而且可以使用较复杂的代码。lambda函数是两者之间一个很好的平衡，但也可能导致更���的维护管理成本。</p>
+<p>用一个字符串来设定一个服务非常简单，但缺少灵活性。设置服务时，使用数组则提供了更多的灵活性，而且可以使用较复杂的代码。lambda函数是两者之间一个很好的平衡，但也可能导致更多的维护管理成本。</p>
 <p>Phalcon\DI 提供服务的延迟加载。除非开发人员在注入服务的时候直接实例化一个对象，然后存存储到容器中。在容器中，通过数组，字符串等方式存储的服务都将被延迟加载，即只有在请求对象的时候才被初始化。</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre>1
 2

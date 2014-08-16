@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-08-16T13:16:38.031Z</updated>
+  <updated>2014-08-16T13:22:57.765Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/08/16/ios-htttp%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82cookie%E7%9A%84%E8%AF%BB%E5%8F%96%E4%B8%8E%E5%86%99%E5%85%A5(nshttpcookiestorage)/"/>
     <id>http://yuhaya.github.io/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/</id>
     <published>2014-08-16T13:05:50.000Z</published>
-    <updated>2014-08-16T13:16:18.000Z</updated>
+    <updated>2014-08-16T13:22:30.000Z</updated>
     <content type="html"><![CDATA[<p>转载自：<a href="http://www.skyfox.org/ios-url-request-cookie.html" target="_blank">http://www.skyfox.org/ios-url-request-cookie.html</a></p>
 <p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
 <p>同样适用于ASIHTTPRequest,AFNetworking, Webview等,cookie常用于一些基于认证的网络请求</p>
@@ -31,6 +31,7 @@
 <p>HTTP header中包含HTTP请求与响应的操作参数. header属性定义了所传输数据的各种特性. header属性以属性名开始,以冒号结尾,最后是属性值.属性名及值会因应用的不同</p>
 <p>ios htttp网络请求cookie的读取与写入:</p>
 <h3 id="1-nsurlconnection-">1.原生NSURLConnection写法</h3>
+<p>一.获取cookie</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -60,33 +61,37 @@
 27
 28
 29
-</pre></td><td class="code"><pre>- (<span class="type">IBAction</span>)cookieTouched:(id)sender {
-    <span class="type">NSURL</span> *url = [<span class="type">NSURL</span> <span class="type">URLWithString</span>:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
-    <span class="type">NSURLRequest</span> *request = [<span class="type">NSURLRequest</span> requestWithURL:url]
-                                             cachePolicy:<span class="type">NSURLRequestReloadIgnoringLocalAndRemoteCacheData</span>
+30
+31
+</pre></td><td class="code"><pre>- (<span class="keyword">IBAction</span>)cookieTouched:(<span class="keyword">id</span>)sender {
+    <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://api.skyfox.org/api-test.php"</span>];
+    <span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:url]
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
                                          timeoutInterval:<span class="number">3</span>];
-    <span class="type">NSOperationQueue</span> *queue = [[<span class="type">NSOperationQueue</span> alloc]init];
-    [<span class="type">NSURLConnection</span> sendAsynchronousRequest:request
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+    [<span class="built_in">NSURLConnection</span> sendAsynchronousRequest:request
                                        queue:queue
-                           completionHandler:^(<span class="type">NSURLResponse</span> *response, <span class="type">NSData</span> *<span class="typedef"><span class="keyword">data</span>, <span class="type">NSError</span> *error)<span class="container">{
+                           completionHandler:^(NSURLResponse *response, NSData *data, <span class="built_in">NSError</span> *error){
                               
-                               //转换<span class="type">NSURLResponse</span>成为<span class="type">HTTPResponse</span>
-                               <span class="type">NSHTTPURLResponse</span> *<span class="type">HTTPResponse</span> = (<span class="type">NSHTTPURLResponse</span> *)<span class="title">response</span>;
-                               //获取<span class="title">headerfields</span>
-                               <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>];//原生<span class="type">NSURLConnection</span>写法
-                               // <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="title">operation</span>.<span class="title">response</span> <span class="title">allHeaderFields</span>]; //<span class="title">afnetworking</span>写法
-                               <span class="type">NSLog</span>(@"<span class="title">fields</span> = %@",[<span class="title">fields</span> <span class="title">description</span>]);
+                               <span class="comment">//转换NSURLResponse成为HTTPResponse</span>
+                               NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;
+                               <span class="comment">//获取headerfields</span>
+                               <span class="built_in">NSDictionary</span> *fields = [HTTPResponse allHeaderFields];
+                               <span class="comment">//原生NSURLConnection写法</span>
+                               <span class="comment">// NSDictionary *fields = [operation.response allHeaderFields]; </span>
+                               <span class="comment">//afnetworking写法</span>
+                               <span class="built_in">NSLog</span>(@<span class="string">"fields = %@"</span>,[fields description]);
  
-                               //获取<span class="title">cookie</span>方法1
-                               // <span class="type">NSArray</span> *<span class="title">cookies</span> = [<span class="type">NSHTTPCookie</span> <span class="title">cookiesWithResponseHeaderFields</span>:<span class="title">fields</span> <span class="title">forURL</span>:<span class="title">url</span>];
-                               //获取<span class="title">cookie</span>方法2
-                               //<span class="type">NSString</span> *<span class="title">cookieString</span> = [[<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>] <span class="title">valueForKey</span>:@"<span class="type">Set</span>-<span class="type">Cookie</span>"];
-                               //获取<span class="title">cookie</span>方法3
-                               <span class="type">NSHTTPCookieStorage</span> *<span class="title">cookieJar</span> = [<span class="type">NSHTTPCookieStorage</span> <span class="title">sharedHTTPCookieStorage</span>];
-                               <span class="title">for</span> (<span class="type">NSHTTPCookie</span> *<span class="title">cookie</span> <span class="title">in</span> [<span class="title">cookieJar</span> <span class="title">cookies</span>]) {
-                                   <span class="type">NSLog</span>(@"<span class="title">cookie</span>%@", <span class="title">cookie</span>);
-                               }</span></span>
-                           }];
+                               <span class="comment">//获取cookie方法1</span>
+                               <span class="comment">// NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:url];</span>
+                               <span class="comment">//获取cookie方法2</span>
+                               <span class="comment">//NSString *cookieString = [[HTTPResponse allHeaderFields] valueForKey:@"Set-Cookie"];</span>
+                               <span class="comment">//获取cookie方法3</span>
+                               NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+                               <span class="keyword">for</span> (NSHTTPCookie *cookie in [cookieJar cookies]) {
+                                   <span class="built_in">NSLog</span>(@<span class="string">"cookie%@"</span>, cookie);
+                               }
+ }];
     
 }
 </pre></td></tr></table></figure>
@@ -257,7 +262,7 @@
 </pre></td></tr></table></figure>
 
 <p>是不是代码比NSThread  NSOperation简洁很多，而且GCD会自动根据任务在多核处理器上分配资源，优化程序。</p>
-<p>系统给每一个应用程序提供了三个concurrent dispatch queues。这三个并发调度队列是全局的，它们只有优先级的不同。因为是全局的，我们不需要去创建。我们只需要通过使用函���dispath_get_global_queue去得到队列，如下：</p>
+<p>系统给每一个应用程序提供了三个concurrent dispatch queues。这三个并发调度队列是全局的，它们只有优先级的不同。因为是全局的，我们不需要去创建。我们只需要通过使用函数dispath_get_global_queue去得到队列，如下：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 </pre></td><td class="code"><pre><span class="attribute">dispatch_queue_t globalQ </span>=<span class="string"> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span>
 </pre></td></tr></table></figure>
@@ -406,7 +411,7 @@
 </li>
 </ol>
 <p>例如不要将函数voidFunc1(int x) 写成voidFunc1(const int x)。同理不要将函数voidFunc2(A a) 写成voidFunc2(const A a)。其中A为用户自定义的数据类型。</p>
-<p>对于非内部数据类型的参数而言，象voidFunc(A a) 这样声明的函数注定效率比较底。因为函数体内将产生A类型的临时���象用于复制参数a，而临时对象的构造、复制、析构过程都将消耗时间。</p>
+<p>对于非内部数据类型的参数而言，象voidFunc(A a) 这样声明的函数注定效率比较底。因为函数体内将产生A类型的临时对象用于复制参数a，而临时对象的构造、复制、析构过程都将消耗时间。</p>
 <p>为了提高效率，可以将函数声明改为voidFunc(A &amp;a)，因为“引用传递”仅借用一下参数的别名而已，不需要产生临时对象。但是函数voidFunc(A &amp;a) 存在一个缺点：</p>
 <p>“引用传递”有可能改变参数a，这是我们不期望的。解决这个问题很容易，加const修饰即可，因此函数最终成为voidFunc(const A &amp;a)。</p>
 <p>以此类推，是否应将voidFunc(int x) 改写为voidFunc(const int&amp;x)，以便提高效率？完全没有必要，因为内部数据类型的参数不存在构造、析构的过程，而复制也非常快，“值传递”和“引用传递”的效率几乎相当。</p>
@@ -1275,7 +1280,7 @@ e. 然而加上mutable修饰符的数据成员,对于任何情况下通过任何
 <p>Phalcon\DI 是一个实现了服务的依赖注入功能的组件，它本身也是一个容器。</p>
 <p>由于Phalcon高度解耦，Phalcon\DI 是框架用来集成其他组件的必不可少的部分，开发人员也可以使用这个组件依赖注入和管理应用程序中不同类文件的实例。</p>
 <p>基本上，这个组件实现了 Inversion of Control 模式。基于此，对象不再以构造函数接收参数或者使用setter的方式来实现注入，而是直接请求服务的依赖注入。这就大大降低了整体程序的复杂性，因为只有一个方法用以获得所需要的一个组件的依赖关系。</p>
-<p>此外，这种模式增强了代码的可测试性，从而使它不容易出错。</p>
+<p>此外，这���模式增强了代码的可测试性，从而使它不容易出错。</p>
 <p>在容器中注册服务¶</p>
 <p>框架本身或开发人员都可以注册服务。当一个组件A要求调用组件B（或它的类的一个实例），可以从容器中请求调用组件B，而不是创建组件B的一个实例。</p>
 <p>这种工作方式为我们提供了许多优点：</p>
@@ -2625,7 +2630,7 @@ op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer 
 <p>//延迟执行block</p>
 <h4 id="-dispatch-">最后再来看看dispatch队列的一个很有特色的函数：</h4>
 <p>void dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);</p>
-<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且这个过程可以是动态的，可以实现队列的动态调度管理等等���比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
+<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且这个过程可以是动态的，可以实现队列的动态调度管理等等。比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
 <p>dispatch_set_target_queue(dispatchA, dispatchB);</p>
 <p>那么dispatchA上还未运行的block会在dispatchB上运行。这时如果暂停dispatchA运行：</p>
 <p>dispatch_suspend(dispatchA);</p>
@@ -3041,7 +3046,7 @@ NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</spa
     <published>2014-06-08T05:13:11.000Z</published>
     <updated>2014-06-08T06:02:37.000Z</updated>
     <content type="html"><![CDATA[<h1 id="-fastzf2-https-github-com-yuhaya-fastzf2-"><a href="https://github.com/yuhaya/FastZF2" target="_blank">FastZF2</a></h1>
-<p>推荐基于zf2的前后台整套的开发骨架，其中已经整合zf2启动高速插件，详情点击<a href="https://github.com/yuhaya/FastZF2" target="_blank">FastZF2</a></p>
+<p>推荐基于zf2的前后台整套���开发骨架，其中已经整合zf2启动高速插件，详情点击<a href="https://github.com/yuhaya/FastZF2" target="_blank">FastZF2</a></p>
 ]]></content>
     
     
