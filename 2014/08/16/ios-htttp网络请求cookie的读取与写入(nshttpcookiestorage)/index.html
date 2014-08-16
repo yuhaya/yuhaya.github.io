@@ -159,7 +159,8 @@
   </header>
   <section class="entry">
     
-      <p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
+      <p>转载自：<a href="http://www.skyfox.org/ios-url-request-cookie.html" target="_blank">http://www.skyfox.org/ios-url-request-cookie.html</a></p>
+<p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
 <p>同样适用于ASIHTTPRequest,AFNetworking, Webview等,cookie常用于一些基于认证的网络请求</p>
 <p>认识下NSHTTPCookieStorage</p>
 <p>NSHTTPCookieStorage 实现了一个管理cookie的单例对象(只有一个实例)，每个cookie都是NSHTTPCookie类的实例，最为一个规则，cookie在所有应用之间共享并在不同进程之间保持同步。Session cookie(一个isSessionOnly方法返回YES的cookie)只能在单一进程中使用。</p>
@@ -214,10 +215,10 @@
                                <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>];//原生<span class="type">NSURLConnection</span>写法
                                // <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="title">operation</span>.<span class="title">response</span> <span class="title">allHeaderFields</span>]; //<span class="title">afnetworking</span>写法
                                <span class="type">NSLog</span>(@"<span class="title">fields</span> = %@",[<span class="title">fields</span> <span class="title">description</span>]);
-
+ 
                                //获取<span class="title">cookie</span>方法1
                                // <span class="type">NSArray</span> *<span class="title">cookies</span> = [<span class="type">NSHTTPCookie</span> <span class="title">cookiesWithResponseHeaderFields</span>:<span class="title">fields</span> <span class="title">forURL</span>:<span class="title">url</span>];
-							   //获取<span class="title">cookie</span>方法2
+                               //获取<span class="title">cookie</span>方法2
                                //<span class="type">NSString</span> *<span class="title">cookieString</span> = [[<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>] <span class="title">valueForKey</span>:@"<span class="type">Set</span>-<span class="type">Cookie</span>"];
                                //获取<span class="title">cookie</span>方法3
                                <span class="type">NSHTTPCookieStorage</span> *<span class="title">cookieJar</span> = [<span class="type">NSHTTPCookieStorage</span> <span class="title">sharedHTTPCookieStorage</span>];

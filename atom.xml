@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-08-16T13:13:19.588Z</updated>
+  <updated>2014-08-16T13:16:38.031Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,8 +19,9 @@
     <link href="http://yuhaya.github.io/2014/08/16/ios-htttp%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82cookie%E7%9A%84%E8%AF%BB%E5%8F%96%E4%B8%8E%E5%86%99%E5%85%A5(nshttpcookiestorage)/"/>
     <id>http://yuhaya.github.io/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/</id>
     <published>2014-08-16T13:05:50.000Z</published>
-    <updated>2014-08-16T13:12:55.000Z</updated>
-    <content type="html"><![CDATA[<p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
+    <updated>2014-08-16T13:16:18.000Z</updated>
+    <content type="html"><![CDATA[<p>转载自：<a href="http://www.skyfox.org/ios-url-request-cookie.html" target="_blank">http://www.skyfox.org/ios-url-request-cookie.html</a></p>
+<p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
 <p>同样适用于ASIHTTPRequest,AFNetworking, Webview等,cookie常用于一些基于认证的网络请求</p>
 <p>认识下NSHTTPCookieStorage</p>
 <p>NSHTTPCookieStorage 实现了一个管理cookie的单例对象(只有一个实例)，每个cookie都是NSHTTPCookie类的实例，最为一个规则，cookie在所有应用之间共享并在不同进程之间保持同步。Session cookie(一个isSessionOnly方法返回YES的cookie)只能在单一进程中使用。</p>
@@ -75,10 +76,10 @@
                                <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>];//原生<span class="type">NSURLConnection</span>写法
                                // <span class="type">NSDictionary</span> *<span class="title">fields</span> = [<span class="title">operation</span>.<span class="title">response</span> <span class="title">allHeaderFields</span>]; //<span class="title">afnetworking</span>写法
                                <span class="type">NSLog</span>(@"<span class="title">fields</span> = %@",[<span class="title">fields</span> <span class="title">description</span>]);
-
+ 
                                //获取<span class="title">cookie</span>方法1
                                // <span class="type">NSArray</span> *<span class="title">cookies</span> = [<span class="type">NSHTTPCookie</span> <span class="title">cookiesWithResponseHeaderFields</span>:<span class="title">fields</span> <span class="title">forURL</span>:<span class="title">url</span>];
-							   //获取<span class="title">cookie</span>方法2
+                               //获取<span class="title">cookie</span>方法2
                                //<span class="type">NSString</span> *<span class="title">cookieString</span> = [[<span class="type">HTTPResponse</span> <span class="title">allHeaderFields</span>] <span class="title">valueForKey</span>:@"<span class="type">Set</span>-<span class="type">Cookie</span>"];
                                //获取<span class="title">cookie</span>方法3
                                <span class="type">NSHTTPCookieStorage</span> *<span class="title">cookieJar</span> = [<span class="type">NSHTTPCookieStorage</span> <span class="title">sharedHTTPCookieStorage</span>];
@@ -256,7 +257,7 @@
 </pre></td></tr></table></figure>
 
 <p>是不是代码比NSThread  NSOperation简洁很多，而且GCD会自动根据任务在多核处理器上分配资源，优化程序。</p>
-<p>系统给每一个应用程序提供了三个concurrent dispatch queues。这三个并发调度队列是全局的，它们只有优先级的不同。因为是全局的，我们不需要去创建。我们只需要通过使用函数dispath_get_global_queue去得到队列，如下：</p>
+<p>系统给每一个应用程序提供了三个concurrent dispatch queues。这三个并发调度队列是全局的，它们只有优先级的不同。因为是全局的，我们不需要去创建。我们只需要通过使用函���dispath_get_global_queue去得到队列，如下：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 </pre></td><td class="code"><pre><span class="attribute">dispatch_queue_t globalQ </span>=<span class="string"> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span>
 </pre></td></tr></table></figure>
@@ -405,7 +406,7 @@
 </li>
 </ol>
 <p>例如不要将函数voidFunc1(int x) 写成voidFunc1(const int x)。同理不要将函数voidFunc2(A a) 写成voidFunc2(const A a)。其中A为用户自定义的数据类型。</p>
-<p>对于非内部数据类型的参数而言，象voidFunc(A a) 这样声明的函数注定效率比较底。因为函数体内将产生A类型的临时对象用于复制参数a，而临时对象的构造、复制、析构过程都将消耗时间。</p>
+<p>对于非内部数据类型的参数而言，象voidFunc(A a) 这样声明的函数注定效率比较底。因为函数体内将产生A类型的临时���象用于复制参数a，而临时对象的构造、复制、析构过程都将消耗时间。</p>
 <p>为了提高效率，可以将函数声明改为voidFunc(A &amp;a)，因为“引用传递”仅借用一下参数的别名而已，不需要产生临时对象。但是函数voidFunc(A &amp;a) 存在一个缺点：</p>
 <p>“引用传递”有可能改变参数a，这是我们不期望的。解决这个问题很容易，加const修饰即可，因此函数最终成为voidFunc(const A &amp;a)。</p>
 <p>以此类推，是否应将voidFunc(int x) 改写为voidFunc(const int&amp;x)，以便提高效率？完全没有必要，因为内部数据类型的参数不存在构造、析构的过程，而复制也非常快，“值传递”和“引用传递”的效率几乎相当。</p>
@@ -1777,7 +1778,7 @@ p2++;
 <p>现在有了这些预备知识，我们可以回头看标题的声明到底是什么意思了：</p>
 <p>void (*b[10]) (void (*)());</p>
 <p>首先，表达式的后半部分被两个（）分隔开了，我们分别分析它们。( *b[10] )，其中出现了变量名b，很容易就知道，b是一个有10个元素的数组，每个元素都是一个指针。</p>
-<p>然后，看(void(*)())，其中没有出现变量名，所以它代表了一个类型，即“指向返回值为void型的函数的指针“，而我们知道，C语法中，类型修饰符是必须出现在变量名的左边的，而在整个表达式中这个类型符是在变量名b的右边，所以， (void(*)())最外层的这个()，表示了定义了一个函数，这个函数有一个参数，就是一���指针，具体来说，就是“指向返回值为void型的函数的指针“。</p>
+<p>然后，看(void(*)())，其中没有出现变量名，所以它代表了一个类型，即“指向返回值为void型的函数的指针“，而我们知道，C语法中，类型修饰符是必须出现在变量名的左边的，而在整个表达式中这个类型符是在变量名b的右边，所以， (void(*)())最外层的这个()，表示了定义了一个函数，这个函数有一个参数，就是一个指针，具体来说，就是“指向返回值为void型的函数的指针“。</p>
 <p>这样就很清楚了，b数组里，每一个指针元素，都是一个函数指针，这个函数有一个参数，这个参数是一个函数指针。整个表达式最左边的void，则定义了b数组中函数指针所指向函数的返回值类型。</p>
 <p>在一串绕口令式的解说后，我们终于看到了事实的真相：这行代码就是逗你玩...</p>
 <p>如果不是故意偷懒，这样代码的作者真是在玩弄阅读者的感情，如果非要实现这样一个复杂的定义的话，我们也是有更好的方法的，就是使用typedef来进行类型声明。</p>
@@ -2624,7 +2625,7 @@ op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer 
 <p>//延迟执行block</p>
 <h4 id="-dispatch-">最后再来看看dispatch队列的一个很有特色的函数：</h4>
 <p>void dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);</p>
-<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且这个过程可以是动态的，可以实现队列的动态调度管理等等。比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
+<p>它会把需要执行的任务对象指定到不同的队列中去处理，这个任务对象可以是dispatch队列，也可以是dispatch源（以后博文会介绍）。而且这个过程可以是动态的，可以实现队列的动态调度管理等等���比如说有两个队列dispatchA和dispatchB，这时把dispatchA指派到dispatchB：</p>
 <p>dispatch_set_target_queue(dispatchA, dispatchB);</p>
 <p>那么dispatchA上还未运行的block会在dispatchB上运行。这时如果暂停dispatchA运行：</p>
 <p>dispatch_suspend(dispatchA);</p>
@@ -3388,7 +3389,7 @@ _<span class="class"><span class="keyword">object</span> = [[<span class="title"
     <published>2014-05-08T15:20:03.000Z</published>
     <updated>2014-05-08T15:28:07.000Z</updated>
     <content type="html"><![CDATA[<p>为什么需要使用锁，当然熟悉多线程的你，自然不会对它觉得陌生。</p>
-<p>那你在代码中是否很好的使用了锁的机制呢？你���知道几种实现锁的方法呢？</p>
+<p>那你在代码中是否很好的使用了锁的机制呢？你又知道几种实现锁的方法呢？</p>
 <p>今天一起来探讨一下Objective-C中几种不同方式实现的锁，在这之前我们先构建一个测试用的类，假想它是我们的一个共享资源，method1与method2是互斥的，代码如下：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
