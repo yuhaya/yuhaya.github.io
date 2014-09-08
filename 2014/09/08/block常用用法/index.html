@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>block的使用 | yuhaya</title>
+  <title>Block常用用法 | yuhaya</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="block的使用"/>
+  <meta property="og:title" content="Block常用用法"/>
   <meta property="og:site_name" content="yuhaya"/>
 
   
@@ -139,7 +139,7 @@
   <header>
     
   
-    <h1 class="title">block的使用</h1>
+    <h1 class="title">Block常用用法</h1>
   
 
 
@@ -159,58 +159,29 @@
   </header>
   <section class="entry">
     
-      <h2 id="-">语法介绍</h2>
-<p>代码块本质上是和其他变量类似。不同的是，代码块存储的数据是一个函数体。使用代码块是，你可以像调用其他标准函数一样，传入参数数，并得到返回值。
-脱字符（^）是块的语法标记。按照我们熟悉的参数语法规约所定义的返回值以及块的主体（也就是可以执行的代码）。下图是如何把块变量赋值给一个变量的语法讲解：
-<img src="/images/1344323584_7609.png" alt="">
-按照调用函数的方式调用块对象变量就可以了：</p>
+      <p>转载自：<a href="http://blog.csdn.net/enuola/article/details/8674063" target="_blank">http://blog.csdn.net/enuola/article/details/8674063</a></p>
+<h2 id="block-">Block简介：</h2>
+<p>Block的实际行为和Function很像，最大的差别是在可以存取同一个Scope的变量值。Block实体形式如下：</p>
+<pre><code>^(传入参数列){行为主体};
+</code></pre><p>Block实体开头是“^”，接着是由小括号所包起来的参数列（比如 int a, int b, int c），行为主体由大括号包起来，专有名字叫做block literal。行为主体可以用return回传值，类型会被compiler自动辨别。如果没有参数列要写成: </p>
+<pre><code>^(void)
+</code></pre><p>例如下面的一个例子：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-</pre></td><td class="code"><pre><span class="keyword">int</span> result = myBlock(<span class="number">4</span>); <span class="comment">// result是 28</span>
+</pre></td><td class="code"><pre>^(int <span class="literal">a</span>){<span class="keyword">return</span> <span class="literal">a</span>*<span class="literal">a</span><span class="comment">;};</span>
 </pre></td></tr></table></figure>
 
-<h2 id="1-nsstring-">1、参数是NSString*的代码块</h2>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-</pre></td><td class="code"><pre><span class="keyword">void</span> (^printBlock)(<span class="built_in">NSString</span> *x);
-printBlock = ^(<span class="built_in">NSString</span>* str)
-{
-    <span class="built_in">NSLog</span>(@<span class="string">"print:%@"</span>, str);
-};
-printBlock(@<span class="string">"hello world!"</span>);
-</pre></td></tr></table></figure>
-
-<p>运行结果是：print:hello world!</p>
-<h2 id="2-">2、代码用在字符串数组排序</h2>
+<p>这是代表Block会回传输入值的平方值（int a 就是参数列， return a*a; 就是行为主体）。记得行为主体里最后要加“;”，因为是叙述，而整个{}最后也要加“;”，因为Block是物件实体。用法如下：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
-3
-4
-5
-6
-7
-</pre></td><td class="code"><pre><span class="built_in">NSArray</span> *stringArray = [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"abc 1"</span>, @<span class="string">"abc 21"</span>, @<span class="string">"abc 12"</span>,@<span class="string">"abc 13"</span>,@<span class="string">"abc 05"</span>,<span class="literal">nil</span>];
-NSComparator sortBlock = ^(<span class="keyword">id</span> string1, <span class="keyword">id</span> string2)
-{
-     <span class="keyword">return</span> [string1 compare:string2];
-};
-<span class="built_in">NSArray</span> *sortArray = [stringArray sortedArrayUsingComparator:sortBlock];
-<span class="built_in">NSLog</span>(@<span class="string">"sortArray:%@"</span>, sortArray);
+</pre></td><td class="code"><pre><span class="keyword">int</span> result = ^(<span class="keyword">int</span> a){<span class="keyword">return</span> a<span class="variable">*a</span>;}(<span class="number">5</span>);
+NSLog(<span class="variable">@"</span><span class="variable">%d</span><span class="string">", result);</span>
 </pre></td></tr></table></figure>
 
-<p>运行结果：
-sortArray:(
-    &quot;abc 05&quot;,
-    &quot;abc 1&quot;,
-    &quot;abc 12&quot;,
-    &quot;abc 13&quot;,
-    &quot;abc 21&quot;
-)</p>
-<h2 id="3-">3、代码块的递归调用</h2>
-<p>代码块想要递归调用，代码块变量必须是全局变量或者是静态变量，这样在程序启动的时候代码块变量就初始化了，可以递归调用</p>
+<p>很奇怪吧？后面的小括号里面的5会被当成a的输入值，然后经由Block输出 5*5 = 25指定给result这个变量。
+有没有简单一点的方法嗯？不然每次都写这么长？有。接下来介绍一个叫做Block Pointer的东西来简化我们的写法。</p>
+<p>Block Pointer是这样定义的：</p>
+<pre><code>回传值(^名字)(参数列);
+</code></pre><p>比如下面的例子：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -218,23 +189,37 @@ sortArray:(
 5
 6
 7
-8
-</pre></td><td class="code"><pre><span class="keyword">static</span> <span class="keyword">void</span> (^ <span class="keyword">const</span> blocks)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> i)
-{
-    <span class="keyword">if</span> (i &gt; <span class="number">0</span>) {
-        <span class="built_in">NSLog</span>(@<span class="string">"num:%d"</span>, i);
-        blocks(i - <span class="number">1</span>);
-     }
-};
-blocks(<span class="number">3</span>);
+</pre></td><td class="code"><pre><span class="comment">//声明一个square的Block Pointer，其所指向的Block有一个int输入和int输出</span>
+<span class="keyword">int</span> (^square)(<span class="keyword">int</span>);
+<span class="comment">//将Block实体指定给square</span>
+square = ^(<span class="keyword">int</span> a){ <span class="keyword">return</span> a*a ; };
+<span class="comment">//调用方法，感觉是是不是很像function的用法？</span>
+<span class="keyword">int</span> result = square(<span class="number">5</span>);
+<span class="built_in">NSLog</span>(@<span class="string">"%d"</span>, result);
 </pre></td></tr></table></figure>
 
-<p>运行打印结果：</p>
-<p>num:3</p>
-<p>num:2</p>
-<p>num:1</p>
-<h2 id="4-">4、在代码块中使用局部变量和全局变量</h2>
-<p>在代码块中可以使用和改变全局变量</p>
+<p>是不是变的简单了？</p>
+<p>也可以吧Block Pointer当成参数传递给一个function，比如：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="keyword">void</span> myFunction(<span class="keyword">int</span> (^mySquare)(<span class="keyword">int</span>));     <span class="comment">//function的定义，将Block作为参数</span>
+<span class="keyword">int</span> (^mySquare)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> a){<span class="keyword">return</span> a*a;};   <span class="comment">//定义一个mySquare的Block pointer变量</span>
+myFunction(mySquare);    <span class="comment">//把mySquare作为myFunction的参数</span>
+</pre></td></tr></table></figure>
+
+<p>上面的三行代码其实等价于下面这行代码</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>myFunction( ^<span class="keyword">int</span>(<span class="keyword">int</span> a){<span class="keyword">return</span> a<span class="variable">*a</span>;} );
+</pre></td></tr></table></figure>
+
+<p>当其作为Object-C method的传入值的话，需要把类型写在变量前面，然后加上小括号。比如下面这种写法：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="pp">-<span class="params">(void)</span>objcMethod:<span class="params">(<span class="function_name">int</span>(^)(int)</span>)square;  //square参数的类型是int<span class="params">(^)</span><span class="params">(int)</span></span>
+</pre></td></tr></table></figure>
+
+<h2 id="-">存取变量</h2>
+<p>1、可以读取和Block pointer同一个Scope的变量值：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -242,33 +227,84 @@ blocks(<span class="number">3</span>);
 5
 6
 7
-8
-9
-10
-11
-12
-13
-14
-</pre></td><td class="code"><pre><span class="keyword">int</span> global = <span class="number">1000</span>;
-<span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])
-{
-    @autoreleasepool {
-        <span class="keyword">void</span>(^block)(<span class="keyword">void</span>) = ^(<span class="keyword">void</span>)
-        {
-            global++;
-            <span class="built_in">NSLog</span>(@<span class="string">"global:%d"</span>, global);
-        };
-        block();
-        <span class="built_in">NSLog</span>(@<span class="string">"global:%d"</span>, global);
+</pre></td><td class="code"><pre>    {
+        <span class="keyword">int</span> outA = <span class="number">8</span>;
+        <span class="keyword">int</span> (^myPtr)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> a){ <span class="keyword">return</span> outA + a;};
+        <span class="comment">//block里面可以读取同一类型的outA的值</span>
+        <span class="keyword">int</span> result = myPtr(<span class="number">3</span>);  <span class="comment">// result is 11</span>
+        <span class="built_in">NSLog</span>(@<span class="string">"result=%d"</span>, result);
     }
-    <span class="keyword">return</span> <span class="number">0</span>;
-}
 </pre></td></tr></table></figure>
 
-<p>运行打印结果：</p>
-<p>global:1001</p>
-<p>global:1001</p>
-<p>而局部变量可以使用，但是不能改变。</p>
+<p>下面来看一段很有意思的代码：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>{
+        <span class="keyword">int</span> outA = <span class="number">8</span>;
+        <span class="keyword">int</span> (^myPtr)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> a){ <span class="keyword">return</span> outA + a;}; <span class="comment">//block里面可以读取同一类型的outA的值        </span>
+        outA = <span class="number">5</span>;  <span class="comment">//在调用myPtr之前改变outA的值</span>
+        <span class="keyword">int</span> result = myPtr(<span class="number">3</span>);  <span class="comment">// result的值仍然是11，并不是8</span>
+        <span class="built_in">NSLog</span>(@<span class="string">"result=%d"</span>, result);
+    }
+</pre></td></tr></table></figure>
+
+<p>为什么result 的值仍然是11？而不是8呢？</p>
+<p>事实上，myPtr在其主体中用到的outA这个变量值的时候做了一个copy的动作，把outA的值copy下来。所以，之后outA即使换成了新的值，对于myPtr里面copy的值是没有影响的。</p>
+<p>需要注意的是，这里copy的值是变量的值，如果它是一个记忆体的位置（地址），换句话说，就是这个变量是个指针的话，</p>
+<p>它的值是可以在block里被改变的。如下例子：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>    {
+        <span class="built_in">NSMutableArray</span> *mutableArray = [<span class="built_in">NSMutableArray</span> arrayWithObjects:@<span class="string">"one"</span>, @<span class="string">"two"</span>, @<span class="string">"three"</span>, <span class="literal">nil</span>];
+        <span class="keyword">int</span> result = ^(<span class="keyword">int</span> a){[mutableArray removeLastObject]; <span class="keyword">return</span> a*a;}(<span class="number">5</span>);
+        <span class="built_in">NSLog</span>(@<span class="string">"test array :%@"</span>, mutableArray);
+    }
+</pre></td></tr></table></figure>
+
+<p>原本mutableArray的值是{@&quot;one&quot;,@&quot;two&quot;,@&quot;three&quot;}，在block里面被更改mutableArray后，就变成{@&quot;one&quot;, @&quot;two&quot;}了。</p>
+<p>2、直接存取static类型的变量</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre>    {
+        <span class="keyword">static</span> <span class="keyword">int</span> outA = <span class="number">8</span>;
+        <span class="keyword">int</span> (^myPtr)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> a){<span class="keyword">return</span> outA + a;};
+        outA = <span class="number">5</span>;
+        <span class="keyword">int</span> result = myPtr(<span class="number">3</span>);  <span class="comment">//result的值是8，因为outA是static类型的变量</span>
+        <span class="built_in">NSLog</span>(@<span class="string">"result=%d"</span>, result);        
+    }
+</pre></td></tr></table></figure>
+
+<p>甚至可以直接在block里面修改outA的值，例如下面的写法：</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>    {
+        <span class="keyword">static</span> <span class="keyword">int</span> outA = <span class="number">8</span>;
+        <span class="keyword">int</span> (^myPtr)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> a){ outA = <span class="number">5</span>; <span class="keyword">return</span> outA + a;};
+        <span class="keyword">int</span> result = myPtr(<span class="number">3</span>);  <span class="comment">//result的值是8，因为outA是static类型的变量</span>
+        <span class="built_in">NSLog</span>(@<span class="string">"result=%d"</span>, result);        
+    }
+</pre></td></tr></table></figure>
+
+<p>3、Block Variable类型的变量</p>
+<p>在某个变量前面如果加上修饰字“__block”的话（注意，block前面有两个下划线），这个变量就称作block variable。</p>
+<p>那么在block里面就可以任意修改此变量的值，如下代码：</p>
 <figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
 2
 3
@@ -277,39 +313,17 @@ blocks(<span class="number">3</span>);
 6
 7
 8
-</pre></td><td class="code"><pre><span class="keyword">int</span> local = <span class="number">500</span>;
-<span class="keyword">void</span>(^block)(<span class="keyword">void</span>) = ^(<span class="keyword">void</span>)
-    {
-<span class="comment">//      local++;</span>
-         <span class="built_in">NSLog</span>(@<span class="string">"local:%d"</span>, local);
-    };
-block();
-<span class="built_in">NSLog</span>(@<span class="string">"local:%d"</span>, local);
+</pre></td><td class="code"><pre>    {
+        __block <span class="keyword">int</span> num = <span class="number">5</span>;        
+        <span class="keyword">int</span> (^myPtr)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> a){<span class="keyword">return</span> num++;};
+        <span class="keyword">int</span> (^myPtr2)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> a){<span class="keyword">return</span> num++;};
+        <span class="keyword">int</span> result = myPtr(<span class="number">0</span>);   <span class="comment">//result的值为5，num的值为6</span>
+        result = myPtr2(<span class="number">0</span>);      <span class="comment">//result的值为6，num的值为7</span>
+        <span class="built_in">NSLog</span>(@<span class="string">"result=%d"</span>, result);    
+    }
 </pre></td></tr></table></figure>
 
-<p>在代码块中改变局部变量编译不通过。怎么在代码块中改变局部变量呢？在局部变量前面加上关键字：__block</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-</pre></td><td class="code"><pre>__block int <span class="built_in">local</span> <span class="subst">=</span> <span class="number">500</span>;
-<span class="literal">void</span>(^block)(<span class="literal">void</span>) <span class="subst">=</span> ^(<span class="literal">void</span>)
-   {
-     <span class="built_in">local</span><span class="subst">++</span>;
-      NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</span>);
-    };
-block();
-NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</span>);
-</pre></td></tr></table></figure>
-
-<p>运行结果：</p>
-<p>local:501</p>
-<p>local:501</p>
-<p>转载自：<a href="http://blog.csdn.net/totogo2010/article/details/7839061" target="_blank">http://blog.csdn.net/totogo2010/article/details/7839061</a></p>
+<p>因为myPtr和myPtr2都有用到num这个block variable，最终num的值为7.</p>
 
     
   </section>
@@ -319,7 +333,7 @@ NSLog(@<span class="string">"local:%d"</span>, <span class="built_in">local</spa
     
       <div class="widget">
         
-          <time datetime="2014-06-10T23:41:41.000Z"><a href="/2014/06/11/block的使用/">6月 11 2014</a></time>
+          <time datetime="2014-09-08T04:05:24.000Z"><a href="/2014/09/08/block常用用法/">9月 8 2014</a></time>
         
         
   

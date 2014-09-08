@@ -90,7 +90,7 @@
   
     <li><a href="/categories/Node.js/">Node.js</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/Object-c/">Object-c</a>&nbsp;<small>(12)</small></li>
+    <li><a href="/categories/Object-c/">Object-c</a>&nbsp;<small>(13)</small></li>
   
     <li><a href="/categories/Yii/">Yii</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,868 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/08/04/理解php-依赖注入laravel-ioc容器/">理解PHP 依赖注入|Laravel IoC容器</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <p> 转载自：<a href="http://www.yuansir-web.com/?p=1012&amp;preview=true" target="_blank">http://www.yuansir-web.com/?p=1012&amp;preview=true</a></p>
+<p>看Laravel的<a href="http://laravel.com/docs/ioc" target="_blank">IoC</a>容器文档只是介绍实例，但是没有说原理，之前用MVC框架都没有在意这个概念，无意中在<a href="http://www.yuansir-web.com/?p=1012&amp;preview=true" target="_blank">phalcon</a>的文档中看到这个详细的介绍，感觉豁然开朗，复制粘贴过来，主要是好久没有写东西了，现在确实很懒变得！</p>
+<p>首先，我们假设，我们要开发一个组件命名为SomeComponent。这个组件中现在将要注入一个数据库连接。
+在这个例子中，数据库连接在component中被创建，这种方法是不切实际的，这样做的话，我们将不能改变数据库连接参数及数据库类型等一些参数。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">SomeComponent</span>
+{</span>
+
+    <span class="comment">/**
+     * The instantiation of the connection is hardcoded inside
+     * the component so is difficult to replace it externally
+     * or change its behavior
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">someDbTask</span><span class="params">()</span>
+    {</span>
+        <span class="variable">$connection</span> = <span class="keyword">new</span> Connection(<span class="keyword">array</span>(
+            <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+            <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+            <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>,
+            <span class="string">"dbname"</span> =&gt; <span class="string">"invo"</span>
+        ));
+
+        <span class="comment">// ...</span>
+    }
+
+}
+
+<span class="variable">$some</span> = <span class="keyword">new</span> SomeComponent();
+<span class="variable">$some</span>-&gt;someDbTask();
+</pre></td></tr></table></figure>
+
+<p>为了解决上面所说的问题，我们需要在使用前创建一个外部连接，并注入到容器中。就目前而言，这看起来是一个很好的解决方案：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">SomeComponent</span>
+{</span>
+
+    <span class="keyword">protected</span> <span class="variable">$_connection</span>;
+
+    <span class="comment">/**
+     * Sets the connection externally
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setConnection</span><span class="params">(<span class="variable">$connection</span>)</span>
+    {</span>
+        <span class="variable">$this</span>-&gt;_connection = <span class="variable">$connection</span>;
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">someDbTask</span><span class="params">()</span>
+    {</span>
+        <span class="variable">$connection</span> = <span class="variable">$this</span>-&gt;_connection;
+
+        <span class="comment">// ...</span>
+    }
+
+}
+
+<span class="variable">$some</span> = <span class="keyword">new</span> SomeComponent();
+
+<span class="comment">//Create the connection</span>
+<span class="variable">$connection</span> = <span class="keyword">new</span> Connection(<span class="keyword">array</span>(
+    <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+    <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+    <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>,
+    <span class="string">"dbname"</span> =&gt; <span class="string">"invo"</span>
+));
+
+<span class="comment">//Inject the connection in the component</span>
+<span class="variable">$some</span>-&gt;setConnection(<span class="variable">$connection</span>);
+
+<span class="variable">$some</span>-&gt;someDbTask();
+</pre></td></tr></table></figure>
+
+<p>现在我们来考虑一个问题，我们在应用程序中的不同地方使用此组件，将多次创建数据库连接。使用一种类似全局注册表的方式，从这获得一个数据库连接实例，而不是使用一次就创建一次。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">Registry</span>
+{</span>
+
+    <span class="comment">/**
+     * Returns the connection
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getConnection</span><span class="params">()</span>
+    {</span>
+       <span class="keyword">return</span> <span class="keyword">new</span> Connection(<span class="keyword">array</span>(
+            <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+            <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+            <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>,
+            <span class="string">"dbname"</span> =&gt; <span class="string">"invo"</span>
+        ));
+    }
+
+}
+
+<span class="class"><span class="keyword">class</span> <span class="title">SomeComponent</span>
+{</span>
+
+    <span class="keyword">protected</span> <span class="variable">$_connection</span>;
+
+    <span class="comment">/**
+     * Sets the connection externally
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setConnection</span><span class="params">(<span class="variable">$connection</span>)</span>{</span>
+        <span class="variable">$this</span>-&gt;_connection = <span class="variable">$connection</span>;
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">someDbTask</span><span class="params">()</span>
+    {</span>
+        <span class="variable">$connection</span> = <span class="variable">$this</span>-&gt;_connection;
+
+        <span class="comment">// ...</span>
+    }
+
+}
+
+<span class="variable">$some</span> = <span class="keyword">new</span> SomeComponent();
+
+<span class="comment">//Pass the connection defined in the registry</span>
+<span class="variable">$some</span>-&gt;setConnection(Registry::getConnection());
+
+<span class="variable">$some</span>-&gt;someDbTask();
+</pre></td></tr></table></figure>
+
+<p>现在，让我们来想像一下，我们必须在组件中实现两个方法，首先需要创建一个新的数据库连接，第二个总是获得一个共享连接：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">Registry</span>
+{</span>
+
+    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="variable">$_connection</span>;
+
+    <span class="comment">/**
+     * Creates a connection
+     */</span>
+    <span class="keyword">protected</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_createConnection</span><span class="params">()</span>
+    {</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> Connection(<span class="keyword">array</span>(
+            <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+            <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+            <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>,
+            <span class="string">"dbname"</span> =&gt; <span class="string">"invo"</span>
+        ));
+    }
+
+    <span class="comment">/**
+     * Creates a connection only once and returns it
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getSharedConnection</span><span class="params">()</span>
+    {</span>
+        <span class="keyword">if</span> (<span class="keyword">self</span>::<span class="variable">$_connection</span>===<span class="keyword">null</span>){
+            <span class="variable">$connection</span> = <span class="keyword">self</span>::_createConnection();
+            <span class="keyword">self</span>::<span class="variable">$_connection</span> = <span class="variable">$connection</span>;
+        }
+        <span class="keyword">return</span> <span class="keyword">self</span>::<span class="variable">$_connection</span>;
+    }
+
+    <span class="comment">/**
+     * Always returns a new connection
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getNewConnection</span><span class="params">()</span>
+    {</span>
+        <span class="keyword">return</span> <span class="keyword">self</span>::_createConnection();
+    }
+
+}
+
+<span class="class"><span class="keyword">class</span> <span class="title">SomeComponent</span>
+{</span>
+
+    <span class="keyword">protected</span> <span class="variable">$_connection</span>;
+
+    <span class="comment">/**
+     * Sets the connection externally
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setConnection</span><span class="params">(<span class="variable">$connection</span>)</span>{</span>
+        <span class="variable">$this</span>-&gt;_connection = <span class="variable">$connection</span>;
+    }
+
+    <span class="comment">/**
+     * This method always needs the shared connection
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">someDbTask</span><span class="params">()</span>
+    {</span>
+        <span class="variable">$connection</span> = <span class="variable">$this</span>-&gt;_connection;
+
+        <span class="comment">// ...</span>
+    }
+
+    <span class="comment">/**
+     * This method always needs a new connection
+     */</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">someOtherDbTask</span><span class="params">(<span class="variable">$connection</span>)</span>
+    {</span>
+
+    }
+
+}
+
+<span class="variable">$some</span> = <span class="keyword">new</span> SomeComponent();
+
+<span class="comment">//This injects the shared connection</span>
+<span class="variable">$some</span>-&gt;setConnection(Registry::getSharedConnection());
+
+<span class="variable">$some</span>-&gt;someDbTask();
+
+<span class="comment">//Here, we always pass a new connection as parameter</span>
+<span class="variable">$some</span>-&gt;someOtherDbTask(Registry::getConnection());
+</pre></td></tr></table></figure>
+
+<p>到此为止，我们已经看到了如何使用依赖注入解决我们的问题。不是在代码内部创建依赖关系，而是让其作为一个参数传递，这使得我们的程序更容易维护，降低程序代码的耦合度，实现一种松耦合。但是从长远来看，这种形式的依赖注入也有一些缺点。</p>
+<p>例如，如果组件中有较多的依赖关系，我们需要创建多个setter方法传递，或创建构造函数进行传递。另外，每次使用组件时，都需要创建依赖组件，使代码维护不太易，我们编写的代码可能像这样：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="comment">//Create the dependencies or retrieve them from the registry</span>
+<span class="variable">$connection</span> = <span class="keyword">new</span> Connection();
+<span class="variable">$session</span> = <span class="keyword">new</span> Session();
+<span class="variable">$fileSystem</span> = <span class="keyword">new</span> FileSystem();
+<span class="variable">$filter</span> = <span class="keyword">new</span> Filter();
+<span class="variable">$selector</span> = <span class="keyword">new</span> Selector();
+
+<span class="comment">//Pass them as constructor parameters</span>
+<span class="variable">$some</span> = <span class="keyword">new</span> SomeComponent(<span class="variable">$connection</span>, <span class="variable">$session</span>, <span class="variable">$fileSystem</span>, <span class="variable">$filter</span>, <span class="variable">$selector</span>);
+
+<span class="comment">// ... or using setters</span>
+
+<span class="variable">$some</span>-&gt;setConnection(<span class="variable">$connection</span>);
+<span class="variable">$some</span>-&gt;setSession(<span class="variable">$session</span>);
+<span class="variable">$some</span>-&gt;setFileSystem(<span class="variable">$fileSystem</span>);
+<span class="variable">$some</span>-&gt;setFilter(<span class="variable">$filter</span>);
+<span class="variable">$some</span>-&gt;setSelector(<span class="variable">$selector</span>);
+</pre></td></tr></table></figure>
+
+<p>我想，我们不得不在应用程序的许多地方创建这个对象。如果你不需要依赖的组件后，我们又要去代码注入部分移除构造函数中的参数或者是setter方法。为了解决这个问题，我们再次返回去使用一个全局注册表来创建组件。但是，在创建对象之前，它增加了一个新的抽象层：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">SomeComponent</span>
+{</span>
+
+    <span class="comment">// ...</span>
+
+    <span class="comment">/**
+     * Define a factory method to create SomeComponent instances injecting its dependencies
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">factory</span><span class="params">()</span>
+    {</span>
+
+        <span class="variable">$connection</span> = <span class="keyword">new</span> Connection();
+        <span class="variable">$session</span> = <span class="keyword">new</span> Session();
+        <span class="variable">$fileSystem</span> = <span class="keyword">new</span> FileSystem();
+        <span class="variable">$filter</span> = <span class="keyword">new</span> Filter();
+        <span class="variable">$selector</span> = <span class="keyword">new</span> Selector();
+
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">self</span>(<span class="variable">$connection</span>, <span class="variable">$session</span>, <span class="variable">$fileSystem</span>, <span class="variable">$filter</span>, <span class="variable">$selector</span>);
+    }
+
+}
+</pre></td></tr></table></figure>
+
+<p>这一刻，我们好像回到了问题的开始，我们正在创建组件内部的依赖，我们每次都在修改以及找寻一种解决问题的办法，但这都不是很好的做法。</p>
+<p>一种实用和优雅的来解决这些问题，是使用容器的依赖注入，像我们在前面看到的，容器作为全局注册表，使用容器的依赖注入做为一种桥梁来解决依赖可以使我们的代码耦合度更低，很好的降低了组件的复杂性：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">SomeComponent</span>
+{</span>
+
+    <span class="keyword">protected</span> <span class="variable">$_di</span>;
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$di</span>)</span>
+    {</span>
+        <span class="variable">$this</span>-&gt;_di = <span class="variable">$di</span>;
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">someDbTask</span><span class="params">()</span>
+    {</span>
+
+        <span class="comment">// Get the connection service</span>
+        <span class="comment">// Always returns a new connection</span>
+        <span class="variable">$connection</span> = <span class="variable">$this</span>-&gt;_di-&gt;get(<span class="string">'db'</span>);
+
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">someOtherDbTask</span><span class="params">()</span>
+    {</span>
+
+        <span class="comment">// Get a shared connection service,</span>
+        <span class="comment">// this will return the same connection everytime</span>
+        <span class="variable">$connection</span> = <span class="variable">$this</span>-&gt;_di-&gt;getShared(<span class="string">'db'</span>);
+
+        <span class="comment">//This method also requires a input filtering service</span>
+        <span class="variable">$filter</span> = <span class="variable">$this</span>-&gt;_db-&gt;get(<span class="string">'filter'</span>);
+
+    }
+
+}
+
+<span class="variable">$di</span> = <span class="keyword">new</span> Phalcon\DI();
+
+<span class="comment">//Register a "db" service in the container</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">'db'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> Connection(<span class="keyword">array</span>(
+        <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+        <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+        <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>,
+        <span class="string">"dbname"</span> =&gt; <span class="string">"invo"</span>
+    ));
+});
+
+<span class="comment">//Register a "filter" service in the container</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">'filter'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> Filter();
+});
+
+<span class="comment">//Register a "session" service in the container</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">'session'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> Session();
+});
+
+<span class="comment">//Pass the service container as unique parameter</span>
+<span class="variable">$some</span> = <span class="keyword">new</span> SomeComponent(<span class="variable">$di</span>);
+
+<span class="variable">$some</span>-&gt;someTask();
+</pre></td></tr></table></figure>
+
+<p>现在，该组件只有访问某种service的时候才需要它，如果它不需要，它甚至不初始化，以节约资源。该组件是高度解耦。他们的行为，或者说他们的任何其他方面都不会影响到组件本身。</p>
+<p>我们的实现办法¶</p>
+<p>Phalcon\DI 是一个实现了服务的依赖注入功能的组件，它本身也是一个容器。</p>
+<p>由于Phalcon高度解耦，Phalcon\DI 是框架用来集成其他组件的必不可少的部分，开发人员也可以使用这个组件依赖注入和管理应用程序中不同类文件的实例。</p>
+<p>基本上，这个组件实现了 Inversion of Control 模式。基于此，对象不再以构造函数接收参数或者使用setter的方式来实现注入，而是直接请求服务的依赖注入。这就大大降低了整体程序的复杂性，因为只有一个方法用以获得所需要的一个组件的依赖关系。</p>
+<p>此外，这种模式增强了代码的可测试性，从而使它不容易出错。</p>
+<p>在容器中注册服务¶</p>
+<p>框架本身或开发人员都可以注册服务。当一个组件A要求调用组件B（或它的类的一个实例），可以从容器中请求调用组件B，而不是创建组件B的一个实例。</p>
+<p>这种工作方式为我们提供了许多优点：</p>
+<p>我们可以更换一个组件，从他们本身或者第三方轻松创建。</p>
+<p>在组件发布之前，我们可以充分的控制对象的初始化，并对对象进行各种设置。</p>
+<p>我们可以使用统一的方式从组件得到一个结构化的全局实例</p>
+<p>服务可以通过以下几种方式注入到容器：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="comment">//Create the Dependency Injector Container</span>
+<span class="variable">$di</span> = <span class="keyword">new</span> Phalcon\DI();
+
+<span class="comment">//By its class name</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">"request"</span>, <span class="string">'Phalcon\Http\Request'</span>);
+
+<span class="comment">//Using an anonymous function, the instance will lazy loaded</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">"request"</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> Phalcon\Http\Request();
+});
+
+<span class="comment">//Registering directly an instance</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">"request"</span>, <span class="keyword">new</span> Phalcon\Http\Request());
+
+<span class="comment">//Using an array definition</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">"request"</span>, <span class="keyword">array</span>(
+    <span class="string">"className"</span> =&gt; <span class="string">'Phalcon\Http\Request'</span>
+));
+</pre></td></tr></table></figure>
+
+<p>在上面的例子中，当向框架请求访问一个请求数据时，它将首先确定容器中是否存在这个”reqeust”名称的服务。</p>
+<p>容器会反回一个请求数据的实例，开发人员最终得到他们想要的组件。</p>
+<p>在上面示例中的每一种方法都有优缺点，具体使用哪一种，由开发过程中的特定场景来决定的。</p>
+<p>用一个字符串来设定一个服务非常简单，但缺少灵活性。设置服务时，使用数组则提供了更多的灵活性，而且可以使用较复杂的代码。lambda函数是两者之间一个很好的平衡，但也可能导致更多的维护管理成本。</p>
+<p>Phalcon\DI 提供服务的延迟加载。除非开发人员在注入服务的时候直接实例化一个对象，然后存存储到容器中。在容器中，通过数组，字符串等方式存储的服务都将被延迟加载，即只有在请求对象的时候才被初始化。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="comment">//Register a service "db" with a class name and its parameters</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">"db"</span>, <span class="keyword">array</span>(
+    <span class="string">"className"</span> =&gt; <span class="string">"Phalcon\Db\Adapter\Pdo\Mysql"</span>,
+    <span class="string">"parameters"</span> =&gt; <span class="keyword">array</span>(
+          <span class="string">"parameter"</span> =&gt; <span class="keyword">array</span>(
+               <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+               <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+               <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>,
+               <span class="string">"dbname"</span> =&gt; <span class="string">"blog"</span>
+          )
+    )
+));
+
+<span class="comment">//Using an anonymous function</span>
+<span class="variable">$di</span>-&gt;set(<span class="string">"db"</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> Phalcon\Db\Adapter\Pdo\Mysql(<span class="keyword">array</span>(
+         <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+         <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+         <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>,
+         <span class="string">"dbname"</span> =&gt; <span class="string">"blog"</span>
+    ));
+});
+</pre></td></tr></table></figure>
+
+<p>以上这两种服务的注册方式产生相同的结果。然后，通过数组定义的，在后面需要的时候，你可以修改服务参数：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="variable">$di</span>-&gt;setParameter(<span class="string">"db"</span>, <span class="number">0</span>, <span class="keyword">array</span>(
+    <span class="string">"host"</span> =&gt; <span class="string">"localhost"</span>,
+    <span class="string">"username"</span> =&gt; <span class="string">"root"</span>,
+    <span class="string">"password"</span> =&gt; <span class="string">"secret"</span>
+));
+</pre></td></tr></table></figure>
+
+<p>从容器中获得服务的最简单方式就是使用”get”方法，它将从容器中返回一个新的实例：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span> <span class="variable">$request</span> = <span class="variable">$di</span>-&gt;get(<span class="string">"request"</span>);
+</pre></td></tr></table></figure>
+
+<p>或者通过下面这种魔术方法的形式调用：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="variable">$request</span> = <span class="variable">$di</span>-&gt;getRequest();
+
+Phalcon\DI 同时允许服务重用，为了得到一个已经实例化过的服务，可以使用 getShared() 方法的形式来获得服务。
+</pre></td></tr></table></figure>
+
+<p>具体的 Phalcon\Http\Request 请求示例：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="variable">$request</span> = <span class="variable">$di</span>-&gt;getShared(<span class="string">"request"</span>);
+</pre></td></tr></table></figure>
+
+<p>参数还可以在请求的时候通过将一个数组参数传递给构造函数的方式：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="preprocessor">&lt;?php</span>
+
+<span class="variable">$component</span> = <span class="variable">$di</span>-&gt;get(<span class="string">"MyComponent"</span>, <span class="keyword">array</span>(<span class="string">"some-parameter"</span>, <span class="string">"other"</span>))
+</pre></td></tr></table></figure>
+
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-08-03T22:32:15.000Z"><a href="/2014/08/04/理解php-依赖注入laravel-ioc容器/">8月 4 2014</a></time>
+        
+        
+  
+  <a href="/categories/Laravel/">@Laravel</a>
+
+
+        
+  
+  <a href="/tags/Ioc/">#Ioc</a>
+
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -569,7 +1431,7 @@ p2++;
 <p>这样，就清晰许多了吧。最重要的时，利用这样的方式，将编写者的设计思路也体现在了代码中。</p>
 <p>最后，介绍一个更快速的阅读方法：从右向左。</p>
 <p>编译器在进行代码扫描时是从左向右的，而我们在解读这个表达式的时候，从右向左的方法会更容易些，如：</p>
-<p>从右向左扫描以上表达式，首先我们看到一个“)”，因为其右边再没有变量，所以我们���道这是一个函数定义，然后，又看到一对“()“，显然也是函数定义，在就是(*)，显然和后面的()联合起来表达了一个函数指针，再左边的void，即修饰了此指针的类型；然后出现了和最右边”)&quot;对应的”(”，显然这个函数定义也完成了，再左边的[10]表达了一个数组，左边是它的名字b，而更左边的“*”和后面的“(“一起表达了一个函数指针，这个函数指针定义了b数组中元素的类型。再往左，指针元素的定义void也出现了。这样，我们就又看到了此表达式的真相。</p>
+<p>从右向左扫描以上表达式，首先我们看到一个“)”，因为其右边再没有变量，所以我们知道这是一个函数定义，然后，又看到一对“()“，显然也是函数定义，在就是(*)，显然和后面的()联合起来表达了一个函数指针，再左边的void，即修饰了此指针的类型；然后出现了和最右边”)&quot;对应的”(”，显然这个函数定义也完成了，再左边的[10]表达了一个数组，左边是它的名字b，而更左边的“*”和后面的“(“一起表达了一个函数指针，这个函数指针定义了b数组中元素的类型。再往左，指针元素的定义void也出现了。这样，我们就又看到了此表达式的真相。</p>
 
     
   </section>
@@ -964,480 +1826,6 @@ defined(<span class="string">'YII_TRACE_LEVEL'</span>) <span class="keyword">or<
         
   
   <a href="/tags/Yii debug/">#Yii debug</a>
-
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/07/28/afnetworking官方例子/">AFNetworking官方例子</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <h2 id="-">建筑</h2>
-<h3 id="nsurlconnection-">NSURLConnection的</h3>
-<ul>
-<li>AFURLConnectionOperation</li>
-<li>AFHTTPRequestOperation</li>
-<li>AFHTTPRequestOperationManager</li>
-</ul>
-<h3 id="nsurlsession-ios-7-mac-os-x-10-9-">NSURLSession（iOS的7 / Mac OS X的10.9）</h3>
-<ul>
-<li>AFURLSessionManager</li>
-<li>AFHTTPSessionManager</li>
-</ul>
-<h3 id="-">序列化</h3>
-<h4 id="afurlrequestserialization">AFURLRequestSerialization</h4>
-<ul>
-<li>AFHTTPRequestSerializer</li>
-<li>AFJSONRequestSerializer</li>
-<li>AFPropertyListRequestSerializer</li>
-</ul>
-<h4 id="afurlresponseserialization">AFURLResponseSerialization</h4>
-<ul>
-<li>AFHTTPResponseSerializer</li>
-<li>AFJSONResponseSerializer</li>
-<li>AFXMLParserResponseSerializer</li>
-<li>AFXMLDocumentResponseSerializer （Mac OS X中）</li>
-<li>AFPropertyListResponseSerializer</li>
-<li>AFImageResponseSerializer</li>
-<li>AFCompoundResponseSerializer</li>
-</ul>
-<h3 id="-">附加功能</h3>
-<ul>
-<li>AFSecurityPolicy</li>
-<li>AFNetworkReachabilityManager</li>
-</ul>
-<h2 id="-">用法</h2>
-<h3 id="http-">HTTP请求营运经理</h3>
-<p>AFHTTPRequestOperationManager封装与Web应用程序进行通信通过HTTP，包括要求制作，响应序列化，网络可达性监控和安全性，以及要求经营管理的常见模式。</p>
-<h3 id="get-">GET请求</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-</pre></td><td class="code"><pre>AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-[manager GET:@<span class="string">"http://example.com/resources.json"</span> parameters:<span class="literal">nil</span> success:^(AFHTTPRequestOperation*operation, <span class="keyword">id</span> responseObject) {
-    <span class="built_in">NSLog</span>(@<span class="string">"JSON: %@"</span>, responseObject);
-} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
-    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
-}];
-</pre></td></tr></table></figure>
-
-<h3 id="post-url-">POST的URL格式编码的请求</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-</pre></td><td class="code"><pre>AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-<span class="built_in">NSDictionary</span> *parameters = @{@<span class="string">"foo"</span>:@<span class="string">"bar"</span>};
-[manager POST:@<span class="string">"http://example.com/resources.json"</span> parameters:parameters success:^(AFHTTPRequestOperation*operation, <span class="keyword">id</span> responseObject) {
-    <span class="built_in">NSLog</span>(@<span class="string">"JSON: %@"</span>, responseObject);
-} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
-    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
-}];
-</pre></td></tr></table></figure>
-
-<h3 id="post-">POST多部分请求</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-</pre></td><td class="code"><pre>AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-<span class="built_in">NSDictionary</span> *parameters = @{@<span class="string">"foo"</span>:@<span class="string">"bar"</span>};
-<span class="built_in">NSURL</span> *filePath = [<span class="built_in">NSURL</span> fileURLWithPath:@<span class="string">"file://path/to/image.png"</span>];
-[manager POST:@<span class="string">"http://example.com/resources.json"</span> parameters:parameters constructingBodyWithBlock:^(<span class="keyword">id</span>&lt;AFMultipartFormData&gt; formData) {
-    [formData appendPartWithFileURL:filePath name:@<span class="string">"image"</span> error:<span class="literal">nil</span>];
-} success:^(AFHTTPRequestOperation *operation,<span class="keyword">id</span> responseObject) {
-    <span class="built_in">NSLog</span>(@<span class="string">"Success: %@"</span>, responseObject);
-} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
-    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
-}];
-</pre></td></tr></table></figure>
-
-<h3 id="afurlsessionmanager">AFURLSessionManager</h3>
-<p>AFURLSessionManager创建和管理一个NSURLSession根据指定的对象NSURLSessionConfiguration对象，这符合<NSURLSessionTaskDelegate> ， <NSURLSessionDataDelegate> ， <NSURLSessionDownloadDelegate>和<NSURLSessionDelegate> 。</p>
-<h3 id="-">创建下载任务</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-</pre></td><td class="code"><pre> NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-
-<span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/download.zip"</span>];
-<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
-
-NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:<span class="literal">nil</span> destination:^<span class="built_in">NSURL</span>*(<span class="built_in">NSURL</span> *targetPath, NSURLResponse *response) {
-    <span class="built_in">NSURL</span> *documentsDirectoryPath = [<span class="built_in">NSURL</span> fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,<span class="literal">YES</span>) firstObject]];
-    <span class="keyword">return</span> [documentsDirectoryPath URLByAppendingPathComponent:[response suggestedFilename]];
-} completionHandler:^(NSURLResponse *response, <span class="built_in">NSURL</span>*filePath, <span class="built_in">NSError</span> *error) {
-    <span class="built_in">NSLog</span>(@<span class="string">"File downloaded to: %@"</span>, filePath);
-}];
-[downloadTask resume];
-</pre></td></tr></table></figure>
-
-<h3 id="-">创建上传任务</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-</pre></td><td class="code"><pre>  NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-
-<span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/upload"</span>];
-<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
-
-<span class="built_in">NSURL</span> *filePath = [<span class="built_in">NSURL</span> fileURLWithPath:@<span class="string">"file://path/to/image.png"</span>];
-NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithRequest:request fromFile:filePath progress:<span class="literal">nil</span> completionHandler:^(NSURLResponse*response, <span class="keyword">id</span> responseObject, <span class="built_in">NSError</span>*error) {
-    <span class="keyword">if</span> (error) {
-        <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
-    } <span class="keyword">else</span> {
-        <span class="built_in">NSLog</span>(@<span class="string">"Success: %@ %@"</span>, response, responseObject);
-    }
-}];
-[uploadTask resume];
-</pre></td></tr></table></figure>
-
-<h3 id="-">创建上传任务的多部分请求，与进展</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-</pre></td><td class="code"><pre>NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@<span class="string">"POST"</span> URLString:@<span class="string">"http://example.com/upload"</span> parameters:<span class="literal">nil</span> constructingBodyWithBlock:^(<span class="keyword">id</span>&lt;AFMultipartFormData&gt; formData) {
-        [formData appendPartWithFileURL:[<span class="built_in">NSURL</span> fileURLWithPath:@<span class="string">"file://path/to/image.jpg"</span>] name:@<span class="string">"file"</span> fileName:@<span class="string">"filename.jpg"</span> mimeType:@<span class="string">"image/jpeg"</span> error:<span class="literal">nil</span>];
-    } error:<span class="literal">nil</span>];
-
-    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    NSProgress *progress = <span class="literal">nil</span>;
-
-    NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithStreamedRequest:request progress:&progress completionHandler:^(NSURLResponse*response, <span class="keyword">id</span> responseObject, <span class="built_in">NSError</span>*error) {
-        <span class="keyword">if</span> (error) {
-            <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
-        } <span class="keyword">else</span> {
-            <span class="built_in">NSLog</span>(@<span class="string">"%@ %@"</span>, response, responseObject);
-        }
-    }];
-
-    [uploadTask resume];
-</pre></td></tr></table></figure>
-
-<h3 id="-">创建数据任务</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-</pre></td><td class="code"><pre>NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
-
-<span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/upload"</span>];
-<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
-
-NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse*response, <span class="keyword">id</span> responseObject, <span class="built_in">NSError</span>*error) {
-    <span class="keyword">if</span> (error) {
-        <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
-    } <span class="keyword">else</span> {
-        <span class="built_in">NSLog</span>(@<span class="string">"%@ %@"</span>, response, responseObject);
-    }
-}];
-[dataTask resume];
-</pre></td></tr></table></figure>
-
-<h3 id="-">请求序列化</h3>
-<p>请求序列化创建URL字符串，编码参数作为一个查询字符串或HTTP主体请求。</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre><span class="constant">NSString</span> *<span class="constant">URLString</span> = @<span class="string">"http://example.com"</span>;
-<span class="constant">NSDictionary</span> *parameters = @{@<span class="string">"foo"</span><span class="symbol">:</span>@<span class="string">"bar"</span>, @<span class="string">"baz"</span><span class="symbol">:</span> @[<span class="variable">@1</span>,<span class="variable">@2</span>, <span class="variable">@3</span>]};
-</pre></td></tr></table></figure>
-
-<h3 id="-">查询字符串参数编码</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre><span class="code"> [[AFHTTPRequestSerializer serializer] requestWithMethod:@"GET" URLString:URLString parameters:parameters];</span>
-GET <span class="link_url">http://example.com?foo=bar&baz</span>[<span class="link_label"></span>]=1&baz[]=2&baz[]=3
-</pre></td></tr></table></figure>
-
-<h3 id="url-">URL，表单参数编码</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-</pre></td><td class="code"><pre>[[<span class="constant">AFHTTPRequestSerializer</span> serializer] <span class="symbol">requestWithMethod:</span>@<span class="string">"POST"</span> <span class="constant">URLString</span><span class="symbol">:URLString</span> <span class="symbol">parameters:</span>parameters];
-
-<span class="constant">POST</span> <span class="symbol">http:</span>/<span class="regexp">/example.com/</span>
-<span class="constant">Content</span>-<span class="constant">Type</span><span class="symbol">:</span> application/x-www-form-urlencoded
-
-foo=bar&baz[]=<span class="number">1</span>&baz[]=<span class="number">2</span>&baz[]=<span class="number">3</span>
-</pre></td></tr></table></figure>
-
-<h3 id="json-">JSON编码参数</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-</pre></td><td class="code"><pre>[[<span class="constant">AFJSONRequestSerializer</span> serializer] <span class="symbol">requestWithMethod:</span>@<span class="string">"POST"</span> <span class="constant">URLString</span><span class="symbol">:URLString</span> <span class="symbol">parameters:</span>parameters];
-<span class="constant">POST</span> <span class="symbol">http:</span>/<span class="regexp">/example.com/</span>
-<span class="constant">Content</span>-<span class="constant">Type</span><span class="symbol">:</span> application/json
-
-{<span class="string">"foo"</span><span class="symbol">:</span> <span class="string">"bar"</span>, <span class="string">"baz"</span><span class="symbol">:</span> [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]}
-</pre></td></tr></table></figure>
-
-<h3 id="-">网络可达性管理</h3>
-<p>AFNetworkReachabilityManager监控领域的可达性，并为WWAN和WiFi网络接口的地址。</p>
-<p>共享网络可达性</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-</pre></td><td class="code"><pre> <span class="attr_selector">[[AFNetworkReachabilityManager sharedManager]</span> setReachabilityStatusChangeBlock<span class="value">:^(AFNetworkReachabilityStatus status) {
-    NSLog(@<span class="string">"Reachability: %@"</span>, AFStringFromNetworkReachabilityStatus(status));</span>
-}];
-</pre></td></tr></table></figure>
-
-<h3 id="-url-http-">与基本URL的HTTP经理</h3>
-<p>当baseURL提供，网络可达性的作用范围是该基地URL的主机。</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-</pre></td><td class="code"><pre><span class="built_in">NSURL</span> *baseURL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/"</span>];
-AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
-
-NSOperationQueue *operationQueue = manager<span class="variable">.operationQueue</span>;
-[manager<span class="variable">.reachabilityManager</span> setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-    <span class="keyword">switch</span> (status) {
-        <span class="keyword">case</span> AFNetworkReachabilityStatusReachableViaWWAN:
-        <span class="keyword">case</span> AFNetworkReachabilityStatusReachableViaWiFi:
-            [operationQueue setSuspended:<span class="literal">NO</span>];
-            <span class="keyword">break</span>;
-        <span class="keyword">case</span> AFNetworkReachabilityStatusNotReachable:
-        <span class="keyword">default</span>:
-            [operationQueue setSuspended:<span class="literal">YES</span>];
-            <span class="keyword">break</span>;
-    }
-}];
-</pre></td></tr></table></figure>
-
-<h3 id="-">安全策略</h3>
-<p>AFSecurityPolicy评估对固定X.509证书和通过安全连接的公共密钥服务器信任。
-新增固定SSL证书到你的应用有助于防止人在这方面的中间人攻击和其他安全漏洞。 应用程序处理敏感的客户数据或财务信息我们强烈建议路线在使用SSL钉扎配置和启用HTTPS连接的所有通信。
-使无效的SSL证书</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-</pre></td><td class="code"><pre>  AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-manager<span class="variable">.securityPolicy</span><span class="variable">.allowInvalidCertificates</span> =<span class="literal">YES</span>; <span class="comment">// 不建议在生产</span>
-</pre></td></tr></table></figure>
-
-<h3 id="afhttprequestoperation">AFHTTPRequestOperation</h3>
-<p>AFHTTPRequestOperation是的一个子类AFURLConnectionOperation使用HTTP或HTTPS协议请求。 它封装的接受状态代码和内容类型，这决定了请求的成功或失败的概念。</p>
-<p>虽然AFHTTPRequestOperationManager通常是去提出要求的最佳途径， AFHTTPRequestOperation可以单独使用。</p>
-<h3 id="get-with-afhttprequestoperation">GET with AFHTTPRequestOperation</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-</pre></td><td class="code"><pre> <span class="built_in">NSURL</span> *URL = [<span class="built_in">NSURL</span> URLWithString:@<span class="string">"http://example.com/resources/123.json"</span>];
-<span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:URL];
-AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-op<span class="variable">.responseSerializer</span> = [AFJSONResponseSerializer serializer];
-[op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation*operation, <span class="keyword">id</span> responseObject) {
-    <span class="built_in">NSLog</span>(@<span class="string">"JSON: %@"</span>, responseObject);
-} failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span>*error) {
-    <span class="built_in">NSLog</span>(@<span class="string">"Error: %@"</span>, error);
-}];
-[[NSOperationQueue mainQueue] addOperation:op];
-</pre></td></tr></table></figure>
-
-<h3 id="-">操作的批处理</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-</pre></td><td class="code"><pre><span class="built_in">NSMutableArray</span> *mutableOperations = [<span class="built_in">NSMutableArray</span> array];
-<span class="keyword">for</span> (<span class="built_in">NSURL</span> *fileURL in filesToUpload) {
-    <span class="built_in">NSURLRequest</span> *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@<span class="string">"POST"</span> URLString:@<span class="string">"http://example.com/upload"</span> parameters:<span class="literal">nil</span> constructingBodyWithBlock:^(<span class="keyword">id</span>&lt;AFMultipartFormData&gt; formData) {
-        [formData appendPartWithFileURL:fileURL name:@<span class="string">"images[]"</span> error:<span class="literal">nil</span>];
-    }];
-
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-
-    [mutableOperations addObject:operation];
-}
-
-<span class="built_in">NSArray</span> *operations = [AFURLConnectionOperation batchOfRequestOperations:@[...] progressBlock:^(NSUInteger numberOfFinishedOperations, NSUInteger totalNumberOfOperations) {
-    <span class="built_in">NSLog</span>(@<span class="string">"%lu of %lu complete"</span>, numberOfFinishedOperations, totalNumberOfOperations);
-} completionBlock:^(<span class="built_in">NSArray</span> *operations) {
-    <span class="built_in">NSLog</span>(@<span class="string">"All operations in batch complete"</span>);
-}];
-[[NSOperationQueue mainQueue] addOperations:operations waitUntilFinished:<span class="literal">NO</span>];
-</pre></td></tr></table></figure>
-
-<h3 id="-">单元测试</h3>
-<p>AFNetworking包括一套内部的测试子目录中的单元测试。 为了运行单元测试，你必须通过CocoaPods安装测试的依赖关系：</p>
-<p> $ cd Tests</p>
-<p> $ pod install </p>
-<p>一旦测试的依赖安装，你可以通过在Xcode的&#39;的iOS测试“和”OS X的测试“计划，执行测试套件。</p>
-<h3 id="-xctool">使用xctool</h3>
-<p>测试也可以通过命令行或在一个持续集成环境中运行xctool ，它可以安装自制软件 ：</p>
-<p> $ brew update </p>
-<p> $ brew install xctool --HEAD </p>
-<p>一旦xctool安装，你可以通过执行该套件rake test 。</p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-07-27T23:53:38.000Z"><a href="/2014/07/28/afnetworking官方例子/">7月 28 2014</a></time>
-        
-        
-  
-  <a href="/categories/AFNetworking/">@AFNetworking</a>
-
-
-        
-  
-  <a href="/tags/AFNetworking/">#AFNetworking</a>
 
 
       </div>

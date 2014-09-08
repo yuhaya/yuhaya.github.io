@@ -90,7 +90,7 @@
   
     <li><a href="/categories/Node.js/">Node.js</a>&nbsp;<small>(1)</small></li>
   
-    <li><a href="/categories/Object-c/">Object-c</a>&nbsp;<small>(12)</small></li>
+    <li><a href="/categories/Object-c/">Object-c</a>&nbsp;<small>(13)</small></li>
   
     <li><a href="/categories/Yii/">Yii</a>&nbsp;<small>(1)</small></li>
   
@@ -114,7 +114,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 10.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -136,6 +136,403 @@
 </header>
     <section id="content" class="blog">
       
+  <article class="post">
+  <header>
+    
+  
+    <h1 class="title"><a href="/2014/05/05/object-c-深拷贝和浅拷贝/">OBJECT-C 深拷贝和浅拷贝</a></h1>
+  
+
+
+    
+      <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+    
+  </header>
+  <section class="entry">
+    
+      <h3 id="-">类型转换</h3>
+<p>第一种：非容器类不可变对象</p>
+<p>第二种：容器类不可变对象</p>
+<p>第三种：非容器类可变对象</p>
+<p>第四种：容器类可变对象</p>
+<h2 id="-">概念</h2>
+<p>浅 复 制：对于被复制的对象的每一层复制都是指针复制（复制对象的指针）。</p>
+<p>深 复 制：在复制操作时，对于被复制的对象至少有一层复制是对象复制（复制引用对象内容）。</p>
+<p>完全复制：在复制操作时，对于被复制的对象的每一层复制都是对象复制。</p>
+<ol>
+<li><p>在复制操作时，对于对象有n层是对象复制，我们可称作n级深复制，此处n应大于等于1。</p>
+</li>
+<li><p>对于完全复制如何实现（目前通用的办法是：迭代法和归档），这里后续是否添加视情况而定，暂时不做讲解。</p>
+</li>
+<li><p>指针复制俗称指针拷贝，对象复制也俗称内容拷贝。 </p>
+</li>
+</ol>
+<p><em>retain</em>：</p>
+<pre><code>始终是浅复制。引用计数每次加一。返回对象是否可变与被复制的对象保持一致。
+</code></pre><p><em>copy</em>：</p>
+<pre><code>对于可变对象为深复制，引用计数不改变;
+
+对于不可变对象是浅复制，引用计数每次加一。
+
+始终返回一个不可变对象。
+</code></pre><p><em>mutableCopy</em>：</p>
+<pre><code>始终是深复制，引用计数不改变。始终返回一个可变对象。
+</code></pre><p>不可变对象：值发生改变，其内存首地址随之改变。</p>
+<p>可变对象：无论值是否改变，其内存首地址都不随之改变。</p>
+<p>引用计数：为了让使用者清楚的知道，该对象有多少个拥有者（即有多少个指针指向同一内存地址）。</p>
+<ol>
+<li>不可变对象→可变对象的转换：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="built_in">NSArray</span> *array1= [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"a"</span>,@<span class="string">"b"</span>,@<span class="string">"c"</span>,@<span class="string">"d"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSMutableArray</span>  *str2=[array1 mutableCopy];
+</pre></td></tr></table></figure>
+
+<ol>
+<li>可变对象→不可变对象的转换：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="built_in">NSMutableArray</span> *array2   = [<span class="built_in">NSMutableArray</span> arrayWithObjects:@<span class="string">"aa"</span>,@<span class="string">"bb"</span>,@<span class="string">"cc"</span>,@<span class="string">"dd"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSArray</span> *array1=[  array2    Copy];
+</pre></td></tr></table></figure>
+
+<ol>
+<li>可变对象→可变对象的转换（不同指针变量指向不同的内存地址）：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="built_in">NSMutableArray</span> *array1= [<span class="built_in">NSMutableArray</span> arrayWithObjects:@<span class="string">"a"</span>,@<span class="string">"b"</span>,@<span class="string">"c"</span>,@<span class="string">"d"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSMutableArray</span>  *str2=[array1 mutableCopy];
+</pre></td></tr></table></figure>
+
+<p>通过上边的两个例子，我们可轻松的将一个对象在可变和不可变之间转换，并且这里不用考虑内存使用原则（即引用计数的问题）。没错，这就是深拷贝的魅力了。</p>
+<ol>
+<li>同类型对象之间的指针复制（不同指针变量指向同一块内存地址）：</li>
+</ol>
+<p>a</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="built_in">NSMutableString</span> *str1=[<span class="built_in">NSMutableString</span> stringWithString:@<span class="string">"two day"</span>];
+<span class="built_in">NSMutableString</span> *str2=[str1   retain];
+[str1  release];
+</pre></td></tr></table></figure>
+
+<p>b</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="built_in">NSArray</span> *array1= [<span class="built_in">NSArray</span> arrayWithObjects:@<span class="string">"a"</span>,@<span class="string">"b"</span>,@<span class="string">"c"</span>,@<span class="string">"d"</span>,<span class="literal">nil</span>];
+<span class="built_in">NSArray</span>  *str2=[array1 Copy];
+[array1 release];
+</pre></td></tr></table></figure>
+
+<p>通俗的讲，多个指针同时指向同一块内存区域，那么这些个指针同时拥有对该内存区的所有权。所有权的瓜分过程，这时候就要用到浅拷贝了。</p>
+<p>则简化为：</p>
+<p>问：什么时候用到深浅拷贝？</p>
+<p>答：深拷贝是在要将一个对象从可变（不可变）转为不可变（可变）或者将一个对象内容克隆一份时用到；浅拷贝是在要复制一个对象的指针时用到。</p>
+<p>＃测试以下代码时需将Project中的Ojective-C automic Reference couting设置为NO(Apple LLVM 5.0-language -Modules)</p>
+<p>第一种：非容器类不可变对象</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="code"><pre> NSString *str1=@<span class="string">"one day"</span>;
+        
+ <span class="built_in">printf</span>(<span class="string">"初始化赋值引用计数为::::%lu"</span>,str1.retainCount);
+ NSString *strCopy1=[str1 retain];
+ <span class="built_in">printf</span>(<span class="string">"\n继续retain引用计数为:::%lu"</span>,str1.retainCount);
+NSString *strCopy2=[str1 copy];
+  <span class="built_in">printf</span>(<span class="string">"\n继续copy后引用计数为::::%lu"</span>,str1.retainCount);
+ NSString *strCopy3=[str1 mutableCopy];
+ <span class="built_in">printf</span>(<span class="string">"\n继续mutableCopy后为:::%lu\n"</span>,str1.retainCount);
+        
+<span class="built_in">printf</span>(<span class="string">"\n非容器类不可变对象\n原始地址::::::::::%p"</span>,str1);
+<span class="built_in">printf</span>(<span class="string">"\nretain复制::::::::%p"</span>,strCopy1);
+<span class="built_in">printf</span>(<span class="string">"\ncopy复制::::::::::%p"</span>,strCopy2);
+<span class="built_in">printf</span>(<span class="string">"\nmutableCopy复制:::%p\n"</span>,strCopy3);
+
+<span class="comment">// 初始化赋值引用计数为：18446744073709551615</span>
+  <span class="comment">// 继续retain引用计数为：18446744073709551615</span>
+<span class="comment">// 继续copy后引用计数为：18446744073709551615</span>
+  <span class="comment">// 继续mutableCopy后为：18446744073709551615</span>
+
+ <span class="comment">//原始地址::::::::::0x1000033d0</span>
+<span class="comment">//retain复制::::::::0x1000033d0//浅复制</span>
+ <span class="comment">//copy复制::::::::::0x1000033d0//浅复制</span>
+ <span class="comment">//mutableCopy复制:::0x10010c420//深复制</span>
+</pre></td></tr></table></figure>
+
+<p>小提示：这里很多人都说是赋值，所以就好解释这里没引用计数的概念。而且也能解释为什么</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>NSString *strCopy2=[str1 <span class="keyword">copy</span>];
+
+NSMutableString  *strCopy2=[str1 <span class="keyword">copy</span>];
+</pre></td></tr></table></figure>
+
+<p>这样都不会报错的原因了。那既然只是简单赋值为什么要这么麻烦呢，直接</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>NSString <span class="variable">*strCopy2</span>=<span class="variable">*str1</span>;
+
+NSMutableString  <span class="variable">*strCopy2</span>=<span class="variable">*str1</span>;
+</pre></td></tr></table></figure>
+
+<p>其实大家都看出来了，这里是指针变量，只存在“指针的复制”，</p>
+<p>跟赋值概念完全不同，虽然这里看起来很像。</p>
+<p>原来该类型是字符串常量时，系统会为我们优化，声明了多个字符串，但是都是常量，且内容相等，那么系统就只为我们申请一块空间。</p>
+<p>  疑问： 深复制=浅复制+赋值吗？ </p>
+<p>   赋值过程：输入数据→寄存器处理→开辟内存→写入数据。</p>
+<p>   一次深复制，可以得到被复制对象指针，并进行一次赋值操作。</p>
+<p> 第二种：容器类不可变对象</p>
+<ol>
+<li>不可变对象→可变对象的转换：</li>
+</ol>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="code"><pre>NSArray <span class="variable">*array1</span>= [NSArray arrayWithObjects:<span class="variable">@"</span>a<span class="string">",<span class="variable">@"</span>b"</span>,<span class="variable">@"</span>c<span class="string">",<span class="variable">@"</span>d"</span>,nil];
+        
+        <span class="keyword">printf</span>(<span class="string">"\n初始化赋值引用计数为::::::::::::<span class="variable">%lu</span>"</span>,[array1 retainCount]);
+        NSArray <span class="variable">*arrayCopy1</span> = [array1 retain];
+        <span class="keyword">printf</span>(<span class="string">"\n继续retain后引用计数为:::::::::<span class="variable">%lu</span>"</span>,array1.retainCount);
+        NSArray <span class="variable">*arrayCopy2</span> = [array1 copy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续copy后引用计数为:::::::::::<span class="variable">%lu</span>"</span>,array1.retainCount);
+        NSArray <span class="variable">*arrayCopy3</span> = [array1 mutableCopy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续mutableCopy后引用计数为::::<span class="variable">%lu</span>\n"</span>,array1.retainCount);
+        
+        <span class="keyword">printf</span>(<span class="string">"\n容器类不可变数组\n原始地址::::::::::<span class="variable">%p</span>\t\t<span class="variable">%p</span>"</span>,array1,[array1 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nretain复制::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCopy1,[arrayCopy1 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\ncopy复制::::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCopy2,[arrayCopy2 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nmutableCopy复制:::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCopy3,[arrayCopy3 objectAtIndex:<span class="number">1</span>]);
+<span class="regexp">//</span>结果
+//初始化赋值引用计数为::::::::::::<span class="number">1</span>
+        //继续retain后引用计数为:::::::::<span class="number">2</span>
+        //继续copy后引用计数为:::::::::::<span class="number">3</span>
+        //继续mutableCopy后引用计数为::::<span class="number">3</span>
+        
+        //容器类不可变数组
+        //原始地址::::::::::<span class="number">0x10010c6b0</span> <span class="number">0x100003410</span>
+        //retain复制::::::::<span class="number">0x10010c6b0</span> <span class="number">0x100003410</span>//浅复制
+        //copy复制::::::::::<span class="number">0x10010c6b0</span> <span class="number">0x100003410</span>//浅复制
+        //mutableCopy复制:::<span class="number">0x10010c760</span> <span class="number">0x100003410</span>//深复制
+</pre></td></tr></table></figure>
+
+<p>第三种：非容器类可变对象</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="code"><pre>NSMutableString *str2=[NSMutableString stringWithString:@<span class="string">"two day"</span>];
+        
+        <span class="built_in">printf</span>(<span class="string">"\n初始化赋值引用计数为::::::::::::%lu"</span>,str2.retainCount);
+        NSMutableString *strCpy1=[str2 retain];
+        <span class="built_in">printf</span>(<span class="string">"\n继续retain后引用计数为:::::::::%lu"</span>,str2.retainCount);
+        NSMutableString *strCpy2=[str2 copy];
+        <span class="built_in">printf</span>(<span class="string">"\n继续copy后引用计数为:::::::::::%lu"</span>,str2.retainCount);
+        NSMutableString *strCpy3=[str2 mutableCopy];
+        <span class="built_in">printf</span>(<span class="string">"\n继续mutableCopy后引用计数为::::%lu\n"</span>,str2.retainCount);
+        
+        <span class="built_in">printf</span>(<span class="string">"\n非容器类可变对象\n原始地址::::::::::%p"</span>,str2);
+        <span class="built_in">printf</span>(<span class="string">"\nretin复制::::::::%p"</span>,strCpy1);
+        <span class="built_in">printf</span>(<span class="string">"\ncopy复制::::::::::%p"</span>,strCpy2);
+        <span class="built_in">printf</span>(<span class="string">"\nmutableCopy复制:::%p"</span>,strCpy3);
+<span class="comment">//结果</span>
+<span class="comment">//初始化赋值引用计数为::::::::::::1</span>
+        <span class="comment">//继续retain后引用计数为:::::::::2</span>
+        <span class="comment">//继续copy后引用计数为:::::::::::2</span>
+        <span class="comment">//继续mutableCopy后引用计数为::::2</span>
+        
+        <span class="comment">//非容器类可变对象</span>
+        <span class="comment">//原始地址::::::::::0x10010c560</span>
+        <span class="comment">//retain复制::::::::0x10010c560//浅复制</span>
+        <span class="comment">//copy复制::::::::::0x100102720//深复制</span>
+        <span class="comment">//mutableCopy复制:::0x10010c880//深复制</span>
+</pre></td></tr></table></figure>
+
+<p>第四种：容器类可变对象</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="code"><pre>NSMutableArray <span class="variable">*array2</span>   = [NSMutableArray arrayWithObjects:<span class="variable">@"</span>aa<span class="string">",<span class="variable">@"</span>bb"</span>,<span class="variable">@"</span>cc<span class="string">",<span class="variable">@"</span>dd"</span>,nil];
+        
+        <span class="keyword">printf</span>(<span class="string">"\n初始化赋值引用计数为::::::::::<span class="variable">%lu</span>"</span>,array2.retainCount);
+        NSMutableArray <span class="variable">*arrayCpy1</span> = [array2 retain];
+        <span class="keyword">printf</span>(<span class="string">"\n继续retain后引用计数为:::::::<span class="variable">%lu</span>"</span>,array2.retainCount);
+        NSMutableArray <span class="variable">*arrayCpy2</span>=[array2 copy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续copy后引用计数为:::::::::<span class="variable">%lu</span>"</span>,array2.retainCount);
+        NSMutableArray <span class="variable">*arrayCpy3</span> = [array2 mutableCopy];
+        <span class="keyword">printf</span>(<span class="string">"\n继续mutableCopy后引用计数为::<span class="variable">%lu</span>\n"</span>,array2.retainCount);
+        
+        <span class="keyword">printf</span>(<span class="string">"\n容器类可变数组\n原始地址:::::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,array2,[array2 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nretain复制:::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCpy1,[arrayCpy1 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\ncopy复制:::::::::::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCpy2,[arrayCpy2 objectAtIndex:<span class="number">1</span>]);
+        <span class="keyword">printf</span>(<span class="string">"\nnmutableCopy复制:::<span class="variable">%p</span>\t<span class="variable">%p</span>"</span>,arrayCpy3,[arrayCpy3 objectAtIndex:<span class="number">1</span>]);
+<span class="regexp">//</span>结果
+        //初始化赋值引用计数为::::::::::<span class="number">1</span>
+        //继续retain后引用计数为:::::::<span class="number">2</span>
+        //继续copy后引用计数为:::::::::<span class="number">2</span>
+        //继续mutableCopy后引用计数为::<span class="number">2</span>
+        
+        //容器类可变数组
+        //原始地址:::::::::::<span class="number">0x10010e6c0</span> <span class="number">0x1000034b0</span>
+        //retain复制:::::::::<span class="number">0x10010e6c0</span> <span class="number">0x1000034b0</span>//浅复制
+        //copy复制:::::::::::<span class="number">0x10010e790</span> <span class="number">0x1000034b0</span>//深复制
+        //nmutableCopy复制:::<span class="number">0x10010e7c0</span> <span class="number">0x1000034b0</span>//深复制
+</pre></td></tr></table></figure>
+
+
+    
+  </section>
+  <footer>
+    
+    <div class="clearfix"></div>
+    
+      <div class="alignleft widget">
+        
+        
+          <time datetime="2014-05-05T00:13:05.000Z"><a href="/2014/05/05/object-c-深拷贝和浅拷贝/">5月 5 2014</a></time>
+        
+        
+  
+  <a href="/categories/Object-c/">@Object-c</a>
+
+
+        
+
+      </div>
+      
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+    <span class="jiathis_txt">分享到：</span>
+        <a class="jiathis_button_googleplus"></a>
+            <a class="jiathis_button_fb"></a>
+                <a class="jiathis_button_twitter"></a>
+                    <a class="jiathis_button_sdonote"></a>
+                        <a class="jiathis_button_gmail"></a>
+                            <a class="jiathis_button_hotmail"></a>
+                                <a class="jiathis_button_linkedin"></a>
+                                    <a class="jiathis_button_pdfonline"></a>
+                                        <a class="jiathis_button_ydnote"></a>
+                                            <a class="jiathis_button_copy"></a>
+                                                <a class="jiathis_button_email"></a>
+                                                    <a class="jiathis_button_print"></a>
+                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                                                        </div>
+                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
+                                                        <!-- JiaThis Button END -->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
   <article class="post">
   <header>
     
@@ -829,7 +1226,7 @@ boss<span class="variable">.detegate</span>=sec;
 <li>安装Koreader</li>
 </ol>
 <p>下载最新的Koreader安装包，下载地址：<a href="https://github.com/koreader/koreader/releases" target="_blank">https://github.com/koreader/koreader/releases</a> 。
-将下载的zip文件解压缩后得到的三个目录（extensions, koreader和launchpad）拷贝到Kindle磁盘根目录即可。</p>
+将下载的zip文件解压缩后得到的三个���录（extensions, koreader和launchpad）拷贝到Kindle磁盘根目录即可。</p>
 <p>参考：<a href="http://tieba.baidu.com/p/2747673281" target="_blank">http://tieba.baidu.com/p/2747673281</a></p>
 
     
@@ -851,89 +1248,6 @@ boss<span class="variable">.detegate</span>=sec;
         
   
   <a href="/tags/kindle paperwhite 2/">#kindle paperwhite 2</a>
-
-
-      </div>
-      
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-
-  <article class="post">
-  <header>
-    
-  
-    <h1 class="title"><a href="/2014/04/04/zf2事件相关图解/">zf2事件相关图解</a></h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <p><img src="/images/event.png" alt=""></p>
-<p><img src="/images/EventManager.png" alt=""></p>
-<p><img src="/images/SharedEventManager.png" alt=""></p>
-<p><img src="/images/trigger.png" alt=""></p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="alignleft widget">
-        
-        
-          <time datetime="2014-04-04T00:17:06.000Z"><a href="/2014/04/04/zf2事件相关图解/">4月 4 2014</a></time>
-        
-        
-  
-  <a href="/categories/Zend Framework 2/">@Zend Framework 2</a>
-
-
-        
-  
-  <a href="/tags/Event/">#Event</a>
 
 
       </div>

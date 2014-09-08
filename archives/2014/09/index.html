@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>MySQL 左右值无限分类 | yuhaya</title>
+  <title>归档：2014/9 | yuhaya</title>
   <meta name="author" content="3wmao">
   
   <meta name="description" content="Simple code farming life">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="MySQL 左右值无限分类"/>
+  
   <meta property="og:site_name" content="yuhaya"/>
 
   
@@ -135,140 +135,25 @@
 </div>
 </header>
     <section id="content" class="blog">
+      
+<h2 class="archive-title">2014/9</h2>
+
+
+  <div class="archive">
+    
       <article class="post">
-  <header>
-    
-  
-    <h1 class="title">MySQL 左右值无限分类</h1>
-  
-
-
-    
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2014-09-08T04:05:24.000Z"><a href="/2014/09/08/block常用用法/">9月 8 2014</a></time>
+            
+              <h1 class="title"><a href="/2014/09/08/block常用用法/">Block常用用法</a></h1>
+            
+          </header>
+        </div>
+      </article>
     
   </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <p>这个算法有如下几个数据结构</p>
-<ul>
-<li><p>lft 代表左 left</p>
-</li>
-<li><p>rgt 代表右 right</p>
-</li>
-<li><p>lvl 代表所在的层次 level</p>
-</li>
-</ul>
-<p>下面这个图是一个典型的结构　</p>
-<p><img src="/images/04174230_jKOK.png" alt="yuhaya"></p>
-<p>我们先看一些使用方法</p>
-<ul>
-<li>查看整个树(A)有多少节点(包含自己)</li>
-</ul>
-<p>直接看根节点就行了 (right-left+1)/2 = (20-1+1)/2 = 10</p>
-<p>这个数有10个节点</p>
-<ul>
-<li>查看从节点A到E的路径</li>
-</ul>
-<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft</p>
-<p>得到的结果是A,B,D,E 这4个节点的数据,且按照访问路径的顺序</p>
-<p>如果2个节点之间不是上下级的关系，则查询没有结果</p>
-<p>反向也是一样的，可以拿到底部一个节点，到上级节点的路径</p>
-<p>select * from tree where lft between 1 and 6 and rgt between 7 and 20 order by lft desc</p>
-<p>唯一的区别就是排序是反向的就行了。</p>
-<ul>
-<li>得到某个节点下面的所有节点，且按照树状结构返回</li>
-</ul>
-<p>我们用B做例子</p>
-<p>select * from tree where lft&gt;2 and right&lt;11 order by lft</p>
-<p>拿到的结果是 C,D,E,F,而且顺序也是正确的。</p>
-<ul>
-<li>拿到所有下2级的子节点</li>
-</ul>
-<p>我们A做例子，这次加上了lvl的参数,因为A的level是1，所以我们查询level不大于3的。</p>
-<p>select * from tree where lft&gt;2 and right&lt;11 and lvl&lt;=3 order by lft</p>
-<p>下面看我们新增加一个节点的方法。</p>
-<p>我们在根节点的下面，G节点的右侧增加一个X节点</p>
-<p><img src="/images/04174230_v8X4.png" alt="yuhaya"></p>
-<p>我们要做的工作就是</p>
-<ul>
-<li><p>G节点的右参数为13</p>
-</li>
-<li><p>变更所有的受影响的节点,给新节点腾出空位子,</p>
-</li>
-</ul>
-<p>所有左节点比G节点大的，都增加2</p>
-<p>update tree set lft=lft+2 where lft&gt;12</p>
-<p>所有右节点比G节点大的，都增加2</p>
-<p>update tree set rgt=rgt+2 where rgt&gt;13</p>
-<ul>
-<li>新节点放在空位子上,lft=14,rgt=15</li>
-</ul>
-<p>这样就完成了一个新节点的增加操作。</p>
-<p><a href="http://my.oschina.net/bootstrap/blog/166805" target="_blank">http://my.oschina.net/bootstrap/blog/166805</a></p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="widget">
-        
-          <time datetime="2014-03-29T09:17:58.000Z"><a href="/2014/03/29/mysql-左右值无限分类/">3月 29 2014</a></time>
-        
-        
-  
-  <a href="/categories/Mysql/">@Mysql</a>
-
-
-        
-
-        
-      </div>
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-<section id="comment">
-  <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-  </div>
-</section>
 
 
     </section>
@@ -301,7 +186,7 @@ var disqus_shortname = 'yuhaya';
   var dsq = document.createElement('script');
   dsq.type = 'text/javascript';
   dsq.async = true;
-  dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+  dsq.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 }());
 </script>
