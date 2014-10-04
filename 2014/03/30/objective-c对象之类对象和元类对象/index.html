@@ -98,6 +98,8 @@
   
     <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
   
+    <li><a href="/categories/ios/">ios</a>&nbsp;<small>(1)</small></li>
+  
     <li><a href="/categories/iquery/">iquery</a>&nbsp;<small>(1)</small></li>
   
     <li><a href="/categories/php/">php</a>&nbsp;<small>(3)</small></li>
@@ -114,7 +116,7 @@
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
   </div>
 </div>
 
@@ -184,7 +186,7 @@ Class isa;
 }
 </pre></td></tr></table></figure>
 
-<p>写到这里大家可能就晕了，怎么又有一个<code>isa</code>？？这些<code>isa</code>到底是什么？之间有什么区别和联系？接下来解答这一连串的疑问。</p>
+<p>写到这里大家可能就晕了，怎么又有一个<code>isa</code>？？这些<code>isa</code>到底是什么？���间有什么区别和联系？接下来解答这一连串的疑问。</p>
 <p>其实在Objective-C中任何的类定义都是对象。即在程序启动的时候任何类定义都对应于一块内存。在编译的时候，编译器会给每一个类生成一个且只生成一个”描述其定义的对象”,也就是苹果公司说的类对象(<code>class object</code>),他是一个单例(singleton), 而我们在C++等语言中所谓的对象，叫做实例对象(instance object)。对于实例对象我们不难理解，但类对象(<code>class object</code>)是干什么吃的呢？我们知道Objective-C是门很动态的语言，因此程序里的所有实例对象(instace object)都是在运行时由Objective-C的运行时库生成的，而这个类对象(<code>class object</code>)就是运行时库用来创建实例对象(instance object)的依据。</p>
 <p>再回到之前的问题，肿么这个实例对象(instance object)的isa指针指向的类对象(<code>class object</code>)里面还有一个isa呢？</p>
 <p>这个类对象(class objec)的isa指向的依然是一个objc-class，它就是“元类对象”(<code>metaclass object</code>)，它和类对象(<code>class object</code>)的关系是这样的:</p>
