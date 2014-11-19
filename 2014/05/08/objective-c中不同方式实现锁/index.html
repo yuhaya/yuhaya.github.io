@@ -23,6 +23,7 @@
 那你在代码中是否很好的使用了锁的机制呢？你又知道几种实现锁的方法呢？
 今天一起来探讨一下Objective-C中几种不同方式实现的锁，在这之前我们先构建一个测试用的类，假想它是我们的一个共享资源，method1与method2是互斥的，代码如下：
 12345678910111213@implementation TestObj - (v">
+<link rel="publisher" href="103768401689473800000">
 
   
     <link rel="alternative" href="/atom.xml" title="yuhaya" type="application/atom+xml">
@@ -34,6 +35,19 @@
   <link rel="stylesheet" href="/css/style.css" type="text/css">
 
   
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-50598159-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
 
 </head>
 <body>
@@ -61,6 +75,8 @@
           <a class="main-nav-link" href="/archives">Archives</a>
         
           <a class="main-nav-link" href="https://github.com/yuhaya">Github</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
         
       </nav>
       <nav id="sub-nav">
@@ -261,6 +277,8 @@
     <a href="/archives" class="mobile-nav-link">Archives</a>
   
     <a href="https://github.com/yuhaya" class="mobile-nav-link">Github</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
   
 </nav>
     

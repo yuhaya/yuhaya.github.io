@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yuhaya.github.io/about/index.html</loc>
+    <lastmod>2014-11-19T02:38:48.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yuhaya.github.io/2014/11/19/hello-world/</loc>
     <lastmod>2014-11-18T23:49:58.000Z</lastmod>
   </url>
@@ -84,11 +89,6 @@
   <url>
     <loc>http://yuhaya.github.io/2014/03/15/about/</loc>
     <lastmod>2014-03-14T16:40:49.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://yuhaya.github.io/about/index.html</loc>
-    <lastmod>2014-03-14T14:59:35.000Z</lastmod>
   </url>
   
   <url>
