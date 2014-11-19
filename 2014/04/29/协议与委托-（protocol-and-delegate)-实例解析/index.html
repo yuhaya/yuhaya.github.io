@@ -1,661 +1,325 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   
   <title>协议与委托 （Protocol and Delegate) 实例解析 | yuhaya</title>
-  <meta name="author" content="3wmao">
-  
-  <meta name="description" content="Simple code farming life">
-  
-  
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1 协议:
+协议，类似于Java或C#语言中的接口，它限制了实现类必须拥有哪些方法。
+它是对对象行为的定义，也是对功能的规范。
+示例：
+123456789// GoodChild.h#import &lt;Foundation/Foundation.h&gt;@protocol GoodChild &lt;NSObject&gt;-(void)filialPiety;@end
 
-  <meta property="og:title" content="协议与委托 （Protocol and Delegate) 实例解析"/>
-  <meta property="og:site_name" content="yuhaya"/>
+
+
+1234567">
+<meta property="og:type" content="article">
+<meta property="og:title" content="协议与委托 （Protocol and Delegate) 实例解析">
+<meta property="og:url" content="http://yuhaya.github.io/2014/04/29/协议与委托-（protocol-and-delegate)-实例解析/">
+<meta property="og:site_name" content="yuhaya">
+<meta property="og:description" content="1 协议:
+协议，类似于Java或C#语言中的接口，它限制了实现类必须拥有哪些方法。
+它是对对象行为的定义，也是对功能的规范。
+示例：
+123456789// GoodChild.h#import &lt;Foundation/Foundation.h&gt;@protocol GoodChild &lt;NSObject&gt;-(void)filialPiety;@end
+
+
+
+1234567">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="协议与委托 （Protocol and Delegate) 实例解析">
+<meta name="twitter:description" content="1 协议:
+协议，类似于Java或C#语言中的接口，它限制了实现类必须拥有哪些方法。
+它是对对象行为的定义，也是对功能的规范。
+示例：
+123456789// GoodChild.h#import &lt;Foundation/Foundation.h&gt;@protocol GoodChild &lt;NSObject&gt;-(void)filialPiety;@end
+
+
+
+1234567">
 
   
-    <meta property="og:image" content="undefined"/>
+    <link rel="alternative" href="/atom.xml" title="yuhaya" type="application/atom+xml">
   
-
-  <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="yuhaya" type="application/atom+xml">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <script src="//upcdn.b0.upaiyun.com/libs/modernizr/modernizr-2.6.2.min.js"></script>
   
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-50598159-1']);
-  _gaq.push(['_trackPageview']);
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
+  
 
 </head>
-
-
 <body>
-  <div id="container" class="container">
-    <header id="sidebar" role="banner" class="sidebar"><div id="branding" class="branding">
-  <a href="/">
-    <img class="circle" src="/img/koala.jpg" alt="Anthem">
-  </a>
-  <h1 id="site-title" class="title">
-    <a href="/">yuhaya</a>
-  </h1>
-</div>
-<a href="#" id="toggle">信息</a>
-<div class="about" style="display: none">
-  <p>Simple code farming life</p>
-</div>
-<nav class="menu-navigation-container">
-  <ul>
-    
-      <li><a href="/">Home</a></li>
-    
-      <li><a href="/archives">Archives</a></li>
-    
-    <li> <a href="/atom.xml">RSS</a> </li>
-  </ul>
-</nav>
-<div class="widget">
-  
-  <nav class="search">
-  <form action="http://google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="搜索">
-    <input type="hidden" name="q" value="site:yuhaya.github.io">
-  </form>
-</nav>
-
-  
-<nav class="categories">
-  <h3 class="title">分类</h3>
-  <ul>
-  
-    <li><a href="/categories/AFNetworking/">AFNetworking</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/Apache/">Apache</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/C/C++/">C/C++</a>&nbsp;<small>(6)</small></li>
-  
-    <li><a href="/categories/GCD/">GCD</a>&nbsp;<small>(2)</small></li>
-  
-    <li><a href="/categories/Laravel/">Laravel</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/Mysql/">Mysql</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/Node.js/">Node.js</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/Object-c/">Object-c</a>&nbsp;<small>(13)</small></li>
-  
-    <li><a href="/categories/Yii/">Yii</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/Zend Framework 2/">Zend Framework 2</a>&nbsp;<small>(6)</small></li>
-  
-    <li><a href="/categories/hexo/">hexo</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/ios/">ios</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/iquery/">iquery</a>&nbsp;<small>(1)</small></li>
-  
-    <li><a href="/categories/php/">php</a>&nbsp;<small>(3)</small></li>
-  
-    <li><a href="/categories/public/">public</a>&nbsp;<small>(3)</small></li>
-  
-    <li><a href="/categories/wireshark/">wireshark</a>&nbsp;<small>(1)</small></li>
-  
-  </ul>
-</nav>
-
-
-  
-<div class="widget tagcloud">
-  <h3 class="title">标签云</h3>
-  <div class="entry">
-    <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle paperwhite 2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">yuhaya</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Simple code farming life</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yuhaya.github.io"></form>
+      </div>
+    </div>
   </div>
-</div>
-
-
-
-  <nav class="other">
-  <ul>
-    <li>
-        Email : 3wmaocomputer@gmail.com
-    </li>
-    <li>
-      <a href="https://github.com/yuhaya" target="_blank">Github</a>
-    </li>
-  </ul>
-</nav>
-
-
-</div>
 </header>
-    <section id="content" class="blog">
-      <article class="post">
-  <header>
+      <div class="outer">
+        <section id="main"><article id="post-协议与委托-（protocol-and-delegate)-实例解析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/04/29/协议与委托-（protocol-and-delegate)-实例解析/" class="article-date">
+  <time datetime="2014-04-28T23:52:15.000Z" itemprop="datePublished">4月 29 2014</time>
+</a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Object-c/">Object-c</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 class="title">协议与委托 （Protocol and Delegate) 实例解析</h1>
+    <h1 class="article-title" itemprop="name">
+      协议与委托 （Protocol and Delegate) 实例解析
+    </h1>
   
 
-
+      </header>
     
-      <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-    
-  </header>
-  <section class="entry">
-    
-      <h2 id="1-">1 协议:</h2>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1_协议:">1 协议:</h2>
 <p>协议，类似于Java或C#语言中的接口，它限制了实现类必须拥有哪些方法。</p>
 <p>它是对对象行为的定义，也是对功能的规范。</p>
 <p>示例：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-</pre></td><td class="code"><pre><span class="comment">// GoodChild.h</span>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// GoodChild.h</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">GoodChild</span> &lt;<span class="title">NSObject</span>&gt;</span></div><div class="line"></div><div class="line">-(<span class="keyword">void</span>)filialPiety;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
 
-<span class="class"><span class="keyword">@protocol</span> <span class="title">GoodChild</span> &lt;<span class="title">NSObject</span>&gt;</span>
 
--(<span class="keyword">void</span>)filialPiety;
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Student.h</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="preprocessor">#import <span class="title">"GoodChild.h"</span></span></div><div class="line"><span class="comment">//注意实现协议的语法。</span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Student</span> : <span class="title">NSObject</span>&lt;<span class="title">GoodChild</span>&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
 
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-</pre></td><td class="code"><pre><span class="comment">// Student.h</span>
 
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-<span class="preprocessor">#import <span class="title">"GoodChild.h"</span></span>
-<span class="comment">//注意实现协议的语法。</span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Student</span> : <span class="title">NSObject</span>&lt;<span class="title">GoodChild</span>&gt;</span>
-
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
-
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-</pre></td><td class="code"><pre><span class="comment">// Student.m</span>
-<span class="comment">// protocol</span>
-<span class="comment">//</span>
-<span class="comment">// Created by sxt on 11-10-23.</span>
-<span class="comment">// Copyright 2011年 __MyCompanyName__. All rights reserved.</span>
-<span class="comment">//</span>
-
-<span class="preprocessor">#import <span class="title">"Student.h"</span></span>
-
-<span class="class"><span class="keyword">@implementation</span> <span class="title">Student</span></span>
-
-- (<span class="keyword">id</span>)init
-{
-<span class="keyword">self</span> = [<span class="keyword">super</span> init];
-<span class="keyword">if</span> (<span class="keyword">self</span>) {
-<span class="comment">// Initialization code here.</span>
-}
-
-<span class="keyword">return</span> <span class="keyword">self</span>;
-}
--(<span class="keyword">void</span>)filialPiety{
-<span class="built_in">NSLog</span>(@<span class="string">"孝敬父母。。"</span>);
-}
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Student.m</span></div><div class="line"><span class="comment">// protocol</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">// Created by sxt on 11-10-23.</span></div><div class="line"><span class="comment">// Copyright 2011年 __MyCompanyName__. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">"Student.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Student</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)init</div><div class="line">{</div><div class="line"><span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line"><span class="keyword">if</span> (<span class="keyword">self</span>) {</div><div class="line"><span class="comment">// Initialization code here.</span></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line">-(<span class="keyword">void</span>)filialPiety{</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"孝敬父母。。"</span>);</div><div class="line">}</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
 <p>此例中定义了一个协议GoodChild,类Student实现了此协议，所以必须有filialPiety方法。</p>
 <p>每个类虽只有一个父类，但可以实现多个协议,以逗号隔开便可。语法如下：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-</pre></td><td class="code"><pre><span class="class"><span class="keyword">@interface</span> <span class="title">Student</span> : <span class="title">NSObject</span>&lt;协议1，协议2&gt;</span>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Student</span> : <span class="title">NSObject</span>&lt;协议1，协议2&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
-
-<h2 id="2-">2 委托:</h2>
+<h2 id="2_委托:">2 委托:</h2>
 <p>委托是objC中使用非常频繁的一种设计模式，它的实现与协议的使用是分不开的，让我们看一个综合示例：</p>
 <p>小公司老板日常的工作是管理公司、教导新员工、发工资与接电话。</p>
 <p>其中管理公司、教导新员工是老板要亲为的。</p>
-<p>而发工资与接电话老板希望招聘一个秘书来帮忙，于是对秘书的要求就是要略懂出纳发工资，要能帮助领导接电话。 而这两项要求便是协议，
-对类功能的限定。</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-</pre></td><td class="code"><pre><span class="comment">// SecProtocol.h</span>
-
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-<span class="class"><span class="keyword">@protocol</span> <span class="title">SecProtocol</span> &lt;<span class="title">NSObject</span>&gt;</span>
-<span class="comment">//发工资</span>
--(<span class="keyword">void</span>)payoff;
-<span class="comment">//接电话</span>
--(<span class="keyword">void</span>)tel;
-
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
+<p>而发工资与接电话老板希望招聘一个秘书来帮忙，于是对秘书的要求就是要略懂出纳发工资，要能帮助领导接电话。 而这两项要求便是协议，<br>对类功能的限定。</p>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// SecProtocol.h</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">SecProtocol</span> &lt;<span class="title">NSObject</span>&gt;</span></div><div class="line"><span class="comment">//发工资</span></div><div class="line">-(<span class="keyword">void</span>)payoff;</div><div class="line"><span class="comment">//接电话</span></div><div class="line">-(<span class="keyword">void</span>)tel;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
 <p>然后定义一个秘书类</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-</pre></td><td class="code"><pre><span class="comment">// Sec.h</span>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Sec.h</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="preprocessor">#import <span class="title">"SecProtocol.h"</span></span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Sec</span> : <span class="title">NSObject</span>&lt;<span class="title">SecProtocol</span>&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-<span class="preprocessor">#import <span class="title">"SecProtocol.h"</span></span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Sec</span> : <span class="title">NSObject</span>&lt;<span class="title">SecProtocol</span>&gt;</span>
 
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
 
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-</pre></td><td class="code"><pre><span class="comment">// Sec.m</span>
-
-<span class="preprocessor">#import <span class="title">"Sec.h"</span></span>
-
-<span class="class"><span class="keyword">@implementation</span> <span class="title">Sec</span></span>
-
-- (<span class="keyword">id</span>)init
-{
-<span class="keyword">self</span> = [<span class="keyword">super</span> init];
-<span class="keyword">if</span> (<span class="keyword">self</span>) {
-<span class="comment">// Initialization code here.</span>
-}
-
-<span class="keyword">return</span> <span class="keyword">self</span>;
-}
-
--(<span class="keyword">void</span>)payoff{
-<span class="built_in">NSLog</span>(@<span class="string">"sec payoff"</span>);
-}
-
--(<span class="keyword">void</span>)tel{
-<span class="built_in">NSLog</span>(@<span class="string">"sec tel"</span>);
-}
-
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Sec.m</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">"Sec.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Sec</span></span></div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)init</div><div class="line">{</div><div class="line"><span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line"><span class="keyword">if</span> (<span class="keyword">self</span>) {</div><div class="line"><span class="comment">// Initialization code here.</span></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line"></div><div class="line">-(<span class="keyword">void</span>)payoff{</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"sec payoff"</span>);</div><div class="line">}</div><div class="line"></div><div class="line">-(<span class="keyword">void</span>)tel{</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"sec tel"</span>);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
 <p>紧接着是老板类：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-</pre></td><td class="code"><pre><span class="comment">// Boss.h</span>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Boss.h</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="preprocessor">#import <span class="title">"SecProtocol.h"</span></span></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Boss</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="comment">//此属性用于指定秘书对象，此对象必须实现SecProtocol协议。</span></div><div class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,retain) <span class="keyword">id</span>&lt;SecProtocol&gt; detegate;</div><div class="line"><span class="comment">//管理</span></div><div class="line">-(<span class="keyword">void</span>)manage;</div><div class="line"><span class="comment">//教导新员工</span></div><div class="line">-(<span class="keyword">void</span>)teach;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-<span class="preprocessor">#import <span class="title">"SecProtocol.h"</span></span>
-<span class="class"><span class="keyword">@interface</span> <span class="title">Boss</span> : <span class="title">NSObject</span></span>
 
-<span class="comment">//此属性用于指定秘书对象，此对象必须实现SecProtocol协议。</span>
-<span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,retain) <span class="keyword">id</span>&lt;SecProtocol&gt; detegate;
-<span class="comment">//管理</span>
--(<span class="keyword">void</span>)manage;
-<span class="comment">//教导新员工</span>
--(<span class="keyword">void</span>)teach;
 
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
-
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-</pre></td><td class="code"><pre><span class="comment">// Boss.m</span>
-<span class="preprocessor">#import <span class="title">"Boss.h"</span></span>
-
-<span class="class"><span class="keyword">@implementation</span> <span class="title">Boss</span></span>
-
-<span class="keyword">@synthesize</span> detegate=_detegate;
-
-- (<span class="keyword">id</span>)init
-{
-<span class="keyword">self</span> = [<span class="keyword">super</span> init];
-<span class="keyword">if</span> (<span class="keyword">self</span>) {
-<span class="comment">// Initialization code here.</span>
-}
-
-<span class="keyword">return</span> <span class="keyword">self</span>;
-}
-
--(<span class="keyword">void</span>)manage{
-<span class="built_in">NSLog</span>(@<span class="string">"boss manage"</span>);
-}
-
--(<span class="keyword">void</span>)teach{
-<span class="built_in">NSLog</span>(@<span class="string">"boss teach"</span>);
-}
-
--(<span class="keyword">void</span>)payoff{
-
-<span class="built_in">NSAutoreleasePool</span> *p=[[<span class="built_in">NSAutoreleasePool</span> alloc] init];
-[_detegate payoff];
-[p release];
-
-}
-
--(<span class="keyword">void</span>)tel{
-
-<span class="built_in">NSAutoreleasePool</span> *p=[[<span class="built_in">NSAutoreleasePool</span> alloc] init];
-[_detegate tel];
-[p release];
-
-}
-<span class="keyword">@end</span>
-</pre></td></tr></table></figure>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Boss.m</span></div><div class="line"><span class="preprocessor">#import <span class="title">"Boss.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Boss</span></span></div><div class="line"></div><div class="line"><span class="keyword">@synthesize</span> detegate=_detegate;</div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)init</div><div class="line">{</div><div class="line"><span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line"><span class="keyword">if</span> (<span class="keyword">self</span>) {</div><div class="line"><span class="comment">// Initialization code here.</span></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line"></div><div class="line">-(<span class="keyword">void</span>)manage{</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"boss manage"</span>);</div><div class="line">}</div><div class="line"></div><div class="line">-(<span class="keyword">void</span>)teach{</div><div class="line"><span class="built_in">NSLog</span>(<span class="string">@"boss teach"</span>);</div><div class="line">}</div><div class="line"></div><div class="line">-(<span class="keyword">void</span>)payoff{</div><div class="line"></div><div class="line"><span class="built_in">NSAutoreleasePool</span> *p=[[<span class="built_in">NSAutoreleasePool</span> alloc] init];</div><div class="line">[_detegate payoff];</div><div class="line">[p release];</div><div class="line"></div><div class="line">}</div><div class="line"></div><div class="line">-(<span class="keyword">void</span>)tel{</div><div class="line"></div><div class="line"><span class="built_in">NSAutoreleasePool</span> *p=[[<span class="built_in">NSAutoreleasePool</span> alloc] init];</div><div class="line">[_detegate tel];</div><div class="line">[p release];</div><div class="line"></div><div class="line">}</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
 
 <p>那么老板就具有这4个方法，当调用前2个时是自己完成功能，而调用后2个时则转为调用秘书的方法。</p>
 <p>此时我们跟秘书对象就叫做代理对象，代理模式的名字由来于此。</p>
 <p>最后调用测试下：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-</pre></td><td class="code"><pre><span class="comment">// main.m</span>
-<span class="comment">// delegate</span>
-<span class="comment">//</span>
-<span class="comment">// Created by sxt on 11-10-23.</span>
-<span class="comment">// Copyright 2011年 Jinlong Wei. All rights reserved.</span>
-<span class="comment">//</span>
+<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// main.m</span></div><div class="line"><span class="comment">// delegate</span></div><div class="line"><span class="comment">//</span></div><div class="line"><span class="comment">// Created by sxt on 11-10-23.</span></div><div class="line"><span class="comment">// Copyright 2011年 Jinlong Wei. All rights reserved.</span></div><div class="line"><span class="comment">//</span></div><div class="line"></div><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"><span class="preprocessor">#import <span class="title">"Boss.h"</span></span></div><div class="line"><span class="preprocessor">#import <span class="title">"Sec.h"</span></span></div><div class="line"><span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</div><div class="line">{</div><div class="line"></div><div class="line"><span class="built_in">NSAutoreleasePool</span> * pool = [[<span class="built_in">NSAutoreleasePool</span> alloc] init];</div><div class="line"></div><div class="line"><span class="comment">//实例化老板对象</span></div><div class="line">Boss *boss=[[[Boss alloc] init] autorelease];</div><div class="line"><span class="comment">//实例化秘书对象</span></div><div class="line">Sec *sec=[[[Sec alloc] init] autorelease];</div><div class="line"></div><div class="line"><span class="comment">//设置老板的代理对象为秘书</span></div><div class="line">boss<span class="variable">.detegate</span>=sec;</div><div class="line"></div><div class="line"><span class="comment">//调用4个方法。</span></div><div class="line">[boss payoff];</div><div class="line">[boss tel];</div><div class="line">[boss manage];</div><div class="line">[boss teach];</div><div class="line">[pool drain];</div><div class="line"><span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">}</div></pre></td></tr></table></figure>
 
-<span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-<span class="preprocessor">#import <span class="title">"Boss.h"</span></span>
-<span class="preprocessor">#import <span class="title">"Sec.h"</span></span>
-<span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])
-{
+<p>转载自:<a href="http://www.dapps.net/dev/iphone/ios-dev-protocol-and-delegate-example.html" target="_blank" rel="external">http://www.dapps.net/dev/iphone/ios-dev-protocol-and-delegate-example.html</a></p>
 
-<span class="built_in">NSAutoreleasePool</span> * pool = [[<span class="built_in">NSAutoreleasePool</span> alloc] init];
-
-<span class="comment">//实例化老板对象</span>
-Boss *boss=[[[Boss alloc] init] autorelease];
-<span class="comment">//实例化秘书对象</span>
-Sec *sec=[[[Sec alloc] init] autorelease];
-
-<span class="comment">//设置老板的代理对象为秘书</span>
-boss<span class="variable">.detegate</span>=sec;
-
-<span class="comment">//调用4个方法。</span>
-[boss payoff];
-[boss tel];
-[boss manage];
-[boss teach];
-[pool drain];
-<span class="keyword">return</span> <span class="number">0</span>;
-}
-</pre></td></tr></table></figure>
-
-<p>转载自:<a href="http://www.dapps.net/dev/iphone/ios-dev-protocol-and-delegate-example.html" target="_blank">http://www.dapps.net/dev/iphone/ios-dev-protocol-and-delegate-example.html</a></p>
-
-    
-  </section>
-  <footer>
-    
-    <div class="clearfix"></div>
-    
-      <div class="widget">
-        
-          <time datetime="2014-04-28T23:52:15.000Z"><a href="/2014/04/29/协议与委托-（protocol-and-delegate)-实例解析/">4月 29 2014</a></time>
-        
-        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2014/04/29/协议与委托-（protocol-and-delegate)-实例解析/" data-id="sr4yz9r6y6jh1sei" class="article-share-link">Share</a>
+      
+        <a href="http://yuhaya.github.io/2014/04/29/协议与委托-（protocol-and-delegate)-实例解析/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  </div>
   
-  <a href="/categories/Object-c/">@Object-c</a>
-
-
+    
+<nav id="article-nav">
+  
+    <a href="/2014/05/02/foundation-uikit-框架类组织架构图/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
         
-
+          Foundation UIKit 框架类组织架构图
         
       </div>
-    
-    <div class="clearfix"></div>
-  </footer>
-</article>
-<!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-    <span class="jiathis_txt">分享到：</span>
-        <a class="jiathis_button_googleplus"></a>
-            <a class="jiathis_button_fb"></a>
-                <a class="jiathis_button_twitter"></a>
-                    <a class="jiathis_button_sdonote"></a>
-                        <a class="jiathis_button_gmail"></a>
-                            <a class="jiathis_button_hotmail"></a>
-                                <a class="jiathis_button_linkedin"></a>
-                                    <a class="jiathis_button_pdfonline"></a>
-                                        <a class="jiathis_button_ydnote"></a>
-                                            <a class="jiathis_button_copy"></a>
-                                                <a class="jiathis_button_email"></a>
-                                                    <a class="jiathis_button_print"></a>
-                                                        <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-                                                        </div>
-                                                        <script type="text/javascript" src="http://v3.jiathis.com/code_mini/jia.js?uid=1394037199379974" charset="utf-8"></script>
-                                                        <!-- JiaThis Button END -->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+    </a>
+  
+  
+    <a href="/2014/04/21/kindle-paperwhite-2-越狱/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">kindle paperwhite 2 越狱</div>
+    </a>
+  
+</nav>
 
-<section id="comment">
+  
+</article>
+
+
+<section id="comments">
   <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   </div>
 </section>
-
-
-    </section>
-    <footer id="footer" class="clearfix footer"><div class="alignleft">
+</section>
+        
+          <aside id="sidebar">
   
-  &copy; 2014 3wmao
-  
-</div>
-<div class="clearfix"></div>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-              ga('create', 'UA-50598159-1', 'yuhaya.github.io');
-                ga('send', 'pageview');
-</script>
-</footer>
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AFNetworking/">AFNetworking</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Apache/">Apache</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GCD/">GCD</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Laravel/">Laravel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Object-c/">Object-c</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iquery/">iquery</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a><span class="category-list-count">1</span></li></ul>
+    </div>
   </div>
-  <script src="http://lib.sinaapp.com/js/jquery/1.9.0/jquery.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/main.js"></script>
 
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AFNetworking/">AFNetworking</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/">Event</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ioc/">Ioc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Yii-debug/">Yii debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ab/">ab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/block/">block</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/">cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dispatch/">dispatch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hhvm/">hhvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iframe/">iframe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle-paperwhite-2/">kindle paperwhite 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/performance/">performance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typedef/">typedef</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wireshark/">wireshark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2/">zf2</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2框架初始化高速插件/">zf2框架初始化高速插件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图形/">图形</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时器/">定时器</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
 
-<script type="text/javascript">
-var disqus_shortname = 'yuhaya';
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii-debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle-paperwhite-2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+    </div>
+  </div>
 
-(function(){
-  var dsq = document.createElement('script');
-  dsq.type = 'text/javascript';
-  dsq.async = true;
-  dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-}());
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/11/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2014/10/04/cgcontextref绘制各种基本图形/">CGContextRef绘制各种基本图形</a>
+          </li>
+        
+          <li>
+            <a href="/2014/09/08/block常用用法/">Block常用用法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/">ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)</a>
+          </li>
+        
+          <li>
+            <a href="/2014/08/15/grand-central-dispatch介绍和使用/">Grand Central Dispatch介绍和使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 3wmao<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'yuhaya';
+  
+  var disqus_url = 'http://yuhaya.github.io/2014/04/29/协议与委托-（protocol-and-delegate)-实例解析/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
 </script>
 
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="/fancybox/jquery.fancybox.css">
-<script type="text/javascript" src="/fancybox/jquery.fancybox.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox({
-    prevEffect: 'none',
-    nextEffect: 'none',
-    closeBtn: false,
-    helpers: {
-        title: {type: 'inside'},
-        buttons: {
-            position: 'bottom'
-        }
-    }
-  });
-})(jQuery);
-</script>
 
-  <a href="https://github.com/yuhaya"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/121cd7cbdc3e4855075ea8b558508b91ac463ac2/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png"></a>
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
 </body>
 </html>
