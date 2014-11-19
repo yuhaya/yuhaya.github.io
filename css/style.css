@@ -187,9 +187,6 @@ body {
     margin: 0 0.8333333333333%;
   }
 }
-#main {
-  float: right;
-}
 .article-date,
 .article-category-link,
 .archive-year,
@@ -312,7 +309,7 @@ body {
   font-weight: bold;
 }
 #header {
-  height: 300px;
+  height: 200px;
   position: relative;
   border-bottom: 1px solid #ddd;
 }
@@ -359,17 +356,17 @@ body {
   z-index: -1;
 }
 #header-title {
-  text-align: center;
+  text-align: left;
   height: 40px;
   position: absolute;
   top: 50%;
-  left: 0;
+  left: 30px;
   margin-top: -20px;
 }
 #logo,
 #subtitle {
   text-decoration: none;
-  color: #fff;
+  color: #000;
   font-weight: 300;
   text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
@@ -393,7 +390,7 @@ body {
 .nav-icon,
 .main-nav-link {
   float: left;
-  color: #fff;
+  color: #f00;
   opacity: 0.6;
   text-decoration: none;
   text-shadow: 0 1px rgba(0,0,0,0.2);
