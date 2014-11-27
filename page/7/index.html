@@ -85,6 +85,115 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-understanding-zf2-configuration" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/04/01/understanding-zf2-configuration/" class="article-date">
+  <time datetime="2014-04-01T13:43:15.000Z" itemprop="datePublished">4月 1 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/04/01/understanding-zf2-configuration/">Understanding ZF2 Configuration</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>In Zend Framework 2 we no longer have the commanding <code>application.ini</code>, instead we got the option to configure our website or rather the modules on a per-module-basis. Furthermore, the modules are able to overwrite each others configuration. With this in mind, it makes it even more important to understand how ZF2 manages the configuration files of several modules internally. In this blog i will guide you guys through the internal process of the framework.</p>
+<h1 id="Where_does_configuration_come_from?">Where does configuration come from?</h1>
+<p>Before we go into the internals, let’s get a quick overview of where configuration usually comes from. Ultimately there’s only three places, that deliver configuration:</p>
+<ol>
+<li><code>./config/application.config.php</code></li>
+<li><code>each Modules class Module</code></li>
+<li><code>./config/autoload/(.*?).php</code></li>
+</ol>
+<p>But wait, what about <code>./modules/(ModuleName)/config/module.config.php</code>? Well, this file only exists for separation concerns. This config file will be called by the <code>Module-&gt;getConfig()</code>, so ultimately the config provider is the Module class itself. Knowing that let’s go through the configuration process.</p>
+<h1 id="Zend\Mvc\Application::init()">Zend\Mvc\Application::init()</h1>
+<p>The very first configuration file that will be loaded is the <code>/config/application.config.php</code>. When we take a quick look at the ZendSkeletonApplications index.php you’ll see that the application-config will be pulled into the <code>Zend\Mvc\Application</code>.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">&lt;?php</span></div><div class="line">chdir(dirname(<span class="keyword">__DIR__</span>));</div><div class="line"></div><div class="line"><span class="comment">// Setup autoloading</span></div><div class="line"><span class="keyword">require</span> <span class="string">'init_autoloader.php'</span>;</div><div class="line"></div><div class="line"><span class="comment">// Run the application!</span></div><div class="line">Zend\Mvc\Application::init(<span class="keyword">require</span> <span class="string">'config/application.config.php'</span>)<span class="variable">-&gt;run</span>();</div></pre></td></tr></table></figure>
+
+<p>Taking a look into <code>Application::init()</code> you’ll notice that not much is happening. Basically the application.config.php will be set as an internal Service called <code>ApplicationConfig</code> and then the most interesting thing that happens is the following highlighted line. The Modules are going to be loaded. And this is where all the magic is happening, so let’s dive into that.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">(<span class="variable">$configuration</span> = array<span class="params">()</span>)</span></span></div><div class="line">{</div><div class="line">    <span class="variable">$smConfig</span> = <span class="keyword">isset</span>(<span class="variable">$configuration</span>[<span class="string">'service_manager'</span>]) ? <span class="variable">$configuration</span>[<span class="string">'service_manager'</span>] : <span class="keyword">array</span>();</div><div class="line">    <span class="variable">$serviceManager</span> = <span class="keyword">new</span> ServiceManager(<span class="keyword">new</span> Service\ServiceManagerConfig(<span class="variable">$smConfig</span>));</div><div class="line">    <span class="variable">$serviceManager</span><span class="variable">-&gt;setService</span>(<span class="string">'ApplicationConfig'</span>, <span class="variable">$configuration</span>);</div><div class="line">    <span class="variable">$serviceManager</span><span class="variable">-&gt;get</span>(<span class="string">'ModuleManager'</span>)<span class="variable">-&gt;loadModules</span>();</div><div class="line">    <span class="keyword">return</span> <span class="variable">$serviceManager</span><span class="variable">-&gt;get</span>(<span class="string">'Application'</span>)<span class="variable">-&gt;bootstrap</span>();</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<h1 id="ModuleManager-&gt;loadModules()">ModuleManager-&gt;loadModules()</h1>
+<p>Now we get into the core of configuration, the <code>ModuleManager</code>. The ModuleManager itself actually does pretty much nothing, when it comes to configuration. What it does however is to trigger a couple of Events. The important Events triggered for us are:</p>
+<ul>
+<li><code>ModuleEvent::EVENT_LOAD_MODULES</code></li>
+<li><code>ModuleEvent::EVENT_LOAD_MODULES_POST</code></li>
+<li><code>ModuleEvent::EVENT_LOAD_MODULE_RESOLVE</code></li>
+<li><code>ModuleEvent::EVENT_LOAD_MODULE</code></li>
+</ul>
+<p>Out of those, the most important one currently is <code>ModuleEvent::EVENT_LOAD_MODULE</code>. Now we need to find out what get’s triggered by this event. The targets of events are called “listeners”, so what’s more natural then to take a look at all the classes under <code>Zend\ModuleManager\Listener\{name}Listener.php</code>.</p>
+<p>When it comes to the configuration of ZF2 the classes / listeners of relevance would be the <code>Zend\ModuleManager\Listener\ConfigListener</code> and <code>Zend\ModuleManager\Listener\ServiceListener</code>, let’s dive into them!</p>
+<h1 id="ConfigListener_vs-_ServiceListener">ConfigListener vs. ServiceListener</h1>
+<p>The big “duel” we’re interested in is the one about the ConfigListener vs. the ServiceListener. Let’s first go through the roles of each of them.</p>
+<h3 id="The_ConfigListener">The ConfigListener</h3>
+<p>Ultimately what the ConfigListener does is to call the function <code>getConfig()</code> of the Module-Classes. This happens for every single Module. And all <code>Module-&gt;getConfig()</code> will be merged into one internal configuration.</p>
+<h3 id="The_ServiceListener">The ServiceListener</h3>
+<p>The Role of the ServiceListener is similar. The ServiceListener ultimately calls all the other config functions of the Module classes. The exact functions that will be called are:</p>
+<ul>
+<li><p><code>getServiceConfig()</code> translates to <code>$config[&#39;service_manager&#39;]</code></p>
+</li>
+<li><p><code>getControllerConfig()</code> translates to <code>$config[&#39;controllers&#39;]</code></p>
+</li>
+<li><p><code>getControllerPluginConfig()</code> translates to <code>$config[&#39;controller_plugins&#39;]</code></p>
+</li>
+<li><p><code>getViewHelperConfig()</code> translates to <code>$config[&#39;view_helpers&#39;]</code></p>
+</li>
+<li><p><code>getValidatorConfig()</code> translates to <code>$config[&#39;validators&#39;]</code></p>
+</li>
+<li><p><code>getFilterConfig()</code> translates to <code>$config[&#39;filters&#39;]</code></p>
+</li>
+<li><p><code>getFormElementConfig()</code> translates to <code>$config[&#39;form_elements&#39;]</code></p>
+</li>
+<li><p><code>getRouteConfig()</code> translates to <code>$config[&#39;route_manager&#39;]</code></p>
+</li>
+</ul>
+<h1 id="The_Load-Order">The Load-Order</h1>
+<p>The very interesting question is now: Who’s last?</p>
+<p>To make the long story short, the first function to be called is <code>getConfig()</code> and after that all functions provided by the several <code>ServiceListener</code> are called in the above listed order. So ultimately the specific functions like <code>getServiceConfig()</code> or <code>getViewHelperConfig()</code> will take priority over the configuration served by <code>getConfig()</code>.</p>
+<h1 id="The_/autoload/_configuration">The /autoload/ configuration</h1>
+<p>The last things to load would be the configuration files served under <code>config/autoload/{,*.}{global,local}.php</code>. Those files could practically overwrite everything, again ;)</p>
+<p>The load order here is alphabetically. The whole directory will be fetched and all matching PHP files will be merged into the existing configuration.</p>
+<h1 id="Conclusion">Conclusion</h1>
+<p>Internally a lot of stuff happens, when setting up the modules. And it is important to know about the load-order of the configuration steps. Finding out about this sure will leave me away from needless debugging time in the future. So whenever you encounter some problems with your configuration, now you know where to look for errors.</p>
+<ol>
+<li>application.config.php</li>
+<li>$module-&gt;getConfig()</li>
+<li>$module-&gt;get{,*}Config() (or ServiceListeners)</li>
+<li>/config/autoload/{,.*}{global,local}.php</li>
+</ol>
+<p>url:<a href="http://samminds.com/2013/04/understanding-zf2-configuration/" target="_blank" rel="external">http://samminds.com/2013/04/understanding-zf2-configuration/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2014/04/01/understanding-zf2-configuration/" data-id="g01alhyxqp1h3gm5" class="article-share-link">Share</a>
+      
+        <a href="http://yuhaya.github.io/2014/04/01/understanding-zf2-configuration/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zf2/">zf2</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-objective-c对象之类对象和元类对象" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/03/30/objective-c对象之类对象和元类对象/" class="article-date">
@@ -475,51 +584,6 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-hhvm-是如何提升-php-性能的？" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/03/23/hhvm-是如何提升-php-性能的？/" class="article-date">
-  <time datetime="2014-03-23T03:50:01.000Z" itemprop="datePublished">3月 23 2014</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/php/">php</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/03/23/hhvm-是如何提升-php-性能的？/">HHVM 是如何提升 PHP 性能的？</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://wuduoyi.com/note/hhvm/" target="_blank" rel="external">http://wuduoyi.com/note/hhvm/</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yuhaya.github.io/2014/03/23/hhvm-是如何提升-php-性能的？/" data-id="w4sozfmlk36ops0j" class="article-share-link">Share</a>
-      
-        <a href="http://yuhaya.github.io/2014/03/23/hhvm-是如何提升-php-性能的？/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hhvm/">hhvm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
@@ -533,7 +597,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AFNetworking/">AFNetworking</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GCD/">GCD</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Laravel/">Laravel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Object-c/">Object-c</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iquery/">iquery</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/性能测试/">性能测试</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AFNetworking/">AFNetworking</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GCD/">GCD</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Laravel/">Laravel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Object-c/">Object-c</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iquery/">iquery</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/性能测试/">性能测试</a><span class="category-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -542,7 +606,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AFNetworking/">AFNetworking</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/">Event</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ioc/">Ioc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Yii-debug/">Yii debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ab/">ab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/block/">block</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/">cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dispatch/">dispatch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hhvm/">hhvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iframe/">iframe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle-paperwhite-2/">kindle paperwhite 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/performance/">performance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typedef/">typedef</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wireshark/">wireshark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2/">zf2</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2框架初始化高速插件/">zf2框架初始化高速插件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图形/">图形</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时器/">定时器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编译/">编译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AFNetworking/">AFNetworking</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/">Event</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ioc/">Ioc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pylot/">Pylot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Yii-debug/">Yii debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ab/">ab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/block/">block</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/">cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dispatch/">dispatch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hhvm/">hhvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iframe/">iframe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle-paperwhite-2/">kindle paperwhite 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/performance/">performance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typedef/">typedef</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wireshark/">wireshark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2/">zf2</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2框架初始化高速插件/">zf2框架初始化高速插件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图形/">图形</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时器/">定时器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编译/">编译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -551,7 +615,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii-debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle-paperwhite-2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a><a href="/tags/编译/" style="font-size: 10.00px;">编译</a>
+      <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Pylot/" style="font-size: 10.00px;">Pylot</a><a href="/tags/Yii-debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle-paperwhite-2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a><a href="/tags/编译/" style="font-size: 10.00px;">编译</a>
     </div>
   </div>
 
@@ -560,7 +624,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -570,6 +634,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/">Web 并发压力测试工具Pylot的安装以及使用</a>
+          </li>
         
           <li>
             <a href="/2014/11/27/-configure-make-make-install/">./configure,make,make install</a>
@@ -585,10 +653,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2014/09/08/block常用用法/">Block常用用法</a>
-          </li>
-        
-          <li>
-            <a href="/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/">ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)</a>
           </li>
         
       </ul>

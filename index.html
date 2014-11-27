@@ -85,6 +85,107 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post-Web-并发压力测试工具Pylot的安装以及使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/" class="article-date">
+  <time datetime="2014-11-27T11:19:31.000Z" itemprop="datePublished">11月 27 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/性能测试/">性能测试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/">Web 并发压力测试工具Pylot的安装以及使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ApacheBench 一把的泪，不说了，下面介绍一个python的并发测试工具<code>Pylot</code></p>
+<p>以下为mac下得安装方法，window的自行Google</p>
+<h3 id="Pylot介绍">Pylot介绍</h3>
+<p>一个简单易用，跨平台的开源网站压力测试工具，可以从命令行运行也可以开启图形界面运行，可以设置cookie，可以将测试结果制作成图表方便查看。</p>
+<h3 id="Pylot配置">Pylot配置</h3>
+<p>第1步：下载Pylot  （必须）</p>
+<p>第2步：安装Python 2.5 + （必须）</p>
+<p>第3步：安装wxPython（可选 - 用于GUI模式）</p>
+<p>从这里获取安装程序：<a href="http://www.wxpython.org/download.php" target="_blank" rel="external">http://www.wxpython.org/download.php</a></p>
+<p>第4步：安装numpy的（可选 - 用于报告以图表）</p>
+<p>从这里获取安装程序：<a href="http://sourceforge.net/projects/numpy" target="_blank" rel="external">http://sourceforge.net/projects/numpy</a></p>
+<p>第5步：安装matplotlib的（可选 - 用于报告以图表）</p>
+<p>从这里获取安装程序：<a href="http://sourceforge.net/projects/matplotlib" target="_blank" rel="external">http://sourceforge.net/projects/matplotlib</a></p>
+<pre><code>wxPython,numpy,matplotlib 手动安装比较麻烦，建议使用easy_install安装
+</code></pre><h3 id="easy_install安装">easy_install安装</h3>
+<p>官网的安装方式：<a href="https://pypi.python.org/pypi/setuptools#unix-wget" target="_blank" rel="external">https://pypi.python.org/pypi/setuptools#unix-wget</a></p>
+<p>我们直接这样安装：</p>
+<pre><code>wget http<span class="variable">s:</span>//bootstrap.pypa.io/ez_setup.<span class="keyword">py</span> -O - | sudo <span class="keyword">python</span>
+</code></pre><p>中间停住的时候便输入你的root密码，回车</p>
+<h3 id="Pylot安装">Pylot安装</h3>
+<p>下载地址 ：<a href="http://pylt.googlecode.com/files/pylot_1.26.zip" target="_blank" rel="external">http://pylt.googlecode.com/files/pylot_1.26.zip</a></p>
+<p>下载后直接解压即可</p>
+<h3 id="安装依赖包">安装依赖包</h3>
+<pre><code><span class="title">easy_install</span> wxpython numpy matplotlib
+</code></pre><h3 id="Pylot使用">Pylot使用</h3>
+<p>　　进入Pylot解压的目录</p>
+<p>　　首先需要配置一下testcases.xml这个文件。这个文件包含了需要测试的目标url以及具体的测试内容。</p>
+<p>　　大家打开testcases.xml之后可以看到两个<case>……</case>，因为我们只是要一个简单的实例，所以我们把第二个<case>….</case>删掉，然后把第一个<case>….</case>里面的<url></url>改成你需要测试的url。我的就是<url><a href="http://www.langman1dian.com" target="_blank" rel="external">http://www.langman1dian.com</a></url>。改好之后整个文章内容是这样的<br>　　<br>`</p>
+<p><testcases><br>    <!-- SAMPLE TEST CASE --><br>    <case><br>        <url><a href="http://3wmao.com" target="_blank" rel="external">http://3wmao.com</a></url><br>    </case><br>    —&gt;<br></testcases><br>`</p>
+<p>好了，保存关闭。运行以下命令</p>
+<pre><code><span class="keyword">python</span> run.<span class="keyword">py</span> -<span class="keyword">a</span> <span class="number">50</span>
+</code></pre><p> 输出的html信息在results目录下</p>
+<h3 id="参数详细说明">参数详细说明</h3>
+<p>-a, —agents=NUM_AGENTS</p>
+<p>设置同时访问用户数量</p>
+<p>-d, —duration=DURATION</p>
+<p>设置总测试时间（秒）</p>
+<p>-r, —rampup=RAMPUP</p>
+<p>设置提升量（秒），我也没太搞懂这个是什么意思</p>
+<p>-i, —interval=INTERVAL </p>
+<p>设置访问间隔（毫秒）</p>
+<p>-x, —xmlfile=TEST_CASE_XML</p>
+<p>设置要使用的xml文件，默认testcase.xml</p>
+<p>-o, —output_dir=PATH</p>
+<p>设置输出文件路径</p>
+<p>-n, —name=TESTNAME</p>
+<p>设置测试名称</p>
+<p>-l, —log_msgs</p>
+<p>设置是否需要日志信息</p>
+<p>-b, —blocking  </p>
+<p>设置是否开启锁定模式，如果开启会锁定输出直到测试结束</p>
+<p>-g, —gui  </p>
+<p>设置是否使用图形界面</p>
+<p>-p, —port=PORT</p>
+<p>设置xml-rpc监听的端口</p>
+<p>使用-g选项的话就可以开启图形界面，图形界面我就不详细介绍了，虽然有几个英文单词吧，但是大家应该一眼就能看明白怎么用了，还是挺方便的。</p>
+<p>参考来源：<a href="http://www.cnblogs.com/numbbbbb/archive/2013/04/19/3029959.html" target="_blank" rel="external">http://www.cnblogs.com/numbbbbb/archive/2013/04/19/3029959.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/" data-id="m5jwj00x4v6t2tu1" class="article-share-link">Share</a>
+      
+        <a href="http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pylot/">Pylot</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post--configure-make-make-install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/11/27/-configure-make-make-install/" class="article-date">
@@ -360,76 +461,6 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/" class="article-date">
-  <time datetime="2014-08-16T13:05:50.000Z" itemprop="datePublished">8月 16 2014</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Object-c/">Object-c</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/">ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>转载自：<a href="http://www.skyfox.org/ios-url-request-cookie.html" target="_blank" rel="external">http://www.skyfox.org/ios-url-request-cookie.html</a></p>
-<p>当你访问一个网站时，NSURLRequest都会帮你主动记录下来你访问的站点设置的cookie，如果 Cookie 存在的话，会把这些信息放在 NSHTTPCookieStorage 容器中共享，当你下次再访问这个站点时，NSURLRequest会拿着上次保存下来了的cookie继续去请求。</p>
-<p>同样适用于ASIHTTPRequest,AFNetworking, Webview等,cookie常用于一些基于认证的网络请求</p>
-<p>认识下NSHTTPCookieStorage</p>
-<p>NSHTTPCookieStorage 实现了一个管理cookie的单例对象(只有一个实例)，每个cookie都是NSHTTPCookie类的实例，最为一个规则，cookie在所有应用之间共享并在不同进程之间保持同步。Session cookie(一个isSessionOnly方法返回YES的cookie)只能在单一进程中使用。</p>
-<h2 id="Cookie">Cookie</h2>
-<p>Cookie是由服务器端生成，发送给User-Agent（一般是浏览器或者客户端），浏览器会将Cookie的key/value保存到某个目录下的文本文件内，下次请求同一网站地址时就发送该Cookie给服务器</p>
-<h2 id="HTTP_header">HTTP header</h2>
-<p>HTTP header中包含HTTP请求与响应的操作参数. header属性定义了所传输数据的各种特性. header属性以属性名开始,以冒号结尾,最后是属性值.属性名及值会因应用的不同</p>
-<p>ios htttp网络请求cookie的读取与写入:</p>
-<h3 id="1-原生NSURLConnection写法">1.原生NSURLConnection写法</h3>
-<p>一.获取cookie</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">IBAction</span>)cookieTouched:(<span class="keyword">id</span>)sender {</div><div class="line">    <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://api.skyfox.org/api-test.php"</span>];</div><div class="line">    <span class="built_in">NSURLRequest</span> *request = [<span class="built_in">NSURLRequest</span> requestWithURL:url]</div><div class="line">                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData</div><div class="line">                                         timeoutInterval:<span class="number">3</span>];</div><div class="line">    NSOperationQueue *queue = [[NSOperationQueue alloc]init];</div><div class="line">    [<span class="built_in">NSURLConnection</span> sendAsynchronousRequest:request</div><div class="line">                                       queue:queue</div><div class="line">                           completionHandler:^(NSURLResponse *response, NSData *data, <span class="built_in">NSError</span> *error){</div><div class="line">                              </div><div class="line">                               <span class="comment">//转换NSURLResponse成为HTTPResponse</span></div><div class="line">                               NSHTTPURLResponse *HTTPResponse = (NSHTTPURLResponse *)response;</div><div class="line">                               <span class="comment">//获取headerfields</span></div><div class="line">                               <span class="built_in">NSDictionary</span> *fields = [HTTPResponse allHeaderFields];</div><div class="line">                               <span class="comment">//原生NSURLConnection写法</span></div><div class="line">                               <span class="comment">// NSDictionary *fields = [operation.response allHeaderFields]; </span></div><div class="line">                               <span class="comment">//afnetworking写法</span></div><div class="line">                               <span class="built_in">NSLog</span>(<span class="string">@"fields = %@"</span>,[fields description]);</div><div class="line"> </div><div class="line">                               <span class="comment">//获取cookie方法1</span></div><div class="line">                               <span class="comment">// NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:url];</span></div><div class="line">                               <span class="comment">//获取cookie方法2</span></div><div class="line">                               <span class="comment">//NSString *cookieString = [[HTTPResponse allHeaderFields] valueForKey:@"Set-Cookie"];</span></div><div class="line">                               <span class="comment">//获取cookie方法3</span></div><div class="line">                               NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];</div><div class="line">                               <span class="keyword">for</span> (NSHTTPCookie *cookie <span class="keyword">in</span> [cookieJar cookies]) {</div><div class="line">                                   <span class="built_in">NSLog</span>(<span class="string">@"cookie%@"</span>, cookie);</div><div class="line">                               }</div><div class="line"> }];</div><div class="line">    </div><div class="line">}</div></pre></td></tr></table></figure>
-
-<h3 id="2-AFNetworking_写法">2.AFNetworking 写法</h3>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[[APIClient sharedClient] postPath:<span class="string">@"http://api.skyfox.org/api-test.php"</span> parameters:p success:^(AFHTTPRequestOperation *operation, <span class="keyword">id</span> JSON) {</div><div class="line">       <span class="built_in">NSDictionary</span> *fields = [operation<span class="variable">.response</span> allHeaderFields]; <span class="comment">//afnetworking写法</span></div><div class="line">       <span class="built_in">NSLog</span>(<span class="string">@"fields = %@"</span>,[fields description]);</div><div class="line">       <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://api.skyfox.org/api-test.php"</span>];</div><div class="line">       <span class="comment">//获取cookie方法1</span></div><div class="line">        <span class="built_in">NSArray</span> *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:fields forURL:url];</div><div class="line">       <span class="comment">//获取cookie方法2</span></div><div class="line">       <span class="comment">//NSString *cookieString = [[HTTPResponse allHeaderFields] valueForKey:@"Set-Cookie"];</span></div><div class="line"></div><div class="line">   } failure:^(AFHTTPRequestOperation *operation, <span class="built_in">NSError</span> *error) {</div><div class="line">     </div><div class="line">   }];</div></pre></td></tr></table></figure>
-
-<p>二.清空cookie</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];</div><div class="line"><span class="built_in">NSArray</span> *cookieArray = [<span class="built_in">NSArray</span> arrayWithArray:[cookieJar cookies]];</div><div class="line"><span class="keyword">for</span> (<span class="keyword">id</span> obj <span class="keyword">in</span> cookieArray) {</div><div class="line">  [cookieJar deleteCookie:obj];</div><div class="line">}</div></pre></td></tr></table></figure>
-
-<p>三.手动设置cookie</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">-(void)test1:(NSString*)urlString{</div><div class="line">    NSURL *url = [NSURL URLWithString:@<span class="string">"http://api.skyfox.org/cookie.php"</span>];</div><div class="line">    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];</div><div class="line">    </div><div class="line">    NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];</div><div class="line">    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"username"</span> <span class="keyword">for</span>Key:NSHTTPCookieName];</div><div class="line">    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"my ios cookie"</span> <span class="keyword">for</span>Key:NSHTTPCookieValue];</div><div class="line">    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"api.skyfox.org"</span> <span class="keyword">for</span>Key:NSHTTPCookieDomain];</div><div class="line">    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"api.skyfox.org"</span> <span class="keyword">for</span>Key:NSHTTPCookieOriginURL];</div><div class="line">    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"/"</span> <span class="keyword">for</span>Key:NSHTTPCookiePath];</div><div class="line">    [cookieProperties <span class="keyword">set</span>Object:@<span class="string">"0"</span> <span class="keyword">for</span>Key:NSHTTPCookieVersion];</div><div class="line">    NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieProperties];</div><div class="line">    [[NSHTTPCookieStorage sharedHTTPCookieStorage] <span class="keyword">set</span>Cookie:cookie];</div><div class="line">    [self.myWebView loadRequest:request];</div><div class="line">}</div><div class="line">//第二次请求会自动带上cookie</div><div class="line">- (IBAction)test2:(id)sender {</div><div class="line">    NSURL *url = [NSURL URLWithString:@<span class="string">"http://api.skyfox.org/cookie.php"</span>];</div><div class="line">    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];</div><div class="line">    [self.mywebview2 loadRequest:request];</div><div class="line">}</div></pre></td></tr></table></figure>
-
-<p>request还可以这样设置个cookie</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[request <span class="keyword">set</span>HTTPShouldHandleCookies:YES];</div><div class="line">[request <span class="keyword">set</span>Value:[NSString stringWithFormat:@<span class="string">"%@=%@"</span>, [cookie name], [cookie value]] <span class="keyword">for</span>HTTPHeaderField:@<span class="string">"Cookie"</span>];</div></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yuhaya.github.io/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/" data-id="nir3on519flp3b87" class="article-share-link">Share</a>
-      
-        <a href="http://yuhaya.github.io/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cookie/">cookie</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -443,7 +474,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AFNetworking/">AFNetworking</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GCD/">GCD</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Laravel/">Laravel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Object-c/">Object-c</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iquery/">iquery</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/性能测试/">性能测试</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AFNetworking/">AFNetworking</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GCD/">GCD</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Laravel/">Laravel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Object-c/">Object-c</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iquery/">iquery</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/性能测试/">性能测试</a><span class="category-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -452,7 +483,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AFNetworking/">AFNetworking</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/">Event</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ioc/">Ioc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Yii-debug/">Yii debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ab/">ab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/block/">block</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/">cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dispatch/">dispatch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hhvm/">hhvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iframe/">iframe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle-paperwhite-2/">kindle paperwhite 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/performance/">performance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typedef/">typedef</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wireshark/">wireshark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2/">zf2</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2框架初始化高速插件/">zf2框架初始化高速插件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图形/">图形</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时器/">定时器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编译/">编译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AFNetworking/">AFNetworking</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/">Event</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ioc/">Ioc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pylot/">Pylot</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Yii-debug/">Yii debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ab/">ab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/block/">block</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/">cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dispatch/">dispatch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hhvm/">hhvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iframe/">iframe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle-paperwhite-2/">kindle paperwhite 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/performance/">performance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typedef/">typedef</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wireshark/">wireshark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2/">zf2</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2框架初始化高速插件/">zf2框架初始化高速插件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图形/">图形</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时器/">定时器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编译/">编译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -461,7 +492,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii-debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle-paperwhite-2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a><a href="/tags/编译/" style="font-size: 10.00px;">编译</a>
+      <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Pylot/" style="font-size: 10.00px;">Pylot</a><a href="/tags/Yii-debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle-paperwhite-2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a><a href="/tags/编译/" style="font-size: 10.00px;">编译</a>
     </div>
   </div>
 
@@ -470,7 +501,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -480,6 +511,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/">Web 并发压力测试工具Pylot的安装以及使用</a>
+          </li>
         
           <li>
             <a href="/2014/11/27/-configure-make-make-install/">./configure,make,make install</a>
@@ -495,10 +530,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2014/09/08/block常用用法/">Block常用用法</a>
-          </li>
-        
-          <li>
-            <a href="/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/">ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)</a>
           </li>
         
       </ul>

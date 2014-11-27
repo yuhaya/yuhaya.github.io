@@ -3,20 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>KVC结合NSCoding实例代码 | 编程年代</title>
+  <title>Tag: Pylot | 编程年代</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="item.h
-1234567891011#import &lt;Foundation/Foundation.h&gt;@interface Item : NSObject@property (nonatomic, strong) NSString *identifier;@property (nonatomic, strong) NSString *title;@property (nonatom">
-<meta property="og:type" content="article">
-<meta property="og:title" content="KVC结合NSCoding实例代码">
-<meta property="og:url" content="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/">
+  <meta name="description" content="Simple code farming life">
+<meta property="og:type" content="website">
+<meta property="og:title" content="编程年代">
+<meta property="og:url" content="http://yuhaya.github.io/tags/Pylot/">
 <meta property="og:site_name" content="编程年代">
-<meta property="og:description" content="item.h
-1234567891011#import &lt;Foundation/Foundation.h&gt;@interface Item : NSObject@property (nonatomic, strong) NSString *identifier;@property (nonatomic, strong) NSString *title;@property (nonatom">
+<meta property="og:description" content="Simple code farming life">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="KVC结合NSCoding实例代码">
-<meta name="twitter:description" content="item.h
-1234567891011#import &lt;Foundation/Foundation.h&gt;@interface Item : NSObject@property (nonatomic, strong) NSString *identifier;@property (nonatomic, strong) NSString *title;@property (nonatom">
+<meta name="twitter:title" content="编程年代">
+<meta name="twitter:description" content="Simple code farming life">
 <link rel="publisher" href="103768401689473800000">
 
   
@@ -86,95 +83,39 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-kvc结合nscoding实例代码" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/06/09/kvc结合nscoding实例代码/" class="article-date">
-  <time datetime="2014-06-09T00:03:51.000Z" itemprop="datePublished">6月 9 2014</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Object-c/">Object-c</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
+        <section id="main">
   
-    <h1 class="article-title" itemprop="name">
-      KVC结合NSCoding实例代码
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2014" class="archive-year">2014</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/" class="archive-article-date">
+  <time datetime="2014-11-27T11:19:31.000Z" itemprop="datePublished">11月 27</time>
+</a>
+      
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/">Web 并发压力测试工具Pylot的安装以及使用</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="item-h">item.h</h4>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Item</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *identifier;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *title;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *notes;</div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)initWithTitle:(<span class="built_in">NSString</span> *)title notes:(<span class="built_in">NSString</span> *)notes;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-
-<h4 id="item-m">item.m</h4>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#import <span class="title">"Item.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Item</span></span></div><div class="line"></div><div class="line">- (<span class="built_in">NSArray</span> *)keysForEncoding;</div><div class="line">{</div><div class="line">    <span class="keyword">return</span> [<span class="built_in">NSArray</span> arrayWithObjects:<span class="string">@"title"</span>, <span class="string">@"notes"</span>, <span class="string">@"identifier"</span>, <span class="literal">nil</span>];</div><div class="line">}</div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)initWithTitle:(<span class="built_in">NSString</span> *)title notes:(<span class="built_in">NSString</span> *)notes</div><div class="line">{</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>)</div><div class="line">    {</div><div class="line">        <span class="keyword">self</span><span class="variable">.title</span> = title;</div><div class="line">        <span class="keyword">self</span><span class="variable">.notes</span> = notes;</div><div class="line">        </div><div class="line">        <span class="comment">// create a unique identifier for this object, helps with state restoration</span></div><div class="line">        <span class="built_in">NSUUID</span> *uuid = [[<span class="built_in">NSUUID</span> alloc] init];</div><div class="line">        <span class="keyword">self</span><span class="variable">.identifier</span> = [uuid UUIDString];</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// we are being created based on what was archived earlier</span></div><div class="line">- (<span class="keyword">id</span>)initWithCoder:(NSCoder *)aDecoder</div><div class="line">{</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>)</div><div class="line">    {</div><div class="line">        <span class="keyword">for</span> (<span class="built_in">NSString</span> *key <span class="keyword">in</span> <span class="keyword">self</span><span class="variable">.keysForEncoding</span>)</div><div class="line">        {</div><div class="line">            [<span class="keyword">self</span> setValue:[aDecoder decodeObjectForKey:key] forKey:key];</div><div class="line">        }</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// we are asked to be archived, encode all our data</span></div><div class="line">- (<span class="keyword">void</span>)encodeWithCoder:(NSCoder *)aCoder</div><div class="line">{</div><div class="line">	<span class="keyword">for</span> (<span class="built_in">NSString</span> *key <span class="keyword">in</span> <span class="keyword">self</span><span class="variable">.keysForEncoding</span>)</div><div class="line">    {</div><div class="line">        [aCoder encodeObject:[<span class="keyword">self</span> valueForKey:key] forKey:key];</div><div class="line">    }</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-
-<h3 id="巧妙的利用KVC辅助实现对象的序列化">巧妙的利用KVC辅助实现对象的序列化</h3>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/" data-id="xs01d3a4jz4n7nk3" class="article-share-link">Share</a>
-      
-        <a href="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KVC/">KVC</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2014/06/11/block的使用/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          block的使用
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2014/06/08/zf2框架初始化速度大提升/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">zf2框架初始化高速插件</div>
-    </a>
-  
-</nav>
-
-  
 </article>
-
-
-  <section id="comments">
-    <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="post-kvc结合nscoding实例代码" data-title="KVC结合NSCoding实例代码" data-url="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/"></div>
-    <!-- 多说评论框 end -->
-    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-    <script type="text/javascript">
-    var duoshuoQuery = {short_name:'3wmao'};
-      (function() {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';ds.async = true;
-        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0] 
-         || document.getElementsByTagName('body')[0]).appendChild(ds);
-      })();
-      </script>
-    <!-- 多说公共JS代码 end -->
-  </section>
+  
+  
+    </div></section>
+  
 </section>
         
           <aside id="sidebar">

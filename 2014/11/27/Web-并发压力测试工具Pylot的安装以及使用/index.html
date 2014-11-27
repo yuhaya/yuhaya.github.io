@@ -3,20 +3,35 @@
 <head>
   <meta charset="utf-8">
   
-  <title>KVC结合NSCoding实例代码 | 编程年代</title>
+  <title>Web 并发压力测试工具Pylot的安装以及使用 | 编程年代</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="item.h
-1234567891011#import &lt;Foundation/Foundation.h&gt;@interface Item : NSObject@property (nonatomic, strong) NSString *identifier;@property (nonatomic, strong) NSString *title;@property (nonatom">
+  <meta name="description" content="ApacheBench 一把的泪，不说了，下面介绍一个python的并发测试工具Pylot
+以下为mac下得安装方法，window的自行Google
+Pylot介绍
+一个简单易用，跨平台的开源网站压力测试工具，可以从命令行运行也可以开启图形界面运行，可以设置cookie，可以将测试结果制作成图表方便查看。
+Pylot配置
+第1步：下载Pylot  （必须）
+第2步：安装Python 2.5 + （">
 <meta property="og:type" content="article">
-<meta property="og:title" content="KVC结合NSCoding实例代码">
-<meta property="og:url" content="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/">
+<meta property="og:title" content="Web 并发压力测试工具Pylot的安装以及使用">
+<meta property="og:url" content="http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/">
 <meta property="og:site_name" content="编程年代">
-<meta property="og:description" content="item.h
-1234567891011#import &lt;Foundation/Foundation.h&gt;@interface Item : NSObject@property (nonatomic, strong) NSString *identifier;@property (nonatomic, strong) NSString *title;@property (nonatom">
+<meta property="og:description" content="ApacheBench 一把的泪，不说了，下面介绍一个python的并发测试工具Pylot
+以下为mac下得安装方法，window的自行Google
+Pylot介绍
+一个简单易用，跨平台的开源网站压力测试工具，可以从命令行运行也可以开启图形界面运行，可以设置cookie，可以将测试结果制作成图表方便查看。
+Pylot配置
+第1步：下载Pylot  （必须）
+第2步：安装Python 2.5 + （">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="KVC结合NSCoding实例代码">
-<meta name="twitter:description" content="item.h
-1234567891011#import &lt;Foundation/Foundation.h&gt;@interface Item : NSObject@property (nonatomic, strong) NSString *identifier;@property (nonatomic, strong) NSString *title;@property (nonatom">
+<meta name="twitter:title" content="Web 并发压力测试工具Pylot的安装以及使用">
+<meta name="twitter:description" content="ApacheBench 一把的泪，不说了，下面介绍一个python的并发测试工具Pylot
+以下为mac下得安装方法，window的自行Google
+Pylot介绍
+一个简单易用，跨平台的开源网站压力测试工具，可以从命令行运行也可以开启图形界面运行，可以设置cookie，可以将测试结果制作成图表方便查看。
+Pylot配置
+第1步：下载Pylot  （必须）
+第2步：安装Python 2.5 + （">
 <link rel="publisher" href="103768401689473800000">
 
   
@@ -86,14 +101,14 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-kvc结合nscoding实例代码" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Web-并发压力测试工具Pylot的安装以及使用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/06/09/kvc结合nscoding实例代码/" class="article-date">
-  <time datetime="2014-06-09T00:03:51.000Z" itemprop="datePublished">6月 9 2014</time>
+    <a href="/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/" class="article-date">
+  <time datetime="2014-11-27T11:19:31.000Z" itemprop="datePublished">11月 27 2014</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Object-c/">Object-c</a>
+    <a class="article-category-link" href="/categories/性能测试/">性能测试</a>
   </div>
 
   </div>
@@ -104,7 +119,7 @@ ga('send', 'pageview');
         
   
     <h1 class="article-title" itemprop="name">
-      KVC结合NSCoding实例代码
+      Web 并发压力测试工具Pylot的安装以及使用
     </h1>
   
 
@@ -112,23 +127,73 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="item-h">item.h</h4>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Item</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *identifier;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *title;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *notes;</div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)initWithTitle:(<span class="built_in">NSString</span> *)title notes:(<span class="built_in">NSString</span> *)notes;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-
-<h4 id="item-m">item.m</h4>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#import <span class="title">"Item.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">Item</span></span></div><div class="line"></div><div class="line">- (<span class="built_in">NSArray</span> *)keysForEncoding;</div><div class="line">{</div><div class="line">    <span class="keyword">return</span> [<span class="built_in">NSArray</span> arrayWithObjects:<span class="string">@"title"</span>, <span class="string">@"notes"</span>, <span class="string">@"identifier"</span>, <span class="literal">nil</span>];</div><div class="line">}</div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)initWithTitle:(<span class="built_in">NSString</span> *)title notes:(<span class="built_in">NSString</span> *)notes</div><div class="line">{</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>)</div><div class="line">    {</div><div class="line">        <span class="keyword">self</span><span class="variable">.title</span> = title;</div><div class="line">        <span class="keyword">self</span><span class="variable">.notes</span> = notes;</div><div class="line">        </div><div class="line">        <span class="comment">// create a unique identifier for this object, helps with state restoration</span></div><div class="line">        <span class="built_in">NSUUID</span> *uuid = [[<span class="built_in">NSUUID</span> alloc] init];</div><div class="line">        <span class="keyword">self</span><span class="variable">.identifier</span> = [uuid UUIDString];</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// we are being created based on what was archived earlier</span></div><div class="line">- (<span class="keyword">id</span>)initWithCoder:(NSCoder *)aDecoder</div><div class="line">{</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>)</div><div class="line">    {</div><div class="line">        <span class="keyword">for</span> (<span class="built_in">NSString</span> *key <span class="keyword">in</span> <span class="keyword">self</span><span class="variable">.keysForEncoding</span>)</div><div class="line">        {</div><div class="line">            [<span class="keyword">self</span> setValue:[aDecoder decodeObjectForKey:key] forKey:key];</div><div class="line">        }</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// we are asked to be archived, encode all our data</span></div><div class="line">- (<span class="keyword">void</span>)encodeWithCoder:(NSCoder *)aCoder</div><div class="line">{</div><div class="line">	<span class="keyword">for</span> (<span class="built_in">NSString</span> *key <span class="keyword">in</span> <span class="keyword">self</span><span class="variable">.keysForEncoding</span>)</div><div class="line">    {</div><div class="line">        [aCoder encodeObject:[<span class="keyword">self</span> valueForKey:key] forKey:key];</div><div class="line">    }</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-
-<h3 id="巧妙的利用KVC辅助实现对象的序列化">巧妙的利用KVC辅助实现对象的序列化</h3>
+        <p>ApacheBench 一把的泪，不说了，下面介绍一个python的并发测试工具<code>Pylot</code></p>
+<p>以下为mac下得安装方法，window的自行Google</p>
+<h3 id="Pylot介绍">Pylot介绍</h3>
+<p>一个简单易用，跨平台的开源网站压力测试工具，可以从命令行运行也可以开启图形界面运行，可以设置cookie，可以将测试结果制作成图表方便查看。</p>
+<h3 id="Pylot配置">Pylot配置</h3>
+<p>第1步：下载Pylot  （必须）</p>
+<p>第2步：安装Python 2.5 + （必须）</p>
+<p>第3步：安装wxPython（可选 - 用于GUI模式）</p>
+<p>从这里获取安装程序：<a href="http://www.wxpython.org/download.php" target="_blank" rel="external">http://www.wxpython.org/download.php</a></p>
+<p>第4步：安装numpy的（可选 - 用于报告以图表）</p>
+<p>从这里获取安装程序：<a href="http://sourceforge.net/projects/numpy" target="_blank" rel="external">http://sourceforge.net/projects/numpy</a></p>
+<p>第5步：安装matplotlib的（可选 - 用于报告以图表）</p>
+<p>从这里获取安装程序：<a href="http://sourceforge.net/projects/matplotlib" target="_blank" rel="external">http://sourceforge.net/projects/matplotlib</a></p>
+<pre><code>wxPython,numpy,matplotlib 手动安装比较麻烦，建议使用easy_install安装
+</code></pre><h3 id="easy_install安装">easy_install安装</h3>
+<p>官网的安装方式：<a href="https://pypi.python.org/pypi/setuptools#unix-wget" target="_blank" rel="external">https://pypi.python.org/pypi/setuptools#unix-wget</a></p>
+<p>我们直接这样安装：</p>
+<pre><code>wget http<span class="variable">s:</span>//bootstrap.pypa.io/ez_setup.<span class="keyword">py</span> -O - | sudo <span class="keyword">python</span>
+</code></pre><p>中间停住的时候便输入你的root密码，回车</p>
+<h3 id="Pylot安装">Pylot安装</h3>
+<p>下载地址 ：<a href="http://pylt.googlecode.com/files/pylot_1.26.zip" target="_blank" rel="external">http://pylt.googlecode.com/files/pylot_1.26.zip</a></p>
+<p>下载后直接解压即可</p>
+<h3 id="安装依赖包">安装依赖包</h3>
+<pre><code><span class="title">easy_install</span> wxpython numpy matplotlib
+</code></pre><h3 id="Pylot使用">Pylot使用</h3>
+<p>　　进入Pylot解压的目录</p>
+<p>　　首先需要配置一下testcases.xml这个文件。这个文件包含了需要测试的目标url以及具体的测试内容。</p>
+<p>　　大家打开testcases.xml之后可以看到两个<case>……</case>，因为我们只是要一个简单的实例，所以我们把第二个<case>….</case>删掉，然后把第一个<case>….</case>里面的<url></url>改成你需要测试的url。我的就是<url><a href="http://www.langman1dian.com" target="_blank" rel="external">http://www.langman1dian.com</a></url>。改好之后整个文章内容是这样的<br>　　<br>`</p>
+<p><testcases><br>    <!-- SAMPLE TEST CASE --><br>    <case><br>        <url><a href="http://3wmao.com" target="_blank" rel="external">http://3wmao.com</a></url><br>    </case><br>    —&gt;<br></testcases><br>`</p>
+<p>好了，保存关闭。运行以下命令</p>
+<pre><code><span class="keyword">python</span> run.<span class="keyword">py</span> -<span class="keyword">a</span> <span class="number">50</span>
+</code></pre><p> 输出的html信息在results目录下</p>
+<h3 id="参数详细说明">参数详细说明</h3>
+<p>-a, —agents=NUM_AGENTS</p>
+<p>设置同时访问用户数量</p>
+<p>-d, —duration=DURATION</p>
+<p>设置总测试时间（秒）</p>
+<p>-r, —rampup=RAMPUP</p>
+<p>设置提升量（秒），我也没太搞懂这个是什么意思</p>
+<p>-i, —interval=INTERVAL </p>
+<p>设置访问间隔（毫秒）</p>
+<p>-x, —xmlfile=TEST_CASE_XML</p>
+<p>设置要使用的xml文件，默认testcase.xml</p>
+<p>-o, —output_dir=PATH</p>
+<p>设置输出文件路径</p>
+<p>-n, —name=TESTNAME</p>
+<p>设置测试名称</p>
+<p>-l, —log_msgs</p>
+<p>设置是否需要日志信息</p>
+<p>-b, —blocking  </p>
+<p>设置是否开启锁定模式，如果开启会锁定输出直到测试结束</p>
+<p>-g, —gui  </p>
+<p>设置是否使用图形界面</p>
+<p>-p, —port=PORT</p>
+<p>设置xml-rpc监听的端口</p>
+<p>使用-g选项的话就可以开启图形界面，图形界面我就不详细介绍了，虽然有几个英文单词吧，但是大家应该一眼就能看明白怎么用了，还是挺方便的。</p>
+<p>参考来源：<a href="http://www.cnblogs.com/numbbbbb/archive/2013/04/19/3029959.html" target="_blank" rel="external">http://www.cnblogs.com/numbbbbb/archive/2013/04/19/3029959.html</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/" data-id="xs01d3a4jz4n7nk3" class="article-share-link">Share</a>
+      <a data-url="http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/" data-id="m5jwj00x4v6t2tu1" class="article-share-link">Share</a>
       
-        <a href="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/#disqus_thread" class="article-comment-link">Comments</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KVC/">KVC</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pylot/">Pylot</a></li></ul>
 
     </footer>
   </div>
@@ -136,19 +201,10 @@ ga('send', 'pageview');
     
 <nav id="article-nav">
   
-    <a href="/2014/06/11/block的使用/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          block的使用
-        
-      </div>
-    </a>
   
-  
-    <a href="/2014/06/08/zf2框架初始化速度大提升/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2014/11/27/-configure-make-make-install/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">zf2框架初始化高速插件</div>
+      <div class="article-nav-title">./configure,make,make install</div>
     </a>
   
 </nav>
@@ -159,7 +215,7 @@ ga('send', 'pageview');
 
   <section id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="post-kvc结合nscoding实例代码" data-title="KVC结合NSCoding实例代码" data-url="http://yuhaya.github.io/2014/06/09/kvc结合nscoding实例代码/"></div>
+    <div class="ds-thread" data-thread-key="post-Web-并发压力测试工具Pylot的安装以及使用" data-title="Web 并发压力测试工具Pylot的安装以及使用" data-url="http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">

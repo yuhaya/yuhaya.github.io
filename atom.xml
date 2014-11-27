@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-11-27T10:04:23.734Z</updated>
+  <updated>2014-11-27T11:46:14.656Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -13,6 +13,78 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Web 并发压力测试工具Pylot的安装以及使用]]></title>
+    <link href="http://yuhaya.github.io/2014/11/27/Web-%E5%B9%B6%E5%8F%91%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7Pylot%E7%9A%84%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E4%BD%BF%E7%94%A8/"/>
+    <id>http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/</id>
+    <published>2014-11-27T11:19:31.000Z</published>
+    <updated>2014-11-27T11:45:44.000Z</updated>
+    <content type="html"><![CDATA[<p>ApacheBench 一把的泪，不说了，下面介绍一个python的并发测试工具<code>Pylot</code></p>
+<p>以下为mac下得安装方法，window的自行Google</p>
+<h3 id="Pylot介绍">Pylot介绍</h3>
+<p>一个简单易用，跨平台的开源网站压力测试工具，可以从命令行运行也可以开启图形界面运行，可以设置cookie，可以将测试结果制作成图表方便查看。</p>
+<h3 id="Pylot配置">Pylot配置</h3>
+<p>第1步：下载Pylot  （必须）</p>
+<p>第2步：安装Python 2.5 + （必须）</p>
+<p>第3步：安装wxPython（可选 - 用于GUI模式）</p>
+<p>从这里获取安装程序：<a href="http://www.wxpython.org/download.php" target="_blank" rel="external">http://www.wxpython.org/download.php</a></p>
+<p>第4步：安装numpy的（可选 - 用于报告以图表）</p>
+<p>从这里获取安装程序：<a href="http://sourceforge.net/projects/numpy" target="_blank" rel="external">http://sourceforge.net/projects/numpy</a></p>
+<p>第5步：安装matplotlib的（可选 - 用于报告以图表）</p>
+<p>从这里获取安装程序：<a href="http://sourceforge.net/projects/matplotlib" target="_blank" rel="external">http://sourceforge.net/projects/matplotlib</a></p>
+<pre><code>wxPython,numpy,matplotlib 手动安装比较麻烦，建议使用easy_install安装
+</code></pre><h3 id="easy_install安装">easy_install安装</h3>
+<p>官网的安装方式：<a href="https://pypi.python.org/pypi/setuptools#unix-wget" target="_blank" rel="external">https://pypi.python.org/pypi/setuptools#unix-wget</a></p>
+<p>我们直接这样安装：</p>
+<pre><code>wget http<span class="variable">s:</span>//bootstrap.pypa.io/ez_setup.<span class="keyword">py</span> -O - | sudo <span class="keyword">python</span>
+</code></pre><p>中间停住的时候便输入你的root密码，回车</p>
+<h3 id="Pylot安装">Pylot安装</h3>
+<p>下载地址 ：<a href="http://pylt.googlecode.com/files/pylot_1.26.zip" target="_blank" rel="external">http://pylt.googlecode.com/files/pylot_1.26.zip</a></p>
+<p>下载后直接解压即可</p>
+<h3 id="安装依赖包">安装依赖包</h3>
+<pre><code><span class="title">easy_install</span> wxpython numpy matplotlib
+</code></pre><h3 id="Pylot使用">Pylot使用</h3>
+<p>　　进入Pylot解压的目录</p>
+<p>　　首先需要配置一下testcases.xml这个文件。这个文件包含了需要测试的目标url以及具体的测试内容。</p>
+<p>　　大家打开testcases.xml之后可以看到两个<case>……</case>，因为我们只是要一个简单的实例，所以我们把第二个<case>….</case>删掉，然后把第一个<case>….</case>里面的<url></url>改成你需要测试的url。我的就是<url><a href="http://www.langman1dian.com" target="_blank" rel="external">http://www.langman1dian.com</a></url>。改好之后整个文章内容是这样的<br>　　<br>`</p>
+<p><testcases><br>    <!-- SAMPLE TEST CASE --><br>    <case><br>        <url><a href="http://3wmao.com" target="_blank" rel="external">http://3wmao.com</a></url><br>    </case><br>    —&gt;<br></testcases><br>`</p>
+<p>好了，保存关闭。运行以下命令</p>
+<pre><code><span class="keyword">python</span> run.<span class="keyword">py</span> -<span class="keyword">a</span> <span class="number">50</span>
+</code></pre><p> 输出的html信息在results目录下</p>
+<h3 id="参数详细说明">参数详细说明</h3>
+<p>-a, —agents=NUM_AGENTS</p>
+<p>设置同时访问用户数量</p>
+<p>-d, —duration=DURATION</p>
+<p>设置总测试时间（秒）</p>
+<p>-r, —rampup=RAMPUP</p>
+<p>设置提升量（秒），我也没太搞懂这个是什么意思</p>
+<p>-i, —interval=INTERVAL </p>
+<p>设置访问间隔（毫秒）</p>
+<p>-x, —xmlfile=TEST_CASE_XML</p>
+<p>设置要使用的xml文件，默认testcase.xml</p>
+<p>-o, —output_dir=PATH</p>
+<p>设置输出文件路径</p>
+<p>-n, —name=TESTNAME</p>
+<p>设置测试名称</p>
+<p>-l, —log_msgs</p>
+<p>设置是否需要日志信息</p>
+<p>-b, —blocking  </p>
+<p>设置是否开启锁定模式，如果开启会锁定输出直到测试结束</p>
+<p>-g, —gui  </p>
+<p>设置是否使用图形界面</p>
+<p>-p, —port=PORT</p>
+<p>设置xml-rpc监听的端口</p>
+<p>使用-g选项的话就可以开启图形界面，图形界面我就不详细介绍了，虽然有几个英文单词吧，但是大家应该一眼就能看明白怎么用了，还是挺方便的。</p>
+<p>参考来源：<a href="http://www.cnblogs.com/numbbbbb/archive/2013/04/19/3029959.html" target="_blank" rel="external">http://www.cnblogs.com/numbbbbb/archive/2013/04/19/3029959.html</a></p>
+]]></content>
+    
+    
+      <category term="Pylot" scheme="http://yuhaya.github.io/tags/Pylot/"/>
+    
+      <category term="性能测试" scheme="http://yuhaya.github.io/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[./configure,make,make install]]></title>
@@ -1043,42 +1115,6 @@
       <category term="zf2框架初始化高速插件" scheme="http://yuhaya.github.io/tags/zf2%E6%A1%86%E6%9E%B6%E5%88%9D%E5%A7%8B%E5%8C%96%E9%AB%98%E9%80%9F%E6%8F%92%E4%BB%B6/"/>
     
       <category term="Zend Framework 2" scheme="http://yuhaya.github.io/categories/Zend-Framework-2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Singletons in Objective-C]]></title>
-    <link href="http://yuhaya.github.io/2014/05/12/singletons-in-objective-c/"/>
-    <id>http://yuhaya.github.io/2014/05/12/singletons-in-objective-c/</id>
-    <published>2014-05-11T23:39:42.000Z</published>
-    <updated>2014-05-12T00:21:35.000Z</updated>
-    <content type="html"><![CDATA[<p>One of my most used design patterns when developing for iOS is the singleton pattern. It’s an extremely powerful way to share data between different parts of code without having to pass the data around manually. More about the singleton pattern and other patterns can be found in this excellent book:</p>
-<h1 id="Background">Background</h1>
-<p>Singleton classes are an important concept to understand because they exhibit an extremely useful design pattern. This idea is used throughout the iPhone SDK, for example, UIApplication has a method called sharedApplication which when called from anywhere will return the UIApplication instance which relates to the currently running application.</p>
-<h1 id="How_to_implement">How to implement</h1>
-<p>You can implement a singleton class in Objective-C using the following code:</p>
-<p>MyManager.h</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#import <span class="title">&lt;foundation/Foundation.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MyManager</span> : <span class="title">NSObject</span> </span>{</div><div class="line">    <span class="built_in">NSString</span> *someProperty;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, retain) <span class="built_in">NSString</span> *someProperty;</div><div class="line"></div><div class="line">+ (<span class="keyword">id</span>)sharedManager;</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-
-<p>MyManager.m</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#import <span class="title">"MyManager.h"</span></span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MyManager</span></span></div><div class="line"></div><div class="line"><span class="keyword">@synthesize</span> someProperty;</div><div class="line"></div><div class="line"><span class="preprocessor">#pragma mark Singleton Methods</span></div><div class="line"></div><div class="line">+ (<span class="keyword">id</span>)sharedManager {</div><div class="line">    <span class="keyword">static</span> MyManager *sharedMyManager = <span class="literal">nil</span>;</div><div class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</div><div class="line">    <span class="built_in">dispatch_once</span>(&onceToken, ^{</div><div class="line">        sharedMyManager = [[<span class="keyword">self</span> alloc] init];</div><div class="line">    });</div><div class="line">    <span class="keyword">return</span> sharedMyManager;</div><div class="line">}</div><div class="line"></div><div class="line">- (<span class="keyword">id</span>)init {</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) {</div><div class="line">      someProperty = [[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"Default Property Value"</span>];</div><div class="line">  }</div><div class="line">  <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)dealloc {</div><div class="line">  <span class="comment">// Should never be called, but just here for clarity really.</span></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-
-<p>What this does is it defines a static variable (but only global to this translation unit)) called <code>sharedMyManager</code> which is then initialised once and only once in <code>sharedManager</code>. The way we ensure that it’s only created once is by using the <code>dispatch_once</code> method from <code>Grand Central Dispatch (GCD)</code>. This is thread safe and handled entirely by the OS for you so that you don’t have to worry about it at all.</p>
-<p>However, if you would rather not use GCD then you should use the following code for <code>sharedManager</code>:</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">+ (<span class="keyword">id</span>)sharedManager {</div><div class="line">    <span class="keyword">static</span> MyManager *sharedMyManager = <span class="literal">nil</span>;</div><div class="line">    <span class="keyword">@synchronized</span>(<span class="keyword">self</span>) {</div><div class="line">        <span class="keyword">if</span> (sharedMyManager == <span class="literal">nil</span>)</div><div class="line">            sharedMyManager = [[<span class="keyword">self</span> alloc] init];</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> sharedMyManager;</div><div class="line">}</div></pre></td></tr></table></figure>
-
-<p>Then you can reference the singleton from anywhere by calling the following function:</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">MyManager *sharedManager </span>=<span class="string"> [MyManager sharedManager];</span></div></pre></td></tr></table></figure>
-
-<p>I’ve used this extensively throughout my code for things such as creating a singleton to handle CoreLocation or CoreData functions.</p>
-<h1 id="Non-ARC_code">Non-ARC code</h1>
-<p>Not that I recommend it, but if you are not using Automatic Reference Counting (ARC), then you should use the following code:</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">import <span class="string">"MyManager.h"</span></div><div class="line"></div><div class="line"><span class="keyword">static</span> MyManager *sharedMyManager = <span class="literal">nil</span>;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">MyManager</span></span></div><div class="line"></div><div class="line"><span class="keyword">@synthesize</span> someProperty;</div><div class="line"></div><div class="line"><span class="preprocessor">#pragma mark Singleton Methods</span></div><div class="line">+ (<span class="keyword">id</span>)sharedManager {</div><div class="line">  <span class="keyword">@synchronized</span>(<span class="keyword">self</span>) {</div><div class="line">      <span class="keyword">if</span>(sharedMyManager == <span class="literal">nil</span>)</div><div class="line">          sharedMyManager = [[<span class="keyword">self</span> alloc] init];</div><div class="line">  }</div><div class="line">  <span class="keyword">return</span> sharedMyManager;</div><div class="line">}</div><div class="line">+ (<span class="keyword">id</span>)allocWithZone:(NSZone *)zone {</div><div class="line">  <span class="keyword">@synchronized</span>(<span class="keyword">self</span>){</div><div class="line">        <span class="keyword">if</span>(sharedMyManager == <span class="literal">nil</span>){</div><div class="line">            sharedMyManager = [<span class="keyword">super</span> allocWithZone:zone];</div><div class="line">        }</div><div class="line">  }</div><div class="line">  <span class="keyword">return</span> sharedMyManager;</div><div class="line">}</div><div class="line">- (<span class="keyword">id</span>)copyWithZone:(NSZone *)zone {</div><div class="line">  <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line">- (<span class="keyword">id</span>)retain {</div><div class="line">  <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line">- (<span class="keyword">unsigned</span>)retainCount {</div><div class="line">  <span class="keyword">return</span> UINT_MAX; <span class="comment">//denotes an object that cannot be released</span></div><div class="line">}</div><div class="line">- (<span class="keyword">oneway</span> <span class="keyword">void</span>)release {</div><div class="line">  <span class="comment">// never release</span></div><div class="line">}</div><div class="line">- (<span class="keyword">id</span>)autorelease {</div><div class="line">  <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line">- (<span class="keyword">id</span>)init {</div><div class="line">  <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) {</div><div class="line">      someProperty = [[<span class="built_in">NSString</span> alloc] initWithString:<span class="string">@"Default Property Value"</span>];</div><div class="line">  }</div><div class="line">  <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div><div class="line">- (<span class="keyword">void</span>)dealloc {</div><div class="line">  <span class="comment">// Should never be called, but just here for clarity really.</span></div><div class="line">  [someProperty release];</div><div class="line">  [<span class="keyword">super</span> dealloc];</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
-
-]]></content>
-    
-    
-      <category term="Object-c" scheme="http://yuhaya.github.io/categories/Object-c/"/>
     
   </entry>
   
