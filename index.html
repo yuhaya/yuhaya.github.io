@@ -85,6 +85,73 @@ ga('send', 'pageview');
       <div class="outer">
         <section id="main">
   
+    <article id="post--configure-make-make-install" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/27/-configure-make-make-install/" class="article-date">
+  <time datetime="2014-11-27T09:27:43.000Z" itemprop="datePublished">11月 27 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/C-C/">C/C++</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/27/-configure-make-make-install/">./configure,make,make install</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天没事折腾apache bench，发现在压力数值调大的时候发生异常，网上各种方法试过都无解。。。</p>
+<p>正题：脚本开发人员一般很少接触源代码编译的工作，即使用到，很多也不清楚具体命令的含义，今天就详细解释一下</p>
+<pre><code>这几个命令都是典型的使用GNU的AUTOCONF和AUTOMAKE产生的程序的安装步骤
+</code></pre><h4 id="-/configure">./configure</h4>
+<p>是用来检测你的安装平台的目标特征的。比如它会检测你是不是有CC或GCC，并不是需要CC或GCC，它是个shell脚本</p>
+<p>configure，这一步一般用来生成 Makefile，为下一步的编译做准备，</p>
+<p>你可以通过在 configure 后加上参数来对安装进行控制，</p>
+<p>比如代码:./configure –prefix=/usr </p>
+<p>意思是将该软件安装在 /usr 下面，</p>
+<p>执行文件就会安装在 /usr/bin （而不是默认的 /usr/local/bin),</p>
+<p>资源文件就会安装在 /usr/share（而不是默认的/usr/local/share）。</p>
+<p>同时一些软件的配置文件你可以通过指定 –sys-config= 参数进行设定。</p>
+<p>有一些软件还可以加上 –with、–enable、–without、–disable 等等参数对编译加以控制，</p>
+<p>你可以通过允许 ./configure –help 察看详细的说明帮助。</p>
+<pre><code>configure是一个<span class="keyword">shell</span>脚本，它可以自动设定源程序以符合各种不同平台上Unix系统的特性，并且根据系统叁数及环境产生合适的Makefile文件或是C的头文件(header <span class="keyword">file</span>)，让源程序可以很方便地在这些不同的平台上被编译连接。
+</code></pre><h4 id="make">make</h4>
+<p>是用来编译的，它从Makefile中读取指令，然后编译。</p>
+<p>make，这一步就是编译，大多数的源代码包都经过这一步进行编译（当然有些perl或python编写的软件需要调用perl或python来进行编译）。</p>
+<p>如果 在 make 过程中出现 error ，你就要记下错误代码（注意不仅仅是最后一行），然后你可以向开发者提交 bugreport（一般在 INSTALL 里有提交地址），或者你的系统少了一些依赖库等，这些需要自己仔细研究错误代码</p>
+<h4 id="make_install">make install</h4>
+<p>是用来安装的，它也从Makefile中读取指令，安装到指定的位置。</p>
+<p>make insatll，这条命令来进行安装（当然有些软件需要先运行 make check 或 make test 来进行一些测试），这一步一般需要你有 root 权限（因为要向系统写入文件）。</p>
+<pre><code>AUTOMAKE和AUTOCONF是非常有用的用来发布<span class="keyword">C</span>程序的东西。
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yuhaya.github.io/2014/11/27/-configure-make-make-install/" data-id="s00bttxknzb6fdkw" class="article-share-link">Share</a>
+      
+        <a href="http://yuhaya.github.io/2014/11/27/-configure-make-make-install/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编译/">编译</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/11/19/hello-world/" class="article-date">
@@ -363,113 +430,6 @@ ga('send', 'pageview');
 
 
   
-    <article id="post-grand-central-dispatch介绍和使用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/08/15/grand-central-dispatch介绍和使用/" class="article-date">
-  <time datetime="2014-08-14T23:30:21.000Z" itemprop="datePublished">8月 15 2014</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/GCD/">GCD</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/08/15/grand-central-dispatch介绍和使用/">Grand Central Dispatch介绍和使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>转载自：<a href="http://blog.csdn.net/totogo2010/article/details/8016129" target="_blank" rel="external">http://blog.csdn.net/totogo2010/article/details/8016129</a></p>
-<h2 id="介绍：">介绍：</h2>
-<p>Grand Central Dispatch 简称（GCD）是苹果公司开发的技术，以优化的应用程序支持多核心处理器和其他的对称多处理系统的系统。这建立在任务并行执行的线程池模式的基础上的。它首次发布在Mac OS X 10.6 ，iOS 4及以上也可用。</p>
-<h2 id="设计：">设计：</h2>
-<p>GCD的工作原理是：让程序平行排队的特定任务，根据可用的处理资源，安排他们在任何可用的处理器核心上执行任务。<br>一个任务可以是一个函数(function)或者是一个block。 GCD的底层依然是用线程实现，不过这样可以让程序员不用关注实现的细节。</p>
-<p>GCD中的FIFO队列称为dispatch queue，它可以保证先进来的任务先得到执行</p>
-<h2 id="dispatch_queue分为下面三种：">dispatch queue分为下面三种：</h2>
-<h3 id="Serial">Serial</h3>
-<p>又称为private dispatch queues，同时只执行一个任务。Serial queue通常用于同步访问特定的资源或数据。当你创建多个Serial queue时，虽然它们各自是同步执行的，但Serial queue与Serial queue之间是并发执行的。</p>
-<h3 id="Concurrent">Concurrent</h3>
-<p>又称为global dispatch queue，可以并发地执行多个任务，但是执行完成的顺序是随机的。</p>
-<h3 id="Main_dispatch_queue">Main dispatch queue</h3>
-<p>它是全局可用的serial queue，它是在应用程序主线程上执行任务的。</p>
-<p>我们看看dispatch queue如何使用</p>
-<ol>
-<li><p>常用的方法dispatch_async</p>
-<p> 为了避免界面在处理耗时的操作时卡死，比如读取网络数据，IO,数据库读写等，我们会在另外一个线程中处理这些操作，然后通    知主线程更新界面。</p>
-<p> 用GCD实现这个流程的操作比前面介绍的NSThread  NSOperation的方法都要简单。代码框架结构如下：</p>
-</li>
-</ol>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function">dispatch_async</span>(<span class="function">dispatch_get_global_queue</span>(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{</div><div class="line">    <span class="comment">// 耗时的操作</span></div><div class="line">    <span class="function">dispatch_async</span>(<span class="function">dispatch_get_main_queue</span>(), ^{</div><div class="line">        <span class="comment">// 更新界面</span></div><div class="line">    });</div><div class="line">});</div></pre></td></tr></table></figure>
-
-<p>如果这样还不清晰的话，那我们还是用上两篇博客中的下载图片为例子，代码如下：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^{</div><div class="line">    <span class="built_in">NSURL</span> * url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://avatar.csdn.net/2/C/D/1_totogo2010.jpg"</span>];</div><div class="line">    NSData * data = [[NSData alloc]initWithContentsOfURL:url];</div><div class="line">    <span class="built_in">UIImage</span> *image = [[<span class="built_in">UIImage</span> alloc]initWithData:data];</div><div class="line">    <span class="keyword">if</span> (data != <span class="literal">nil</span>) {</div><div class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^{</div><div class="line">            <span class="keyword">self</span><span class="variable">.imageView</span><span class="variable">.image</span> = image;</div><div class="line">         });</div><div class="line">    }</div><div class="line">});</div></pre></td></tr></table></figure>
-
-<p>是不是代码比NSThread  NSOperation简洁很多，而且GCD会自动根据任务在多核处理器上分配资源，优化程序。</p>
-<p>系统给每一个应用程序提供了三个concurrent dispatch queues。这三个并发调度队列是全局的，它们只有优先级的不同。因为是全局的，我们不需要去创建。我们只需要通过使用函数dispath_get_global_queue去得到队列，如下：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">dispatch_queue_t globalQ </span>=<span class="string"> dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span></div></pre></td></tr></table></figure>
-
-<p>这里也用到了系统默认就有一个串行队列main_queue</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">dispatch_queue_t mainQ </span>=<span class="string"> dispatch_get_main_queue();</span></div></pre></td></tr></table></figure>
-
-<p>dispatch_queue_t mainQ = dispatch_get_main_queue();  </p>
-<ol>
-<li>dispatch_queue_t mainQ = dispatch_get_main_queue();</li>
-</ol>
-<p>dispatch_group_async可以实现监听一组任务是否完成，完成后得到通知执行其他的操作。这个方法很有用，比如你执行三个下载任务，当三个任务都下载完成后你才通知界面说完成的了。下面是一段例子代码：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>);</div><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line">dispatch_group_async(group, queue, ^{</div><div class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">1</span>];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"group1"</span>);</div><div class="line">});</div><div class="line">dispatch_group_async(group, queue, ^{</div><div class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"group2"</span>);</div><div class="line">});</div><div class="line">dispatch_group_async(group, queue, ^{</div><div class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">3</span>];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"group3"</span>);</div><div class="line">});</div><div class="line">dispatch_group_notify(group, dispatch_get_main_queue(), ^{</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"updateUi"</span>);</div><div class="line">});</div><div class="line">dispatch_release(group);</div></pre></td></tr></table></figure>
-
-<p>dispatch_group_async是异步的方法，运行后可以看到打印结果：</p>
-<p>2012-09-25 16:04:16.737 gcdTest[43328:11303] group1</p>
-<p>2012-09-25 16:04:17.738 gcdTest[43328:12a1b] group2</p>
-<p>2012-09-25 16:04:18.738 gcdTest[43328:13003] group3</p>
-<p>2012-09-25 16:04:18.739 gcdTest[43328:f803] updateUi</p>
-<p>每个一秒打印一个，当第三个任务执行后，upadteUi被打印。</p>
-<ol>
-<li>dispatch_barrier_async的使用</li>
-</ol>
-<p>dispatch_barrier_async是在前面的任务执行结束后它才执行，而且它后面的任务等它执行完成之后才会执行</p>
-<p>例子代码如下：</p>
-<figure class="highlight object-c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_queue_t</span> queue = dispatch_queue_create(<span class="string">"gcdtest.rongfzh.yc"</span>, DISPATCH_QUEUE_CONCURRENT);</div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^{</div><div class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">2</span>];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"dispatch_async1"</span>);</div><div class="line">});</div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^{</div><div class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">4</span>];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"dispatch_async2"</span>);</div><div class="line">});</div><div class="line">dispatch_barrier_async(queue, ^{</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"dispatch_barrier_async"</span>);</div><div class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">4</span>];</div><div class="line"></div><div class="line">});</div><div class="line"><span class="built_in">dispatch_async</span>(queue, ^{</div><div class="line">    [<span class="built_in">NSThread</span> sleepForTimeInterval:<span class="number">1</span>];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"dispatch_async3"</span>);</div><div class="line">});</div></pre></td></tr></table></figure>
-
-<p>打印结果：</p>
-<p>2012-09-25 16:20:33.967 gcdTest[45547:11203] dispatch_async1</p>
-<p>2012-09-25 16:20:35.967 gcdTest[45547:11303] dispatch_async2</p>
-<p>2012-09-25 16:20:35.967 gcdTest[45547:11303] dispatch_barrier_async</p>
-<p>2012-09-25 16:20:40.970 gcdTest[45547:11303] dispatch_async3</p>
-<p>请注意执行的时间，可以看到执行的顺序如上所述。</p>
-<ol>
-<li>dispatch_apply </li>
-</ol>
-<p>执行某个代码片段N次。</p>
-<p>dispatch_apply(5, globalQ, ^(size_t index) {<br>    // 执行5次<br>});</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yuhaya.github.io/2014/08/15/grand-central-dispatch介绍和使用/" data-id="hjcyjeqdp5dmrpwp" class="article-share-link">Share</a>
-      
-        <a href="http://yuhaya.github.io/2014/08/15/grand-central-dispatch介绍和使用/#disqus_thread" class="article-comment-link">Comments</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dispatch/">dispatch</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -483,7 +443,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AFNetworking/">AFNetworking</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Apache/">Apache</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GCD/">GCD</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Laravel/">Laravel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Object-c/">Object-c</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iquery/">iquery</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/AFNetworking/">AFNetworking</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/C-C/">C/C++</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/GCD/">GCD</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Laravel/">Laravel</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Object-c/">Object-c</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Yii/">Yii</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Zend-Framework-2/">Zend Framework 2</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iquery/">iquery</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/php/">php</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/public/">public</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/wireshark/">wireshark</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/性能测试/">性能测试</a><span class="category-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -492,7 +452,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AFNetworking/">AFNetworking</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/">Event</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ioc/">Ioc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Yii-debug/">Yii debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ab/">ab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/block/">block</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/">cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dispatch/">dispatch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hhvm/">hhvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iframe/">iframe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle-paperwhite-2/">kindle paperwhite 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/performance/">performance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typedef/">typedef</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wireshark/">wireshark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2/">zf2</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2框架初始化高速插件/">zf2框架初始化高速插件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图形/">图形</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时器/">定时器</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AFNetworking/">AFNetworking</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Event/">Event</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ioc/">Ioc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Yii-debug/">Yii debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ab/">ab</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/block/">block</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/const/">const</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cookie/">cookie</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dispatch/">dispatch</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hhvm/">hhvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iframe/">iframe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kindle-paperwhite-2/">kindle paperwhite 2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvc/">mvc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/performance/">performance</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/typedef/">typedef</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/wireshark/">wireshark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2/">zf2</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zf2框架初始化高速插件/">zf2框架初始化高速插件</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图形/">图形</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/定时器/">定时器</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/编译/">编译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -501,7 +461,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii-debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle-paperwhite-2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a>
+      <a href="/tags/AFNetworking/" style="font-size: 10.00px;">AFNetworking</a><a href="/tags/Event/" style="font-size: 10.00px;">Event</a><a href="/tags/Ioc/" style="font-size: 10.00px;">Ioc</a><a href="/tags/KVC/" style="font-size: 10.00px;">KVC</a><a href="/tags/Yii-debug/" style="font-size: 10.00px;">Yii debug</a><a href="/tags/ab/" style="font-size: 10.00px;">ab</a><a href="/tags/block/" style="font-size: 20.00px;">block</a><a href="/tags/blog/" style="font-size: 10.00px;">blog</a><a href="/tags/c/" style="font-size: 10.00px;">c</a><a href="/tags/const/" style="font-size: 20.00px;">const</a><a href="/tags/cookie/" style="font-size: 10.00px;">cookie</a><a href="/tags/dispatch/" style="font-size: 20.00px;">dispatch</a><a href="/tags/hhvm/" style="font-size: 10.00px;">hhvm</a><a href="/tags/iframe/" style="font-size: 10.00px;">iframe</a><a href="/tags/kindle-paperwhite-2/" style="font-size: 10.00px;">kindle paperwhite 2</a><a href="/tags/mvc/" style="font-size: 10.00px;">mvc</a><a href="/tags/performance/" style="font-size: 10.00px;">performance</a><a href="/tags/typedef/" style="font-size: 10.00px;">typedef</a><a href="/tags/wireshark/" style="font-size: 10.00px;">wireshark</a><a href="/tags/zf2/" style="font-size: 20.00px;">zf2</a><a href="/tags/zf2框架初始化高速插件/" style="font-size: 10.00px;">zf2框架初始化高速插件</a><a href="/tags/图形/" style="font-size: 10.00px;">图形</a><a href="/tags/定时器/" style="font-size: 10.00px;">定时器</a><a href="/tags/编译/" style="font-size: 10.00px;">编译</a>
     </div>
   </div>
 
@@ -510,7 +470,7 @@ ga('send', 'pageview');
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">October 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">September 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">August 2014</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">July 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/06/">June 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05/">May 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04/">April 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -520,6 +480,10 @@ ga('send', 'pageview');
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/11/27/-configure-make-make-install/">./configure,make,make install</a>
+          </li>
         
           <li>
             <a href="/2014/11/19/hello-world/">Hello World</a>
@@ -535,10 +499,6 @@ ga('send', 'pageview');
         
           <li>
             <a href="/2014/08/16/ios-htttp网络请求cookie的读取与写入(nshttpcookiestorage)/">ios htttp网络请求cookie的读取与写入(NSHTTPCookieStorage)</a>
-          </li>
-        
-          <li>
-            <a href="/2014/08/15/grand-central-dispatch介绍和使用/">Grand Central Dispatch介绍和使用</a>
           </li>
         
       </ul>

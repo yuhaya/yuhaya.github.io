@@ -3,30 +3,29 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Foundation UIKit 框架类组织架构图 | 编程年代</title>
+  <title>./configure,make,make install | 编程年代</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Foundation框架
-图中灰色部分是OS X系统的,iOS不支持的。
-
-UIKit框架">
+  <meta name="description" content="今天没事折腾apache bench，发现在压力数值调大的时候发生异常，网上各种方法试过都无解。。。
+正题：脚本开发人员一般很少接触源代码编译的工作，即使用到，很多也不清楚具体命令的含义，今天就详细解释一下
+这几个命令都是典型的使用GNU的AUTOCONF和AUTOMAKE产生的程序的安装步骤
+./configure
+是用来检测你的安装平台的目标特征的。比如它会检测你是不是有CC或GCC，并不是需">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Foundation UIKit 框架类组织架构图">
-<meta property="og:url" content="http://yuhaya.github.io/2014/05/02/foundation-uikit-框架类组织架构图/">
+<meta property="og:title" content="./configure,make,make install">
+<meta property="og:url" content="http://yuhaya.github.io/2014/11/27/-configure-make-make-install/">
 <meta property="og:site_name" content="编程年代">
-<meta property="og:description" content="Foundation框架
-图中灰色部分是OS X系统的,iOS不支持的。
-
-UIKit框架">
-<meta property="og:image" content="/images/Foundation1.jpg">
-<meta property="og:image" content="/images/Foundation2.jpg">
-<meta property="og:image" content="/images/Foundation3.jpg">
-<meta property="og:image" content="/images/UIKit.jpg">
+<meta property="og:description" content="今天没事折腾apache bench，发现在压力数值调大的时候发生异常，网上各种方法试过都无解。。。
+正题：脚本开发人员一般很少接触源代码编译的工作，即使用到，很多也不清楚具体命令的含义，今天就详细解释一下
+这几个命令都是典型的使用GNU的AUTOCONF和AUTOMAKE产生的程序的安装步骤
+./configure
+是用来检测你的安装平台的目标特征的。比如它会检测你是不是有CC或GCC，并不是需">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Foundation UIKit 框架类组织架构图">
-<meta name="twitter:description" content="Foundation框架
-图中灰色部分是OS X系统的,iOS不支持的。
-
-UIKit框架">
+<meta name="twitter:title" content="./configure,make,make install">
+<meta name="twitter:description" content="今天没事折腾apache bench，发现在压力数值调大的时候发生异常，网上各种方法试过都无解。。。
+正题：脚本开发人员一般很少接触源代码编译的工作，即使用到，很多也不清楚具体命令的含义，今天就详细解释一下
+这几个命令都是典型的使用GNU的AUTOCONF和AUTOMAKE产生的程序的安装步骤
+./configure
+是用来检测你的安装平台的目标特征的。比如它会检测你是不是有CC或GCC，并不是需">
 <link rel="publisher" href="103768401689473800000">
 
   
@@ -96,14 +95,14 @@ ga('send', 'pageview');
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-foundation-uikit-框架类组织架构图" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post--configure-make-make-install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/05/02/foundation-uikit-框架类组织架构图/" class="article-date">
-  <time datetime="2014-05-02T12:03:18.000Z" itemprop="datePublished">5月 2 2014</time>
+    <a href="/2014/11/27/-configure-make-make-install/" class="article-date">
+  <time datetime="2014-11-27T09:27:43.000Z" itemprop="datePublished">11月 27 2014</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/categories/Object-c/">Object-c</a>
+    <a class="article-category-link" href="/categories/C-C/">C/C++</a>
   </div>
 
   </div>
@@ -114,7 +113,7 @@ ga('send', 'pageview');
         
   
     <h1 class="article-title" itemprop="name">
-      Foundation UIKit 框架类组织架构图
+      ./configure,make,make install
     </h1>
   
 
@@ -122,39 +121,50 @@ ga('send', 'pageview');
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Foundation框架">Foundation框架</h2>
-<p>图中灰色部分是OS X系统的,iOS不支持的。</p>
-<p><img src="/images/Foundation1.jpg" alt=""><br><img src="/images/Foundation2.jpg" alt=""><br><img src="/images/Foundation3.jpg" alt=""></p>
-<h2 id="UIKit框架">UIKit框架</h2>
-<p><img src="/images/UIKit.jpg" alt=""></p>
-
+        <p>今天没事折腾apache bench，发现在压力数值调大的时候发生异常，网上各种方法试过都无解。。。</p>
+<p>正题：脚本开发人员一般很少接触源代码编译的工作，即使用到，很多也不清楚具体命令的含义，今天就详细解释一下</p>
+<pre><code>这几个命令都是典型的使用GNU的AUTOCONF和AUTOMAKE产生的程序的安装步骤
+</code></pre><h4 id="-/configure">./configure</h4>
+<p>是用来检测你的安装平台的目标特征的。比如它会检测你是不是有CC或GCC，并不是需要CC或GCC，它是个shell脚本</p>
+<p>configure，这一步一般用来生成 Makefile，为下一步的编译做准备，</p>
+<p>你可以通过在 configure 后加上参数来对安装进行控制，</p>
+<p>比如代码:./configure –prefix=/usr </p>
+<p>意思是将该软件安装在 /usr 下面，</p>
+<p>执行文件就会安装在 /usr/bin （而不是默认的 /usr/local/bin),</p>
+<p>资源文件就会安装在 /usr/share（而不是默认的/usr/local/share）。</p>
+<p>同时一些软件的配置文件你可以通过指定 –sys-config= 参数进行设定。</p>
+<p>有一些软件还可以加上 –with、–enable、–without、–disable 等等参数对编译加以控制，</p>
+<p>你可以通过允许 ./configure –help 察看详细的说明帮助。</p>
+<pre><code>configure是一个<span class="keyword">shell</span>脚本，它可以自动设定源程序以符合各种不同平台上Unix系统的特性，并且根据系统叁数及环境产生合适的Makefile文件或是C的头文件(header <span class="keyword">file</span>)，让源程序可以很方便地在这些不同的平台上被编译连接。
+</code></pre><h4 id="make">make</h4>
+<p>是用来编译的，它从Makefile中读取指令，然后编译。</p>
+<p>make，这一步就是编译，大多数的源代码包都经过这一步进行编译（当然有些perl或python编写的软件需要调用perl或python来进行编译）。</p>
+<p>如果 在 make 过程中出现 error ，你就要记下错误代码（注意不仅仅是最后一行），然后你可以向开发者提交 bugreport（一般在 INSTALL 里有提交地址），或者你的系统少了一些依赖库等，这些需要自己仔细研究错误代码</p>
+<h4 id="make_install">make install</h4>
+<p>是用来安装的，它也从Makefile中读取指令，安装到指定的位置。</p>
+<p>make insatll，这条命令来进行安装（当然有些软件需要先运行 make check 或 make test 来进行一些测试），这一步一般需要你有 root 权限（因为要向系统写入文件）。</p>
+<pre><code>AUTOMAKE和AUTOCONF是非常有用的用来发布<span class="keyword">C</span>程序的东西。
+</code></pre>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yuhaya.github.io/2014/05/02/foundation-uikit-框架类组织架构图/" data-id="j5siz3oruvcd3ml2" class="article-share-link">Share</a>
+      <a data-url="http://yuhaya.github.io/2014/11/27/-configure-make-make-install/" data-id="s00bttxknzb6fdkw" class="article-share-link">Share</a>
       
-        <a href="http://yuhaya.github.io/2014/05/02/foundation-uikit-框架类组织架构图/#disqus_thread" class="article-comment-link">Comments</a>
+        <a href="http://yuhaya.github.io/2014/11/27/-configure-make-make-install/#disqus_thread" class="article-comment-link">Comments</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/编译/">编译</a></li></ul>
+
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2014/05/02/委托(delegate)/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          委托(delegate)
-        
-      </div>
-    </a>
   
-  
-    <a href="/2014/04/29/协议与委托-（protocol-and-delegate)-实例解析/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2014/11/19/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">协议与委托 （Protocol and Delegate) 实例解析</div>
+      <div class="article-nav-title">Hello World</div>
     </a>
   
 </nav>
@@ -165,7 +175,7 @@ ga('send', 'pageview');
 
   <section id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="post-foundation-uikit-框架类组织架构图" data-title="Foundation UIKit 框架类组织架构图" data-url="http://yuhaya.github.io/2014/05/02/foundation-uikit-框架类组织架构图/"></div>
+    <div class="ds-thread" data-thread-key="post--configure-make-make-install" data-title="./configure,make,make install" data-url="http://yuhaya.github.io/2014/11/27/-configure-make-make-install/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
