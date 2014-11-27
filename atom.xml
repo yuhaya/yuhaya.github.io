@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-11-27T11:46:14.656Z</updated>
+  <updated>2014-11-27T11:48:21.063Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://yuhaya.github.io/2014/11/27/Web-%E5%B9%B6%E5%8F%91%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7Pylot%E7%9A%84%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E4%BD%BF%E7%94%A8/"/>
     <id>http://yuhaya.github.io/2014/11/27/Web-并发压力测试工具Pylot的安装以及使用/</id>
     <published>2014-11-27T11:19:31.000Z</published>
-    <updated>2014-11-27T11:45:44.000Z</updated>
+    <updated>2014-11-27T11:48:07.000Z</updated>
     <content type="html"><![CDATA[<p>ApacheBench 一把的泪，不说了，下面介绍一个python的并发测试工具<code>Pylot</code></p>
 <p>以下为mac下得安装方法，window的自行Google</p>
 <h3 id="Pylot介绍">Pylot介绍</h3>
@@ -47,8 +47,10 @@
 </code></pre><h3 id="Pylot使用">Pylot使用</h3>
 <p>　　进入Pylot解压的目录</p>
 <p>　　首先需要配置一下testcases.xml这个文件。这个文件包含了需要测试的目标url以及具体的测试内容。</p>
-<p>　　大家打开testcases.xml之后可以看到两个<case>……</case>，因为我们只是要一个简单的实例，所以我们把第二个<case>….</case>删掉，然后把第一个<case>….</case>里面的<url></url>改成你需要测试的url。我的就是<url><a href="http://www.langman1dian.com" target="_blank" rel="external">http://www.langman1dian.com</a></url>。改好之后整个文章内容是这样的<br>　　<br>`</p>
-<p><testcases><br>    <!-- SAMPLE TEST CASE --><br>    <case><br>        <url><a href="http://3wmao.com" target="_blank" rel="external">http://3wmao.com</a></url><br>    </case><br>    —&gt;<br></testcases><br>`</p>
+<p>　　大家打开testcases.xml之后可以看到两个<case>……</case>，因为我们只是要一个简单的实例，所以我们把第二个<case>….</case>删掉，然后把第一个<case>….</case>里面的<url></url>改成你需要测试的url。我的就是<url><a href="http://3wmao.com" target="_blank" rel="external">http://3wmao.com</a></url>。改好之后整个文章内容是这样的
+　　</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">testcases</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- SAMPLE TEST CASE --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">case</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="title">url</span>&gt;</span>http://3wmao.com<span class="tag">&lt;/<span class="title">url</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="title">case</span>&gt;</span></div><div class="line">    --&gt;</div><div class="line"><span class="tag">&lt;/<span class="title">testcases</span>&gt;</span></div></pre></td></tr></table></figure>
+
 <p>好了，保存关闭。运行以下命令</p>
 <pre><code><span class="keyword">python</span> run.<span class="keyword">py</span> -<span class="keyword">a</span> <span class="number">50</span>
 </code></pre><p> 输出的html信息在results目录下</p>

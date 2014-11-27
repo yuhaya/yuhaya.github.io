@@ -138,8 +138,10 @@ ga('send', 'pageview');
 </code></pre><h3 id="Pylot使用">Pylot使用</h3>
 <p>　　进入Pylot解压的目录</p>
 <p>　　首先需要配置一下testcases.xml这个文件。这个文件包含了需要测试的目标url以及具体的测试内容。</p>
-<p>　　大家打开testcases.xml之后可以看到两个<case>……</case>，因为我们只是要一个简单的实例，所以我们把第二个<case>….</case>删掉，然后把第一个<case>….</case>里面的<url></url>改成你需要测试的url。我的就是<url><a href="http://www.langman1dian.com" target="_blank" rel="external">http://www.langman1dian.com</a></url>。改好之后整个文章内容是这样的<br>　　<br>`</p>
-<p><testcases><br>    <!-- SAMPLE TEST CASE --><br>    <case><br>        <url><a href="http://3wmao.com" target="_blank" rel="external">http://3wmao.com</a></url><br>    </case><br>    —&gt;<br></testcases><br>`</p>
+<p>　　大家打开testcases.xml之后可以看到两个<case>……</case>，因为我们只是要一个简单的实例，所以我们把第二个<case>….</case>删掉，然后把第一个<case>….</case>里面的<url></url>改成你需要测试的url。我的就是<url><a href="http://3wmao.com" target="_blank" rel="external">http://3wmao.com</a></url>。改好之后整个文章内容是这样的
+　　</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">testcases</span>&gt;</span></div><div class="line">    <span class="comment">&lt;!-- SAMPLE TEST CASE --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">case</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="title">url</span>&gt;</span>http://3wmao.com<span class="tag">&lt;/<span class="title">url</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="title">case</span>&gt;</span></div><div class="line">    --&gt;</div><div class="line"><span class="tag">&lt;/<span class="title">testcases</span>&gt;</span></div></pre></td></tr></table></figure>
+
 <p>好了，保存关闭。运行以下命令</p>
 <pre><code><span class="keyword">python</span> run.<span class="keyword">py</span> -<span class="keyword">a</span> <span class="number">50</span>
 </code></pre><p> 输出的html信息在results目录下</p>
