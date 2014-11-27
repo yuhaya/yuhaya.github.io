@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title><![CDATA[yuhaya]]></title>
+  <title><![CDATA[编程年代]]></title>
   <subtitle><![CDATA[Simple code farming life]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yuhaya.github.io/"/>
-  <updated>2014-11-19T02:39:28.205Z</updated>
+  <updated>2014-11-27T05:31:14.590Z</updated>
   <id>http://yuhaya.github.io/</id>
   
   <author>
-    <name><![CDATA[3wmao]]></name>
+    <name><![CDATA[yuhaya]]></name>
     <email><![CDATA[3wmaocomputer@gmail.com]]></email>
   </author>
   
