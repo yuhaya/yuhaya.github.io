@@ -1,0 +1,1 @@
+import{_ as l,c as e,o as i,a2 as p}from"./chunks/framework.BfF5VrUX.js";const u=JSON.parse('{"title":"⽤户协议","description":"","frontmatter":{},"headers":[],"relativePath":"en/rule.md","filePath":"en/rule.md"}'),r={name:"en/rule.md"};function o(t,a,h,n,d,s){return i(),e("div",null,[...a[0]||(a[0]=[p("",60)])])}const b=l(r,[["render",o]]);export{u as __pageData,b as default};
