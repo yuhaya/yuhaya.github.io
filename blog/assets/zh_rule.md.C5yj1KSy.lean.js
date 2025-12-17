@@ -1,0 +1,1 @@
+import{_ as l,c as e,o as i,ag as p}from"./chunks/framework.DXCYPbuZ.js";const u=JSON.parse('{"title":"⽤户协议","description":"","frontmatter":{},"headers":[],"relativePath":"zh/rule.md","filePath":"zh/rule.md"}'),r={name:"zh/rule.md"};function o(t,a,h,n,d,s){return i(),e("div",null,[...a[0]||(a[0]=[p("",60)])])}const b=l(r,[["render",o]]);export{u as __pageData,b as default};
