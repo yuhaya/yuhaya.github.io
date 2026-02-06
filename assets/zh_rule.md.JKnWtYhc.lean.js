@@ -1,0 +1,1 @@
+import{_ as l,o as e,c as i,a3 as p}from"./chunks/framework.DyVDm1WL.js";const u=JSON.parse('{"title":"⽤戶協議","description":"","frontmatter":{},"headers":[],"relativePath":"zh/rule.md","filePath":"zh/rule.md"}'),r={name:"zh/rule.md"};function o(t,a,h,n,d,s){return e(),i("div",null,[...a[0]||(a[0]=[p("",60)])])}const b=l(r,[["render",o]]);export{u as __pageData,b as default};
